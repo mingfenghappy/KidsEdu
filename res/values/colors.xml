@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="player_panel_background_color">#9f000000</color>
+    <color name="list_item_select_color">#ff13901a</color>
+    <color name="translucent_black_color">#8f000000</color>
+    <color name="text_color_pressed">#ffffffff</color>
+    <color name="color_play_loading_text">#ffbdbdbd</color>
+    <color name="player_bottom_line">#22ffffff</color>
+    <color name="video_source_color">#ff545454</color>
+</resources>
