@@ -1,10 +1,9 @@
 package com.morningtel.kidsedu;
 
-import com.morningtel.kidsedu.mediaplayer.PlayerActivity;
+import com.morningtel.kidsedu.commons.CommonUtils;
 
 import android.os.Bundle;
 import android.app.Activity;
-import android.content.Intent;
 import android.view.Menu;
 
 public class MainActivity extends Activity {
@@ -14,8 +13,7 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
-		Intent intent=new Intent(this, PlayerActivity.class);
-		startActivity(intent);
+		System.out.println(CommonUtils.getDisplayParams(MainActivity.this));
 	}
 
 	@Override

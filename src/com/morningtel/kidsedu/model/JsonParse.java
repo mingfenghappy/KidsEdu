@@ -1,0 +1,89 @@
+package com.morningtel.kidsedu.model;
+
+import java.util.ArrayList;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+public class JsonParse {
+
+	/**
+	 * 获取app列表等
+	 * @param str
+	 * @return
+	 */
+	public static ArrayList<AppTypesModel> getAppTypesModelList(String str) {
+		ArrayList<AppTypesModel> model_list=new ArrayList<AppTypesModel>();
+		try {
+			JSONObject obj=new JSONObject(str);
+			JSONArray appTypes_array=obj.getJSONArray("appTypes");
+			for(int i=0;i<appTypes_array.length();i++) {
+				JSONObject model_obj=appTypes_array.getJSONObject(i);
+				AppTypesModel model=new AppTypesModel();
+				model.setId(model_obj.getInt("id"));
+				model.setName(model_obj.getString("name"));
+				model_list.add(model);
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return model_list;
+	}
+	
+	/**
+	 * 根据id获取列表
+	 * @param str
+	 * @return
+	 */
+	public static ArrayList<AppsFilterModel> getAppsFilterModelList(String str) {
+		ArrayList<AppsFilterModel> model_list=new ArrayList<AppsFilterModel>();
+		try {
+			JSONObject obj=new JSONObject(str);
+			JSONArray apps_array=obj.getJSONArray("apps");
+			for(int i=0;i<apps_array.length();i++) {
+				JSONObject model_obj=apps_array.getJSONObject(i);
+				AppsFilterModel model=new AppsFilterModel();
+				model.setCommentCount(model_obj.getInt("commentCount"));
+				model.setCommentGrade(model_obj.getDouble("commentGrade"));
+				model.setDownloadCount(model_obj.getInt("downloadCount"));
+				model.setIconUrl(model_obj.getString("iconUrl"));
+				model.setId(model_obj.getInt("id"));
+				model.setLastUpdateTime(model_obj.getLong("lastUpdateTime"));
+				model.setMobiledesc(model_obj.getString("mobiledesc"));
+				model.setMoney(model_obj.getInt("money"));
+				model.setName(model_obj.getString("name"));
+				model.setOriginalMoney(model_obj.getInt("originalMoney"));
+				model.setPackageName(model_obj.getString("packageName"));
+				model.setProvider(model_obj.getString("provider"));
+				model.setViewCount(model_obj.getInt("viewCount"));
+				model_list.add(model);
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return model_list;
+	}
+	
+	public static AppModel getAppModelByAid(String str) {
+		AppModel model=new AppModel();
+		try {
+			JSONObject obj=new JSONObject(str);
+			JSONObject app_obj=obj.getJSONObject("app");
+			JSONArray appFiles_array=app_obj.getJSONArray("appFiles");
+			JSONObject model_obj=appFiles_array.getJSONObject(0);
+			model.setFileSize(model_obj.getLong("fileSize"));
+			model.setPackageName(model_obj.getString("packageName"));
+			model.setFileUrl(model_obj.getString("fileUrl"));
+			model.setName(app_obj.getString("name"));
+			model.setId(app_obj.getInt("id"));
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			model=null;
+		}
+		return model;
+	}
+}
