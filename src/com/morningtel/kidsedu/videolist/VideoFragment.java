@@ -1,4 +1,4 @@
-package com.morningtel.kidsedu.musiclist;
+package com.morningtel.kidsedu.videolist;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,6 +13,7 @@ import com.morningtel.kidsedu.applist.AppDetailActivity;
 import com.morningtel.kidsedu.commons.CommonUtils;
 import com.morningtel.kidsedu.model.AppsFilterModel;
 import com.morningtel.kidsedu.model.JsonParse;
+import com.morningtel.kidsedu.musiclist.MusicListAdapter;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -27,18 +28,18 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class MusicFragment extends Fragment {
+public class VideoFragment extends Fragment {
 	
 	PullToRefreshListView fragment_apptabs_listview=null;
-	MusicListAdapter adapter=null;
+	VideoListAdapter adapter=null;
 	
 	ArrayList<AppsFilterModel> appfilter_list=null;
     private int id=0;
     //Ò³Âë
     int page=1;
 
-    public static MusicFragment newInstance(int id) {
-    	MusicFragment fragment = new MusicFragment();
+    public static VideoFragment newInstance(int id) {
+    	VideoFragment fragment = new VideoFragment();
         Bundle bundle=new Bundle();
         bundle.putInt("id", id);
         fragment.setArguments(bundle);
@@ -50,7 +51,7 @@ public class MusicFragment extends Fragment {
         super.onCreate(savedInstanceState);
         this.id=getArguments().getInt("id");
         appfilter_list=new ArrayList<AppsFilterModel>();
-        adapter=new MusicListAdapter(appfilter_list, getActivity());
+        adapter=new VideoListAdapter(appfilter_list, getActivity());
     }
 
     @Override
@@ -64,7 +65,7 @@ public class MusicFragment extends Fragment {
 						DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_ABBREV_ALL);
 				refreshView.getLoadingLayoutProxy().setLastUpdatedLabel(label);
 				page=1;
-				getMusicFilter();
+				getVideoFilter();
 			}
 		});
         fragment_apptabs_listview.setOnLastItemVisibleListener(new OnLastItemVisibleListener() {
@@ -73,7 +74,7 @@ public class MusicFragment extends Fragment {
 			public void onLastItemVisible() {
 				if(appfilter_list.size()%20==0) {
 					page++;
-					getMusicFilter();
+					getVideoFilter();
 				}
 			}
 		});
@@ -89,11 +90,11 @@ public class MusicFragment extends Fragment {
 			}
 		});
         actualListView.setAdapter(adapter);
-        getMusicFilter();
+        getVideoFilter();
         return view;
     }
     
-    public void getMusicFilter() {
+    public void getVideoFilter() {
     	final Handler handler=new Handler() {
     		@Override
     		public void handleMessage(Message msg) {

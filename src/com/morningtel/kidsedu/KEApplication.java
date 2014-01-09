@@ -12,6 +12,7 @@ public class KEApplication extends Application {
 	
 	public String kidsIconUrl="http://res.kidsedu.com/";	
 	public String kidsDataUrl="http://www.kidsedu.com";
+	public String kidsVideoUrl="http://res.kidsedu.com/mp4video";
 	
 	//下载信息记录
 	public HashMap<String, Integer> download_maps=null;

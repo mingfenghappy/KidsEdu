@@ -11,5 +11,12 @@
     <dimen name="movie_review_title_font_size">15.0sp</dimen>
     <dimen name="title_font_size">19.0sp</dimen>
     <dimen name="volume_control_top_margin">5.0dip</dimen>
+    <dimen name="video_detail_page_left_padding">15.0dip</dimen>
+    <dimen name="video_detail_page_top_padding">15.0dip</dimen>
+    <dimen name="video_detail_page_right_padding">15.0dip</dimen>
+    <dimen name="video_detail_page_bottom_padding">15.0dip</dimen>
+    <dimen name="video_detail_page_top_layout_height">170.0dip</dimen>
+    <dimen name="video_detail_page_text_left_padding">5.0dip</dimen>
+    <dimen name="video_detail_play_drawable_padding">2.0dip</dimen>
 
 </resources>

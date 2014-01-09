@@ -67,6 +67,11 @@ public class JsonParse {
 		return model_list;
 	}
 	
+	/**
+	 * 获取应用下载以及音乐播放列表元素信息
+	 * @param str
+	 * @return
+	 */
 	public static AppModel getAppModelByAid(String str) {
 		AppModel model=new AppModel();
 		try {
@@ -79,6 +84,41 @@ public class JsonParse {
 			model.setFileUrl(model_obj.getString("fileUrl"));
 			model.setName(app_obj.getString("name"));
 			model.setId(app_obj.getInt("id"));
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			model=null;
+		}
+		return model;
+	}
+	
+	/**
+	 * 视频播放列表
+	 * @param str
+	 * @return
+	 */
+	public static AppModel getVideoModelByAid(String str) {
+		AppModel model=new AppModel();
+		try {
+			JSONObject obj=new JSONObject(str);
+			JSONObject app_obj=obj.getJSONObject("app");
+			JSONArray appFiles_array=app_obj.getJSONArray("appFiles");
+			ArrayList<VideoItemModel> item_list=new ArrayList<VideoItemModel>();
+			for(int i=0;i<appFiles_array.length();i++) {
+				JSONObject model_obj=appFiles_array.getJSONObject(i);
+				VideoItemModel item=new VideoItemModel();
+				item.setVersionCode(model_obj.getString("versionCode"));
+				item.setFileUrl(model_obj.getString("fileUrl"));
+				item_list.add(item);
+			}
+			model.setIconUrl(app_obj.getString("iconUrl"));
+			model.setModel_list(item_list);
+			model.setName(app_obj.getString("name"));
+			model.setId(app_obj.getInt("id"));
+			model.setProvider(app_obj.getString("provider"));
+			model.setResolution(app_obj.getInt("resolution"));
+			model.setCommentGrade(app_obj.getDouble("commentGrade"));
+			model.setMobiledesc(app_obj.getString("mobiledesc"));
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

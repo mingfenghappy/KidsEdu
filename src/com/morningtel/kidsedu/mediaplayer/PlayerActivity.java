@@ -41,7 +41,7 @@ import com.morningtel.kidsedu.commons.CommonUtils;
 
 public class PlayerActivity extends BaseActivity implements OnBufferingUpdateListener, OnCompletionListener, OnPreparedListener, OnVideoSizeChangedListener, SurfaceHolder.Callback {
 	
-	TextView playervideotitle=null;
+	TextView nav_title=null;
 	ImageView playerlightbutton=null;
 	ImageView playerplaybutton=null;
 	ImageView playervolumebutton=null;
@@ -139,7 +139,7 @@ public class PlayerActivity extends BaseActivity implements OnBufferingUpdateLis
 		player_title_control.setVisibility(View.GONE);
 		player_bottom_control=(RelativeLayout) findViewById(R.id.player_bottom_control);
 		player_bottom_control.setVisibility(View.GONE);
-		playervideotitle=(TextView) findViewById(R.id.playervideotitle);
+		nav_title=(TextView) findViewById(R.id.nav_title);
 		playerlightbutton=(ImageView) findViewById(R.id.playerlightbutton);
 		playerlightbutton.setOnClickListener(new ImageView.OnClickListener() {
 
@@ -308,7 +308,7 @@ public class PlayerActivity extends BaseActivity implements OnBufferingUpdateLis
 	
 	private void playVideo() {
 		doCleanUp();
-		path = "http://res.kidsedu.com//mp4video/EB/7C/%7BEB7C994B-71AD-CD70-BF95-A43FFFFDFF39%7D.mp4";
+		path=getIntent().getExtras().getString("url");
 		// Create a new media player and set the listeners
 		
 		try {

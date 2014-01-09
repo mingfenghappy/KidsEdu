@@ -1,4 +1,4 @@
-package com.morningtel.kidsedu.detail;
+package com.morningtel.kidsedu.applist;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;

@@ -10,7 +10,6 @@ import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.morningtel.kidsedu.KEApplication;
 import com.morningtel.kidsedu.R;
 import com.morningtel.kidsedu.commons.CommonUtils;
-import com.morningtel.kidsedu.detail.AppDetailActivity;
 import com.morningtel.kidsedu.model.AppsFilterModel;
 import com.morningtel.kidsedu.model.JsonParse;
 import com.morningtel.kidsedu.receiver.AppReceiver;
