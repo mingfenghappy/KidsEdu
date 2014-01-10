@@ -126,6 +126,7 @@ public class VideoDetailActivity extends BaseActivity {
 				// TODO Auto-generated method stub
 				Intent intent=new Intent(VideoDetailActivity.this, PlayerActivity.class);
 				Bundle bundle=new Bundle();
+				bundle.putParcelableArrayList("item_list", item_list);
 				bundle.putString("url", ((KEApplication) getApplicationContext()).kidsVideoUrl+item_list.get(position).getFileUrl().substring(6, item_list.get(position).getFileUrl().length())+".mp4");
 				intent.putExtras(bundle);
 				startActivity(intent);
@@ -151,7 +152,7 @@ public class VideoDetailActivity extends BaseActivity {
 					bitmapUtils.display(video_detail_image, ((KEApplication) getApplicationContext()).kidsIconUrl+model.getIconUrl());
 					video_detail_num.setText(""+model.getCommentGrade());
 					video_detail_provider.setText("提供者："+model.getProvider());
-					video_detail_resolution.setText("剧集：共"+model.getResolution()+"集");
+					video_detail_resolution.setText("剧集：共"+model.getModel_list().size()+"集");
 					video_detail_playButton.setVisibility(View.VISIBLE);
 					video_detail_downloadButton.setVisibility(View.VISIBLE);
 					item_list.addAll(model.getModel_list());

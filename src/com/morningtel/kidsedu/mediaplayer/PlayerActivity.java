@@ -1,6 +1,8 @@
 package com.morningtel.kidsedu.mediaplayer;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import io.vov.vitamio.LibsChecker;
 import io.vov.vitamio.MediaPlayer;
@@ -26,18 +28,24 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.ViewGroup.LayoutParams;
 import android.view.WindowManager;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
+import android.widget.SimpleAdapter;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.morningtel.kidsedu.BaseActivity;
+import com.morningtel.kidsedu.KEApplication;
 import com.morningtel.kidsedu.R;
 import com.morningtel.kidsedu.commons.CommonUtils;
+import com.morningtel.kidsedu.model.VideoItemModel;
 
 public class PlayerActivity extends BaseActivity implements OnBufferingUpdateListener, OnCompletionListener, OnPreparedListener, OnVideoSizeChangedListener, SurfaceHolder.Callback {
 	
@@ -48,7 +56,9 @@ public class PlayerActivity extends BaseActivity implements OnBufferingUpdateLis
 	TextView playercurrentplaytime=null;
 	TextView playertotalplaytime=null;
 	SeekBar playerplayprogressseekbar=null;
+	TextView player_choice=null;
 	ListView anthology_list=null;
+	SimpleAdapter adapter=null;
 	SurfaceView surface=null;
 	ImageView playLoadingImage=null;
 	LinearLayout playLoadingLayout=null;
@@ -79,6 +89,7 @@ public class PlayerActivity extends BaseActivity implements OnBufferingUpdateLis
 	int MINIMUM_LIGHT=30;
 	//最高亮度
 	int MAXIMUM_LIGHT=255;
+	ArrayList<VideoItemModel> item_list=null;
 	
 	Handler handler_voice_bar=null;
 	Handler handler_contro_screen=null;
@@ -101,6 +112,8 @@ public class PlayerActivity extends BaseActivity implements OnBufferingUpdateLis
 		mAudioManager=(AudioManager) getSystemService(Context.AUDIO_SERVICE);
 		
 		setContentView(R.layout.player_layout);
+
+		path=getIntent().getExtras().getString("url");
 		
 		init();
 	}
@@ -131,6 +144,8 @@ public class PlayerActivity extends BaseActivity implements OnBufferingUpdateLis
 					player_bottom_control.setVisibility(View.GONE);
 					voice_seekbar.setVisibility(View.GONE);
 					light_seekbar.setVisibility(View.GONE);
+					player_choice.setVisibility(View.GONE);
+					anthology_list.setVisibility(View.GONE);
 				}
 			}
 		};
@@ -211,6 +226,65 @@ public class PlayerActivity extends BaseActivity implements OnBufferingUpdateLis
 			}
 		});
 		anthology_list=(ListView) findViewById(R.id.anthology_list);
+		item_list=getIntent().getExtras().getParcelableArrayList("item_list");
+		ArrayList<HashMap<String, String>> model_list=new ArrayList<HashMap<String, String>>();
+		for(int i=0;i<item_list.size();i++) {
+			HashMap<String, String> map=new HashMap<String, String>();
+			map.put("item", "第"+item_list.get(i).getVersionCode()+"集");
+			model_list.add(map);
+		}
+		adapter=new SimpleAdapter(PlayerActivity.this, model_list, R.layout.video_detail_grid_item, new String[]{"item"}, new int[]{R.id.itemText});
+		anthology_list.setAdapter(adapter);
+		anthology_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				// TODO Auto-generated method stub
+				if(mMediaPlayer!=null) {
+					mMediaPlayer.stop();
+				}
+				releaseMediaPlayer();
+				doCleanUp();
+				path=((KEApplication) getApplicationContext()).kidsVideoUrl+item_list.get(position).getFileUrl().substring(6, item_list.get(position).getFileUrl().length())+".mp4";
+				play();
+			}
+		});
+		anthology_list.setOnScrollListener(new OnScrollListener() {
+			
+			@Override
+			public void onScrollStateChanged(AbsListView view, int scrollState) {
+				// TODO Auto-generated method stub
+				switch(scrollState) {
+				case OnScrollListener.SCROLL_STATE_IDLE:
+					handler_contro_screen.sendEmptyMessageDelayed(2, 4000);
+					break;
+				case OnScrollListener.SCROLL_STATE_TOUCH_SCROLL:
+					handler_contro_screen.removeMessages(2);
+					break;
+				}
+			}
+			
+			@Override
+			public void onScroll(AbsListView view, int firstVisibleItem,
+					int visibleItemCount, int totalItemCount) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		player_choice=(TextView) findViewById(R.id.player_choice);
+		player_choice.setOnClickListener(new TextView.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				if(anthology_list.getVisibility()==View.GONE) {
+					anthology_list.setVisibility(View.VISIBLE);
+				}
+				else {
+					anthology_list.setVisibility(View.GONE);
+				}
+			}});
 		surface=(SurfaceView) findViewById(R.id.surface);
 		surface.setOnClickListener(new OnClickListener() {
 
@@ -227,6 +301,7 @@ public class PlayerActivity extends BaseActivity implements OnBufferingUpdateLis
 				else {
 					player_title_control.setVisibility(View.VISIBLE);
 					player_bottom_control.setVisibility(View.VISIBLE);
+					player_choice.setVisibility(View.VISIBLE);
 					handler_contro_screen.sendEmptyMessageDelayed(2, 4000);
 				}
 			}});	
@@ -308,7 +383,6 @@ public class PlayerActivity extends BaseActivity implements OnBufferingUpdateLis
 	
 	private void playVideo() {
 		doCleanUp();
-		path=getIntent().getExtras().getString("url");
 		// Create a new media player and set the listeners
 		
 		try {

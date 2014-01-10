@@ -8,8 +8,8 @@
         android:layout_gravity="top" 
         android:id="@+id/player_title_control" 
         android:background="@color/player_panel_background_color" 
-        android:paddingTop="15.0dip" 
-        android:paddingBottom="15.0dip" 
+        android:paddingTop="10.0dip" 
+        android:paddingBottom="10.0dip" 
         android:scrollbars="none" 
         android:layout_width="fill_parent" 
         android:layout_height="wrap_content">

@@ -116,7 +116,6 @@ public class JsonParse {
 			model.setName(app_obj.getString("name"));
 			model.setId(app_obj.getInt("id"));
 			model.setProvider(app_obj.getString("provider"));
-			model.setResolution(app_obj.getInt("resolution"));
 			model.setCommentGrade(app_obj.getDouble("commentGrade"));
 			model.setMobiledesc(app_obj.getString("mobiledesc"));
 		} catch (JSONException e) {

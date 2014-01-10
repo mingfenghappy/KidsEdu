@@ -27,7 +27,6 @@ public class AppModel implements Serializable {
 	String name="";
 	ArrayList<VideoItemModel> model_list=null;
 	String provider="";
-	int resolution=0;
 	
 	public ArrayList<VideoItemModel> getModel_list() {
 		return model_list;
@@ -40,12 +39,6 @@ public class AppModel implements Serializable {
 	}
 	public void setProvider(String provider) {
 		this.provider = provider;
-	}
-	public int getResolution() {
-		return resolution;
-	}
-	public void setResolution(int resolution) {
-		this.resolution = resolution;
 	}
 	public int getId() {
 		return id;
