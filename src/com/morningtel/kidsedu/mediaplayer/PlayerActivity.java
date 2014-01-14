@@ -45,7 +45,6 @@ import com.morningtel.kidsedu.BaseActivity;
 import com.morningtel.kidsedu.KEApplication;
 import com.morningtel.kidsedu.R;
 import com.morningtel.kidsedu.commons.CommonUtils;
-import com.morningtel.kidsedu.model.VideoItemModel;
 
 public class PlayerActivity extends BaseActivity implements OnBufferingUpdateListener, OnCompletionListener, OnPreparedListener, OnVideoSizeChangedListener, SurfaceHolder.Callback {
 	
@@ -89,7 +88,8 @@ public class PlayerActivity extends BaseActivity implements OnBufferingUpdateLis
 	int MINIMUM_LIGHT=30;
 	//最高亮度
 	int MAXIMUM_LIGHT=255;
-	ArrayList<VideoItemModel> item_list=null;
+	String[] versionCode_array;
+	String[] fileUrl_array;
 	
 	Handler handler_voice_bar=null;
 	Handler handler_contro_screen=null;
@@ -155,6 +155,14 @@ public class PlayerActivity extends BaseActivity implements OnBufferingUpdateLis
 		player_bottom_control=(RelativeLayout) findViewById(R.id.player_bottom_control);
 		player_bottom_control.setVisibility(View.GONE);
 		nav_title=(TextView) findViewById(R.id.nav_title);
+		nav_title.setOnClickListener(new TextView.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				finish();
+			}});
+		nav_title.setText(getIntent().getExtras().getString("name"));
 		playerlightbutton=(ImageView) findViewById(R.id.playerlightbutton);
 		playerlightbutton.setOnClickListener(new ImageView.OnClickListener() {
 
@@ -226,11 +234,12 @@ public class PlayerActivity extends BaseActivity implements OnBufferingUpdateLis
 			}
 		});
 		anthology_list=(ListView) findViewById(R.id.anthology_list);
-		item_list=getIntent().getExtras().getParcelableArrayList("item_list");
+		versionCode_array=getIntent().getExtras().getStringArray("VersionCode");
+		fileUrl_array=getIntent().getExtras().getStringArray("FileUrl");
 		ArrayList<HashMap<String, String>> model_list=new ArrayList<HashMap<String, String>>();
-		for(int i=0;i<item_list.size();i++) {
+		for(int i=0;i<versionCode_array.length;i++) {
 			HashMap<String, String> map=new HashMap<String, String>();
-			map.put("item", "第"+item_list.get(i).getVersionCode()+"集");
+			map.put("item", "第"+versionCode_array[i]+"集");
 			model_list.add(map);
 		}
 		adapter=new SimpleAdapter(PlayerActivity.this, model_list, R.layout.video_detail_grid_item, new String[]{"item"}, new int[]{R.id.itemText});
@@ -246,7 +255,7 @@ public class PlayerActivity extends BaseActivity implements OnBufferingUpdateLis
 				}
 				releaseMediaPlayer();
 				doCleanUp();
-				path=((KEApplication) getApplicationContext()).kidsVideoUrl+item_list.get(position).getFileUrl().substring(6, item_list.get(position).getFileUrl().length())+".mp4";
+				path=((KEApplication) getApplicationContext()).kidsVideoUrl+fileUrl_array[position].substring(6, fileUrl_array[position].length())+".mp4";
 				play();
 			}
 		});
@@ -296,6 +305,8 @@ public class PlayerActivity extends BaseActivity implements OnBufferingUpdateLis
 					player_bottom_control.setVisibility(View.GONE);
 					voice_seekbar.setVisibility(View.GONE);
 					light_seekbar.setVisibility(View.GONE);
+					player_choice.setVisibility(View.GONE);
+					anthology_list.setVisibility(View.GONE);
 					handler_contro_screen.removeMessages(2);
 				}
 				else {

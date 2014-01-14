@@ -84,6 +84,9 @@ public class JsonParse {
 			model.setFileUrl(model_obj.getString("fileUrl"));
 			model.setName(app_obj.getString("name"));
 			model.setId(app_obj.getInt("id"));
+			model.setIconUrl(app_obj.getString("iconUrl"));
+			model.setMobiledesc(app_obj.getString("mobiledesc"));
+			model.setDownloadCount(app_obj.getInt("downloadCount"));
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -118,6 +121,7 @@ public class JsonParse {
 			model.setProvider(app_obj.getString("provider"));
 			model.setCommentGrade(app_obj.getDouble("commentGrade"));
 			model.setMobiledesc(app_obj.getString("mobiledesc"));
+			model.setDownloadCount(app_obj.getInt("downloadCount"));
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

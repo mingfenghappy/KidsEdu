@@ -28,6 +28,15 @@ public class Conn extends SQLiteOpenHelper {
 	private static final String APP_INFO="appinfo";
 	private static final String APP_FLAG="appflag";
 	
+	private static final String	MUSIC_TABLE="musictable";
+	private static final String MUSIC_NAME="musicname";
+	private static final String MUSIC_INFO="musicinfo";
+	
+	private static final String	VIDEO_TABLE="videotable";
+	private static final String VIDEO_NAME="videoname";
+	private static final String VIDEO_INFO="videoinfo";
+	private static final String VIDEO_NUM="videonum";
+	
 	Context context=null;
 	
 	static Conn conn=null;
@@ -49,6 +58,8 @@ public class Conn extends SQLiteOpenHelper {
 	public void onCreate(SQLiteDatabase db) {
 		// TODO Auto-generated method stub
 		db.execSQL("create table if not exists "+APP_TABLE+"("+_ID+" integer primary key autoincrement not null, "+APP_INFO+" blob, "+APP_PACKAGENAME+" text, "+APP_FLAG+" INTEGER)");
+		db.execSQL("create table if not exists "+MUSIC_TABLE+"("+_ID+" integer primary key autoincrement not null, "+MUSIC_INFO+" blob, "+MUSIC_NAME+" text)");
+		db.execSQL("create table if not exists "+VIDEO_TABLE+"("+_ID+" integer primary key autoincrement not null, "+VIDEO_INFO+" blob, "+VIDEO_NAME+" text, "+VIDEO_NUM+" INTEGER)");
 	}
 
 	@Override
@@ -58,10 +69,10 @@ public class Conn extends SQLiteOpenHelper {
 	}
 	
 	/**
-	 * 将对象保存到数据库中
+	 * 将应用对象保存到数据库中
 	 * @param model
 	 */
-	public void insertModel(Object obj) {
+	public void insertAppModel(Object obj) {
 		synchronized (this) {
 			SQLiteDatabase db_check=this.getReadableDatabase();
 			Cursor cs=db_check.query(APP_TABLE, null, APP_PACKAGENAME+"=?", new String[]{((AppModel) obj).getPackageName()}, null, null, null);
@@ -71,23 +82,91 @@ public class Conn extends SQLiteOpenHelper {
 				db_check.close();
 				return;
 			}
-			
-			ContentValues values=null;
-			if(obj instanceof AppModel) {
-				byte[] bytes=serialize((AppModel) obj);
-				values=new ContentValues(3);
-				values.put(APP_INFO, bytes);
-				values.put(APP_PACKAGENAME, ((AppModel) obj).getPackageName());
-				values.put(APP_FLAG, 0);
+			else {
+				cs.close();
+				db_check.close();
 			}
+			ContentValues values=null;
+			byte[] bytes=serialize((AppModel) obj);
+			values=new ContentValues(3);
+			values.put(APP_INFO, bytes);
+			values.put(APP_PACKAGENAME, ((AppModel) obj).getPackageName());
+			values.put(APP_FLAG, 0);
 			SQLiteDatabase db=this.getWritableDatabase();
 			db.beginTransaction();
-			if(obj instanceof AppModel) {
-				db.insert(APP_TABLE, null, values);
-			}
+			db.insert(APP_TABLE, null, values);
 			db.setTransactionSuccessful();
 			db.endTransaction();
 			db.close();	
+		}			
+	}
+	
+	/**
+	 * 将音乐对象保存到数据库中
+	 * @param model
+	 */
+	public void insertMusicModel(Object obj) {
+		synchronized (this) {
+			SQLiteDatabase db_check=this.getReadableDatabase();
+			Cursor cs=db_check.query(MUSIC_TABLE, null, MUSIC_NAME+"=?", new String[]{((AppModel) obj).getName()}, null, null, null);
+			cs.moveToFirst();
+			if(cs.getCount()>0) {
+				cs.close();
+				db_check.close();
+				return;
+			}
+			else {
+				cs.close();
+				db_check.close();
+			}
+			ContentValues values=null;
+			byte[] bytes=serialize((AppModel) obj);
+			values=new ContentValues(2);
+			values.put(MUSIC_INFO, bytes);
+			values.put(MUSIC_NAME, ((AppModel) obj).getName());
+			SQLiteDatabase db=this.getWritableDatabase();
+			db.beginTransaction();
+			db.insert(MUSIC_TABLE, null, values);
+			db.setTransactionSuccessful();
+			db.endTransaction();
+			db.close();	
+		}			
+	}
+	
+	/**
+	 * 将视频对象保存到数据库中
+	 * @param model
+	 */
+	public void insertVideoModel(Object obj, int num) {
+		synchronized (this) {
+			SQLiteDatabase db_check=this.getReadableDatabase();
+			Cursor cs=db_check.query(VIDEO_TABLE, null, VIDEO_NAME+"=?", new String[]{((AppModel) obj).getName()}, null, null, null);
+			cs.moveToFirst();
+			if(cs.getCount()>0) {
+				cs.close();
+				db_check.close();
+				ContentValues values=new ContentValues(1);
+				values.put(VIDEO_NUM, num);
+				SQLiteDatabase db=this.getWritableDatabase();
+				db.update(VIDEO_TABLE, values, VIDEO_NAME+"=?", new String[]{((AppModel) obj).getName()});
+				db.close();
+			}
+			else {
+				cs.close();
+				db_check.close();
+				ContentValues values=new ContentValues(3);
+				byte[] bytes=serialize((AppModel) obj);
+				values.put(VIDEO_INFO, bytes);
+				values.put(VIDEO_NAME, ((AppModel) obj).getName());
+				values.put(VIDEO_NUM, num);
+				SQLiteDatabase db=this.getWritableDatabase();
+				db.beginTransaction();
+				db.insert(VIDEO_TABLE, null, values);
+				db.setTransactionSuccessful();
+				db.endTransaction();
+				db.close();	
+			}
+			
 		}			
 	}
 	
@@ -108,6 +187,7 @@ public class Conn extends SQLiteOpenHelper {
             byte[] bytes =  mem_out.toByteArray(); 
             return bytes; 
         } catch (IOException e) { 
+        	e.printStackTrace();
             return null; 
         } 
     } 
@@ -151,21 +231,52 @@ public class Conn extends SQLiteOpenHelper {
 	}
 	
 	/**
-	 * 获取全部安装信息
+	 * 根据类型获取全部相应信息
 	 * @return
 	 */
-	public ArrayList<AppModel> getAppModelList() {
+	public ArrayList<AppModel> getAppModelList(String type) {
 		synchronized (this) {
 			ArrayList<AppModel> model_list=new ArrayList<AppModel>();
-			SQLiteDatabase db_check=this.getReadableDatabase();
-			Cursor cs=db_check.query(APP_TABLE, null, null, null, null, null, null);
+			SQLiteDatabase db=this.getReadableDatabase();
+			Cursor cs=null;
+			if(type.equals("app")) {
+				cs=db.query(APP_TABLE, null, null, null, null, null, null);
+			}
+			else if(type.equals("video")) {
+				cs=db.query(VIDEO_TABLE, null, null, null, null, null, null);
+			}
+			else if(type.equals("music")) {
+				cs=db.query(MUSIC_TABLE, null, null, null, null, null, null);
+			}
 			cs.moveToFirst();
 			for(int i=0;i<cs.getCount();i++) {
 				cs.moveToPosition(i);
 				model_list.add(deserializeModel(cs.getBlob(1)));
 			}
+			cs.close();
+			db.close();
 			return model_list;
 		}
 	}
-
+	
+	/**
+	 * 根据类型删除某一个数据
+	 * @param name
+	 */
+	public void deleteAppModel(String name, String type) {
+		synchronized (this) {
+			SQLiteDatabase db=this.getWritableDatabase();
+			if(type.equals("app")) {
+				db.delete(APP_TABLE, APP_PACKAGENAME+"=?", new String[]{name});
+			}
+			else if(type.equals("video")) {
+				db.delete(VIDEO_TABLE, VIDEO_NAME+"=?", new String[]{name});
+			}
+			else if(type.equals("music")) {
+				db.delete(MUSIC_TABLE, MUSIC_NAME+"=?", new String[]{name});
+			}
+			db.close();
+		}
+	}
+	
 }

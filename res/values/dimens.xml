@@ -18,5 +18,13 @@
     <dimen name="video_detail_page_top_layout_height">170.0dip</dimen>
     <dimen name="video_detail_page_text_left_padding">5.0dip</dimen>
     <dimen name="video_detail_play_drawable_padding">2.0dip</dimen>
-
+    <dimen name="titlebar_height">44.0dip</dimen>
+    <dimen name="account_textview_width">100dip</dimen>
+    <dimen name="account_profile_item_height">50dip</dimen>
+    <dimen name="middle_margin">10dip</dimen>
+    <dimen name="normal_margin">10dip</dimen>
+    <dimen name="small_margin">10dip</dimen>
+    <dimen name="large_text_size">18sp</dimen>
+    <dimen name="middle_text_size">15sp</dimen>
+    <dimen name="small_text_size">12sp</dimen>
 </resources>

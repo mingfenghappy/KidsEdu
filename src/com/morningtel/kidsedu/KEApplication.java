@@ -3,8 +3,6 @@ package com.morningtel.kidsedu;
 import java.io.File;
 import java.util.HashMap;
 
-import com.morningtel.kidsedu.db.Conn;
-
 import android.app.Application;
 import android.os.Environment;
 
@@ -35,7 +33,6 @@ public class KEApplication extends Application {
 				file_.mkdirs();
 			}
 		}
-		System.out.println(Conn.getInstance(getApplicationContext()).getAppModelList().size());
 		download_maps=new HashMap<String, Integer>();
 	}
 }

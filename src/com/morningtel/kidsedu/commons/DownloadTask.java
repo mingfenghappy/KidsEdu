@@ -130,7 +130,7 @@ public class DownloadTask extends AsyncTask<String, Integer, String> {
 			return result;
 		}
 
-		Conn.getInstance(context).insertModel(model);
+		Conn.getInstance(context).insertAppModel(model);
 		
 		String url_=((KEApplication) context.getApplicationContext()).kidsIconUrl+model.getFileUrl();
 		final String filePath=Environment.getExternalStorageDirectory().getAbsolutePath()+"/kidsedu/temp/"+model.getFileUrl().substring(model.getFileUrl().indexOf("/")+1, model.getFileUrl().length());

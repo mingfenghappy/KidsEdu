@@ -1,7 +1,8 @@
 package com.morningtel.kidsedu.main;
 
 import com.morningtel.kidsedu.R;
-import com.morningtel.kidsedu.applist.AppTabsActivity;
+import com.morningtel.kidsedu.account.AccountActivity;
+import com.morningtel.kidsedu.applist.AppListActivity;
 import com.morningtel.kidsedu.musiclist.MusicTabsActivity;
 import com.morningtel.kidsedu.service.MusicBackgroundService;
 import com.morningtel.kidsedu.videolist.VideoTabsActivity;
@@ -23,6 +24,8 @@ public class TabMainActivity extends TabActivity {
 	
 	LinearLayout music_layout=null;
 	LinearLayout video_layout=null;
+	LinearLayout read_layout=null;
+	LinearLayout study_layout=null;
 	LinearLayout game_layout=null;
 	EditText tab_search=null;
 	ImageView tab_account=null;
@@ -38,21 +41,37 @@ public class TabMainActivity extends TabActivity {
 	}
 	
 	public void init() {
-		music_layout=(LinearLayout) findViewById(R.id.music_layout);
-		music_layout.setOnClickListener(new LinearLayout.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				setTab(0);
-			}});
 		video_layout=(LinearLayout) findViewById(R.id.video_layout);
 		video_layout.setOnClickListener(new LinearLayout.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
+				setTab(0);
+			}});
+		music_layout=(LinearLayout) findViewById(R.id.music_layout);
+		music_layout.setOnClickListener(new LinearLayout.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
 				setTab(1);
+			}});
+		read_layout=(LinearLayout) findViewById(R.id.read_layout);
+		read_layout.setOnClickListener(new LinearLayout.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				setTab(2);
+			}});
+		study_layout=(LinearLayout) findViewById(R.id.study_layout);
+		study_layout.setOnClickListener(new LinearLayout.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				setTab(3);
 			}});
 		game_layout=(LinearLayout) findViewById(R.id.game_layout);
 		game_layout.setOnClickListener(new LinearLayout.OnClickListener() {
@@ -60,20 +79,46 @@ public class TabMainActivity extends TabActivity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				setTab(2);
+				setTab(4);
 			}});
 		host=getTabHost();
-		addTab("spec1", MusicTabsActivity.class, R.drawable.ic_launcher);
-		addTab("spec2", VideoTabsActivity.class, R.drawable.ic_launcher);
-		addTab("spec3", AppTabsActivity.class, R.drawable.ic_launcher);
+		addTab("spec1", VideoTabsActivity.class, R.drawable.ic_launcher);
+		addTab("spec2", MusicTabsActivity.class, R.drawable.ic_launcher);
+		addTab("spec3", AppListActivity.class, R.drawable.ic_launcher);
+		addTab("spec4", AppListActivity.class, R.drawable.ic_launcher);
+		addTab("spec5", AppListActivity.class, R.drawable.ic_launcher);
 		setTab(0);
 		tab_search=(EditText) findViewById(R.id.tab_search);
 		tab_account=(ImageView) findViewById(R.id.tab_account);
+		tab_account.setOnClickListener(new ImageView.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent intent=new Intent(TabMainActivity.this, AccountActivity.class);
+				startActivity(intent);
+			}});
 	}
 	
 	public void addTab(String tag, Class<?> cls, int drawable) {
 		TabSpec spec=host.newTabSpec(tag);
-		spec.setContent(new Intent(TabMainActivity.this, cls));
+		Intent intent=new Intent(TabMainActivity.this, cls);
+		if(tag.equals("spec3")) {
+			Bundle bundle=new Bundle();
+			bundle.putInt("id", 1);
+			intent.putExtras(bundle);
+		}
+		else if(tag.equals("spec4")) {
+			Bundle bundle=new Bundle();
+			bundle.putInt("id", 1);
+			intent.putExtras(bundle);
+		}
+		else if(tag.equals("spec5")) {
+			Bundle bundle=new Bundle();
+			bundle.putInt("id", 1);
+			intent.putExtras(bundle);
+		}
+		spec.setContent(intent);
 		spec.setIndicator("", getResources().getDrawable(drawable));
 		host.addTab(spec);
 	}
@@ -88,6 +133,12 @@ public class TabMainActivity extends TabActivity {
 			break;
 		case 2:
 			host.setCurrentTabByTag("spec3");
+			break;
+		case 3:
+			host.setCurrentTabByTag("spec4");
+			break;
+		case 4:
+			host.setCurrentTabByTag("spec5");
 			break;
 		}
 	}

@@ -11,4 +11,7 @@
     <color name="translucent_black">#8f000000</color>
     <color name="playchoice">#459e4a</color>
     <color name="playunchoice">#aaa</color>
+    <color name="account_guide_message_color">#eb7629</color>
+    <color name="wan_text_gray">#aaa</color>
+    <color name="ade_dark_green">#ff669900</color>   
 </resources>

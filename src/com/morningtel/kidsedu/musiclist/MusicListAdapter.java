@@ -9,6 +9,7 @@ import com.morningtel.kidsedu.KEApplication;
 import com.morningtel.kidsedu.R;
 import com.morningtel.kidsedu.commons.BitmapHelp;
 import com.morningtel.kidsedu.commons.CommonUtils;
+import com.morningtel.kidsedu.db.Conn;
 import com.morningtel.kidsedu.model.AppModel;
 import com.morningtel.kidsedu.model.AppsFilterModel;
 import com.morningtel.kidsedu.model.JsonParse;
@@ -184,6 +185,7 @@ public class MusicListAdapter extends BaseAdapter {
 					bundle.putBoolean("isNewStartFlag", true);
 					intent.putExtras(bundle);
 					context.startService(intent);
+					Conn.getInstance(context).insertMusicModel(model);
 				}
 			}
 		};

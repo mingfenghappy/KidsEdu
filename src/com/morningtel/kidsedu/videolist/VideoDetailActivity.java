@@ -24,6 +24,7 @@ import com.morningtel.kidsedu.KEApplication;
 import com.morningtel.kidsedu.R;
 import com.morningtel.kidsedu.commons.BitmapHelp;
 import com.morningtel.kidsedu.commons.CommonUtils;
+import com.morningtel.kidsedu.db.Conn;
 import com.morningtel.kidsedu.mediaplayer.PlayerActivity;
 import com.morningtel.kidsedu.model.AppModel;
 import com.morningtel.kidsedu.model.JsonParse;
@@ -48,6 +49,8 @@ public class VideoDetailActivity extends BaseActivity {
 	GridView video_detail_gridview=null;
 	SimpleAdapter adapter=null;
 	ArrayList<HashMap<String, Object>> ui_list=null;
+	//当前页面对象
+	AppModel model=null;
 	
 	public static BitmapUtils bitmapUtils;
 
@@ -71,7 +74,7 @@ public class VideoDetailActivity extends BaseActivity {
 	
 	public void init() {
 		nav_title=(TextView) findViewById(R.id.nav_title);
-		nav_title.setText(getIntent().getExtras().getString("name"));
+		nav_title.setText("看看");
 		nav_title.setOnClickListener(new TextView.OnClickListener() {
 
 			@Override
@@ -124,12 +127,22 @@ public class VideoDetailActivity extends BaseActivity {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				// TODO Auto-generated method stub
+				String[] versionCode_array=new String[item_list.size()];
+				String[] fileUrl_array=new String[item_list.size()];
+				for(int i=0;i<item_list.size();i++) {
+					versionCode_array[i]=item_list.get(i).getVersionCode();
+					fileUrl_array[i]=item_list.get(i).getFileUrl();
+				}
+				
 				Intent intent=new Intent(VideoDetailActivity.this, PlayerActivity.class);
 				Bundle bundle=new Bundle();
-				bundle.putParcelableArrayList("item_list", item_list);
+				bundle.putString("name", getIntent().getExtras().getString("name"));
+				bundle.putStringArray("VersionCode", versionCode_array);
+				bundle.putStringArray("FileUrl", fileUrl_array);
 				bundle.putString("url", ((KEApplication) getApplicationContext()).kidsVideoUrl+item_list.get(position).getFileUrl().substring(6, item_list.get(position).getFileUrl().length())+".mp4");
 				intent.putExtras(bundle);
 				startActivity(intent);
+				Conn.getInstance(VideoDetailActivity.this).insertVideoModel(model, Integer.parseInt(item_list.get(position).getVersionCode()));
 			}
 		});
 		adapter=new SimpleAdapter(VideoDetailActivity.this, ui_list, R.layout.video_detail_grid_item, new String[]{"itemText"}, new int[]{R.id.itemText});
@@ -148,7 +161,7 @@ public class VideoDetailActivity extends BaseActivity {
     				CommonUtils.showCustomToast(VideoDetailActivity.this, "网络异常，请稍后再试");
 				}
 				else {
-					AppModel model=JsonParse.getVideoModelByAid(msg.obj.toString());
+					model=JsonParse.getVideoModelByAid(msg.obj.toString());
 					bitmapUtils.display(video_detail_image, ((KEApplication) getApplicationContext()).kidsIconUrl+model.getIconUrl());
 					video_detail_num.setText(""+model.getCommentGrade());
 					video_detail_provider.setText("提供者："+model.getProvider());
