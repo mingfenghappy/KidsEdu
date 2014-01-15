@@ -27,7 +27,14 @@ public class AppModel implements Serializable {
 	String name="";
 	ArrayList<VideoItemModel> model_list=null;
 	String provider="";
+	int resourceType=0;
 	
+	public int getResourceType() {
+		return resourceType;
+	}
+	public void setResourceType(int resourceType) {
+		this.resourceType = resourceType;
+	}
 	public ArrayList<VideoItemModel> getModel_list() {
 		return model_list;
 	}

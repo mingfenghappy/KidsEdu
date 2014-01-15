@@ -105,17 +105,17 @@ public class TabMainActivity extends TabActivity {
 		Intent intent=new Intent(TabMainActivity.this, cls);
 		if(tag.equals("spec3")) {
 			Bundle bundle=new Bundle();
-			bundle.putInt("id", 1);
+			bundle.putInt("id", 9);
 			intent.putExtras(bundle);
 		}
 		else if(tag.equals("spec4")) {
 			Bundle bundle=new Bundle();
-			bundle.putInt("id", 1);
+			bundle.putInt("id", 8);
 			intent.putExtras(bundle);
 		}
 		else if(tag.equals("spec5")) {
 			Bundle bundle=new Bundle();
-			bundle.putInt("id", 1);
+			bundle.putInt("id", 10);
 			intent.putExtras(bundle);
 		}
 		spec.setContent(intent);

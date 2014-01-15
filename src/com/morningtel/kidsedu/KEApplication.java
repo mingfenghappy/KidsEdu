@@ -3,7 +3,10 @@ package com.morningtel.kidsedu;
 import java.io.File;
 import java.util.HashMap;
 
+import com.morningtel.kidsedu.service.UpdateService;
+
 import android.app.Application;
+import android.content.Intent;
 import android.os.Environment;
 
 public class KEApplication extends Application {
@@ -14,6 +17,8 @@ public class KEApplication extends Application {
 	
 	//下载信息记录
 	public HashMap<String, Integer> download_maps=null;
+	//升级信息
+	public HashMap<String, String> update_maps=null;
 	//允许切换播放标志
 	public boolean isMusicPlay=true;
 	//当前正在播放的音乐
@@ -34,5 +39,10 @@ public class KEApplication extends Application {
 			}
 		}
 		download_maps=new HashMap<String, Integer>();
+		update_maps=new HashMap<String, String>();
+		
+		//开启更新服务
+		Intent intent=new Intent(getApplicationContext(), UpdateService.class);
+		startService(intent);
 	}
 }

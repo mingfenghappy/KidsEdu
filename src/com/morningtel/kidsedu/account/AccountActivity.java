@@ -21,6 +21,8 @@ public class AccountActivity extends BaseActivity {
 	Button account_coin_recharge=null;
 	TextView account_tt=null;
 	TextView account_kk=null;
+	TextView account_dd=null;
+	TextView account_xx=null;
 	TextView account_ww=null;
 	
 	@Override
@@ -65,6 +67,30 @@ public class AccountActivity extends BaseActivity {
 				Intent intent=new Intent(AccountActivity.this, AccountVideoActivity.class);
 				startActivity(intent);
 			}});
+		account_dd=(TextView) findViewById(R.id.account_dd);
+		account_dd.setOnClickListener(new TextView.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent intent=new Intent(AccountActivity.this, AccountAppActivity.class);
+				Bundle bundle=new Bundle();
+				bundle.putInt("resourceType", 9);
+				intent.putExtras(bundle);
+				startActivity(intent);
+			}});
+		account_xx=(TextView) findViewById(R.id.account_xx);
+		account_xx.setOnClickListener(new TextView.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent intent=new Intent(AccountActivity.this, AccountAppActivity.class);
+				Bundle bundle=new Bundle();
+				bundle.putInt("resourceType", 8);
+				intent.putExtras(bundle);
+				startActivity(intent);
+			}});
 		account_ww=(TextView) findViewById(R.id.account_ww);
 		account_ww.setOnClickListener(new TextView.OnClickListener() {
 
@@ -72,6 +98,9 @@ public class AccountActivity extends BaseActivity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent intent=new Intent(AccountActivity.this, AccountAppActivity.class);
+				Bundle bundle=new Bundle();
+				bundle.putInt("resourceType", 10);
+				intent.putExtras(bundle);
 				startActivity(intent);
 			}});
 	}

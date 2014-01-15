@@ -2,6 +2,10 @@ package com.morningtel.kidsedu.account;
 
 import java.util.ArrayList;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -17,6 +21,7 @@ import com.morningtel.kidsedu.BaseActivity;
 import com.morningtel.kidsedu.R;
 import com.morningtel.kidsedu.db.Conn;
 import com.morningtel.kidsedu.model.AppModel;
+import com.morningtel.kidsedu.receiver.AppReceiver;
 
 public class AccountAppActivity extends BaseActivity {
 	
@@ -28,6 +33,8 @@ public class AccountAppActivity extends BaseActivity {
 	ArrayList<AppModel> model_list=null;
 	//当前第一个item
 	int firstItem=0;
+	//应用类型
+	int resourceType=0;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -35,10 +42,21 @@ public class AccountAppActivity extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_account_app);
-		
-		model_list=Conn.getInstance(getApplicationContext()).getAppModelList("app");
+
+		resourceType=getIntent().getExtras().getInt("resourceType");
+		model_list=new ArrayList<AppModel>();
+		ArrayList<AppModel> model_list_temp=Conn.getInstance(getApplicationContext()).getAppModelList("app");
+		for(int i=0;i<model_list_temp.size();i++) {
+			if(model_list_temp.get(i).getResourceType()==resourceType) {
+				model_list.add(model_list_temp.get(i));
+			}
+		}
 		
 		init();
+		
+		IntentFilter filter=new IntentFilter();
+    	filter.addAction(AppReceiver.appChange);
+    	registerReceiver(receiver, filter);
 	}
 	
 	public void init() {
@@ -80,4 +98,32 @@ public class AccountAppActivity extends BaseActivity {
         float px=dp*(metrics.densityDpi/160f);
         return (int) px;
     }
+	
+	BroadcastReceiver receiver=new BroadcastReceiver() {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			// TODO Auto-generated method stub
+			if(intent.getAction().equals(AppReceiver.appChange)) {
+				model_list.clear();
+				ArrayList<AppModel> model_list_temp=Conn.getInstance(getApplicationContext()).getAppModelList("app");
+				for(int i=0;i<model_list_temp.size();i++) {
+					if(model_list_temp.get(i).getResourceType()==resourceType) {
+						model_list.add(model_list_temp.get(i));
+					}
+				}
+				app_list.setAdapter(adapter);
+				app_list.setSelection(firstItem);
+			}
+			else if(intent.getAction().equals(AppReceiver.appUpdate)) {
+				
+			}
+		}};
+		
+	@Override
+    public void onDestroy() {
+    	// TODO Auto-generated method stub
+    	super.onDestroy();
+    	unregisterReceiver(receiver);
+    }	
 }

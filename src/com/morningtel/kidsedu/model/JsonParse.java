@@ -1,6 +1,7 @@
 package com.morningtel.kidsedu.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -87,6 +88,8 @@ public class JsonParse {
 			model.setIconUrl(app_obj.getString("iconUrl"));
 			model.setMobiledesc(app_obj.getString("mobiledesc"));
 			model.setDownloadCount(app_obj.getInt("downloadCount"));
+			JSONObject model_obj_resourceType=new JSONObject(app_obj.getString("resourceType"));
+			model.setResourceType(model_obj_resourceType.getInt("id"));
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -129,4 +132,25 @@ public class JsonParse {
 		}
 		return model;
 	}
+	
+	/**
+	 * 获取版本更新
+	 * @param str
+	 * @return
+	 */
+	public static HashMap<String, String> getUpdateAppModelList(String str) {
+		HashMap<String, String> model_map=new HashMap<String, String>();
+		try {
+			JSONObject obj=new JSONObject(str);
+			JSONArray obj_array=obj.getJSONArray("appFiles");
+			for(int i=0;i<obj_array.length();i++) {
+				JSONObject obj_model=obj_array.getJSONObject(i);
+				model_map.put(obj_model.getString("packageName"), obj_model.getString("fileUrl"));
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return model_map;
+	} 
 }

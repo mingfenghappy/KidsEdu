@@ -11,6 +11,7 @@ import android.os.Bundle;
 public class AppReceiver extends BroadcastReceiver {
 	
 	public final static String appChange="app_change";
+	public final static String appUpdate="app_update";
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
@@ -33,6 +34,9 @@ public class AppReceiver extends BroadcastReceiver {
             ((KEApplication) context.getApplicationContext()).download_maps.remove(packageName);
             sendBroadCast(context, packageName);
             Conn.getInstance(context).updateModel(packageName, 0);
+            if(((KEApplication) context.getApplicationContext()).update_maps.containsKey(packageName)) {
+            	((KEApplication) context.getApplicationContext()).update_maps.remove(packageName);
+            }
         } 
 	}
 	

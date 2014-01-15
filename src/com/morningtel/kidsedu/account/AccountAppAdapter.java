@@ -9,6 +9,7 @@ import com.morningtel.kidsedu.KEApplication;
 import com.morningtel.kidsedu.R;
 import com.morningtel.kidsedu.commons.BitmapHelp;
 import com.morningtel.kidsedu.commons.CommonUtils;
+import com.morningtel.kidsedu.commons.DownloadTask;
 import com.morningtel.kidsedu.model.AppModel;
 
 import android.content.Context;
@@ -66,6 +67,7 @@ public class AccountAppAdapter extends BaseAdapter {
 			convertView=LayoutInflater.from(context).inflate(R.layout.adapter_account_music, null);
 			holder.button_start=(Button) convertView.findViewById(R.id.button_start);
 			holder.button_remove=(Button) convertView.findViewById(R.id.button_remove);
+			holder.button_update=(Button) convertView.findViewById(R.id.button_update);
 			holder.account_image=(ImageView) convertView.findViewById(R.id.account_image);
 			holder.account_title=(TextView) convertView.findViewById(R.id.account_title);
 			holder.account_otherinfo=(TextView) convertView.findViewById(R.id.account_otherinfo);
@@ -147,7 +149,7 @@ public class AccountAppAdapter extends BaseAdapter {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				
+				CommonUtils.openApp(context, model_list.get(position_).getPackageName());
 			}});
 		holder.button_remove.setText("Ð¶ÔØ");
 		holder.button_remove.setOnClickListener(new Button.OnClickListener() {
@@ -155,8 +157,24 @@ public class AccountAppAdapter extends BaseAdapter {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				
+				CommonUtils.uninstall(model_list.get(position_).getPackageName(), context);
 			}});
+		holder.button_update.setText("Éý¼¶");
+		if(((KEApplication) context.getApplicationContext()).update_maps.containsKey(model_list.get(position_).getPackageName())) {
+			holder.button_update.setVisibility(View.VISIBLE);
+			holder.button_update.setOnClickListener(new Button.OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					DownloadTask task=new DownloadTask();
+					task.setParams(context, model_list.get(position_).getId(), model_list.get(position_).getName(), model_list.get(position_).getPackageName());
+					task.execute(""+model_list.get(position_).getId());
+				}});
+		}
+		else {
+			holder.button_update.setVisibility(View.GONE);
+		}
 		return convertView;
 	}
 
@@ -165,6 +183,7 @@ public class AccountAppAdapter extends BaseAdapter {
 class Account_AppList_Holder {
 	Button button_start=null;
 	Button button_remove=null;
+	Button button_update=null;
 	ImageView account_image=null;
 	TextView account_title=null;
 	TextView account_otherinfo=null;

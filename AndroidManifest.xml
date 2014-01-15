@@ -40,6 +40,7 @@
         <activity android:name=".videolist.VideoDetailActivity" android:screenOrientation="portrait" android:configChanges="orientation|keyboardHidden|navigation" />
         <activity android:name=".mediaplayer.PlayerActivity" android:screenOrientation="landscape" android:configChanges="orientation|keyboardHidden|navigation" ></activity>
         <activity android:name=".commons.NotificationActivity" android:screenOrientation="portrait" android:configChanges="orientation|keyboardHidden|navigation" ></activity>        
+		<service android:name=".service.UpdateService"></service>
 		<service android:name=".service.MusicBackgroundService"></service>
         <activity android:name=".service.MusicServiceActivity" android:screenOrientation="portrait" android:configChanges="orientation|keyboardHidden|navigation" ></activity>        
         <activity android:name=".account.AccountActivity" android:screenOrientation="portrait" android:configChanges="orientation|keyboardHidden|navigation" ></activity>        

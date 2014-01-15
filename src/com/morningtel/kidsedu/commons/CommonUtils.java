@@ -9,6 +9,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map.Entry;
 
 import org.apache.http.HttpResponse;
@@ -22,10 +23,19 @@ import org.apache.http.params.CoreConnectionPNames;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 
+import com.morningtel.kidsedu.R;
+
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.PixelFormat;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -193,7 +203,7 @@ public class CommonUtils {
      * @param context
      */
     public static void uninstall(final String packageName, final Context context) {
-    	Uri packageURI = Uri.parse("package:packageName");   
+    	Uri packageURI = Uri.parse("package:"+packageName);   
     	Intent uninstallIntent = new Intent(Intent.ACTION_DELETE, packageURI);   
     	context.startActivity(uninstallIntent);
     }
@@ -202,11 +212,11 @@ public class CommonUtils {
      * 打开apk
      * @param context
      */
-    public static void openApp(Context context) {
+    public static void openApp(Context context, String packageName) {
     	PackageManager packageManager=context.getPackageManager(); 
     	Intent intent=new Intent(); 
     	try { 
-    	    intent =packageManager.getLaunchIntentForPackage("要调用应用的包名"); 
+    	    intent =packageManager.getLaunchIntentForPackage(packageName); 
     	} catch (Exception e) { 
     		e.printStackTrace();
     	} 
@@ -270,6 +280,55 @@ public class CommonUtils {
         } catch (NameNotFoundException e) {  
             return false;  
         }  
+    }
+    
+    /**
+     * 获取全部安装信息
+     * @param context
+     * @return
+     */
+    public static HashMap<String, Integer> getWholeAPPInfo(Context context) {
+    	HashMap<String, Integer> appMap=new HashMap<String, Integer>(); //用来存储获取的应用信息数据
+    	List<PackageInfo> packages=context.getPackageManager().getInstalledPackages(0);
+    	for(int i=0;i<packages.size();i++) { 
+	    	PackageInfo packageInfo=packages.get(i); 
+	    	if((packageInfo.applicationInfo.flags&ApplicationInfo.FLAG_SYSTEM)==0) {
+	    		//如果非系统应用，则添加至appMap
+		    	appMap.put(packageInfo.packageName, packageInfo.versionCode); 
+	    	}
+    	}
+    	return appMap;
+    }
+    
+    public static Drawable getAPPIcon(Context context, String packageName) {
+    	List<PackageInfo> packages=context.getPackageManager().getInstalledPackages(0);
+    	for(int i=0;i<packages.size();i++) { 
+	    	PackageInfo packageInfo=packages.get(i); 
+	    	if((packageInfo.applicationInfo.flags&ApplicationInfo.FLAG_SYSTEM)==0) {
+	    		//如果非系统应用，则添加至appMap
+	    		if(packageInfo.packageName.equals(packageName)) {
+	    			return packageInfo.applicationInfo.loadIcon(context.getPackageManager());
+	    		}
+	    	}
+    	}
+    	return null;
+    }
+    
+    /**
+     * 将Drawable转化为Bitmap
+     * @param drawable
+     * @return
+     */
+    public static Bitmap drawableToBitmap(Context context, Drawable drawable) {       
+    	if(drawable==null) {
+    		return BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_launcher);
+    	}
+    	Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), drawable.getOpacity()!=PixelFormat.OPAQUE?Bitmap.Config.ARGB_8888:Bitmap.Config.RGB_565);
+    	Canvas canvas = new Canvas(bitmap);
+    	drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+    	drawable.draw(canvas);
+    	return bitmap;
+
     }
     
 }
