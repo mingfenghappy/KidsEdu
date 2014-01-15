@@ -6,6 +6,7 @@ import java.util.HashMap;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -35,6 +36,8 @@ public class VideoDetailActivity extends BaseActivity {
 	ArrayList<VideoItemModel> item_list=null;
 	
 	TextView nav_title=null;
+	
+	AudioManager mAudioManager=null;
 	
 	ImageView video_detail_image=null;
 	ImageView video_detail_grade=null;

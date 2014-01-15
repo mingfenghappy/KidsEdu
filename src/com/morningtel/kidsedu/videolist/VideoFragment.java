@@ -13,7 +13,6 @@ import com.morningtel.kidsedu.applist.AppDetailActivity;
 import com.morningtel.kidsedu.commons.CommonUtils;
 import com.morningtel.kidsedu.model.AppsFilterModel;
 import com.morningtel.kidsedu.model.JsonParse;
-import com.morningtel.kidsedu.musiclist.MusicListAdapter;
 
 import android.content.Intent;
 import android.os.Bundle;

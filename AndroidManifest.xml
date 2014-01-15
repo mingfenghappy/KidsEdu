@@ -45,6 +45,7 @@
         <activity android:name=".account.AccountActivity" android:screenOrientation="portrait" android:configChanges="orientation|keyboardHidden|navigation" ></activity>        
         <activity android:name=".account.AccountMusicActivity" android:screenOrientation="portrait" android:configChanges="orientation|keyboardHidden|navigation" ></activity>        
         <activity android:name=".account.AccountVideoActivity" android:screenOrientation="portrait" android:configChanges="orientation|keyboardHidden|navigation" ></activity>        
+        <activity android:name=".account.AccountAppActivity" android:screenOrientation="portrait" android:configChanges="orientation|keyboardHidden|navigation" ></activity>        
         
         <receiver android:name=".receiver.AppReceiver" >     
             <intent-filter>     

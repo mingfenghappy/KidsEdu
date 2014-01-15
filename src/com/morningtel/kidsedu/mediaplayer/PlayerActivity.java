@@ -257,6 +257,7 @@ public class PlayerActivity extends BaseActivity implements OnBufferingUpdateLis
 				doCleanUp();
 				path=((KEApplication) getApplicationContext()).kidsVideoUrl+fileUrl_array[position].substring(6, fileUrl_array[position].length())+".mp4";
 				play();
+				playVideo();
 			}
 		});
 		anthology_list.setOnScrollListener(new OnScrollListener() {
@@ -400,12 +401,11 @@ public class PlayerActivity extends BaseActivity implements OnBufferingUpdateLis
 			mMediaPlayer=new MediaPlayer(this);
 			mMediaPlayer.setDataSource(path);
 			mMediaPlayer.setDisplay(holder);
-			mMediaPlayer.prepare();
 			mMediaPlayer.setOnBufferingUpdateListener(this);
 			mMediaPlayer.setOnCompletionListener(this);
 			mMediaPlayer.setOnPreparedListener(this);
 			mMediaPlayer.setOnVideoSizeChangedListener(this);
-			setVolumeControlStream(AudioManager.STREAM_MUSIC);			
+			mMediaPlayer.prepareAsync();
 		} catch (IllegalArgumentException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -471,12 +471,11 @@ public class PlayerActivity extends BaseActivity implements OnBufferingUpdateLis
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
-				playVideo();
 				handler_play.sendMessage(new Message());
 			}}).start();
 		
 	}
-
+	
 	@Override
 	public void surfaceChanged(SurfaceHolder holder, int format, int width,
 			int height) {
@@ -488,6 +487,7 @@ public class PlayerActivity extends BaseActivity implements OnBufferingUpdateLis
 	public void surfaceCreated(SurfaceHolder holder) {
 		// TODO Auto-generated method stub
 		play();		
+		playVideo();
 	}
 
 	@Override
@@ -522,6 +522,9 @@ public class PlayerActivity extends BaseActivity implements OnBufferingUpdateLis
 		duration=mMediaPlayer.getDuration();
 		playertotalplaytime.setText(""+CommonUtils.toTime((int) duration));
 		handler_voice_bar.sendEmptyMessage(1);
+
+		mMediaPlayer.getMetadata();
+		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 		mIsVideoReadyToBePlayed=true;
 		if(mIsVideoReadyToBePlayed&&mIsVideoSizeKnown) {
 			startVideoPlayback();
@@ -554,7 +557,7 @@ public class PlayerActivity extends BaseActivity implements OnBufferingUpdateLis
 	@Override
 	protected void onPause() {
 		super.onPause();
-		if(mMediaPlayer!=null) {
+		if(mMediaPlayer!=null&&mIsVideoReadyToBePlayed&&mIsVideoSizeKnown) {
 			playPos=mMediaPlayer.getCurrentPosition();
 			mMediaPlayer.stop();
 		}

@@ -66,5 +66,13 @@ public class AccountActivity extends BaseActivity {
 				startActivity(intent);
 			}});
 		account_ww=(TextView) findViewById(R.id.account_ww);
+		account_ww.setOnClickListener(new TextView.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent intent=new Intent(AccountActivity.this, AccountAppActivity.class);
+				startActivity(intent);
+			}});
 	}
 }

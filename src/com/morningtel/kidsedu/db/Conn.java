@@ -240,7 +240,7 @@ public class Conn extends SQLiteOpenHelper {
 			SQLiteDatabase db=this.getReadableDatabase();
 			Cursor cs=null;
 			if(type.equals("app")) {
-				cs=db.query(APP_TABLE, null, null, null, null, null, null);
+				cs=db.query(APP_TABLE, null, APP_FLAG+"=?", new String[]{"1"}, null, null, null);
 			}
 			else if(type.equals("video")) {
 				cs=db.query(VIDEO_TABLE, null, null, null, null, null, null);
