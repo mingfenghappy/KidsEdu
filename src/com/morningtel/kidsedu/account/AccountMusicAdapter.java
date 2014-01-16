@@ -11,12 +11,9 @@ import com.morningtel.kidsedu.commons.BitmapHelp;
 import com.morningtel.kidsedu.commons.CommonUtils;
 import com.morningtel.kidsedu.db.Conn;
 import com.morningtel.kidsedu.model.AppModel;
-import com.morningtel.kidsedu.service.MusicBackgroundService;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,7 +67,6 @@ public class AccountMusicAdapter extends BaseAdapter {
 		if(convertView==null) {
 			holder=new Account_MusicList_Holder();
 			convertView=LayoutInflater.from(context).inflate(R.layout.adapter_account_music, null);
-			holder.button_start=(Button) convertView.findViewById(R.id.button_start);
 			holder.button_remove=(Button) convertView.findViewById(R.id.button_remove);
 			holder.account_image=(ImageView) convertView.findViewById(R.id.account_image);
 			holder.account_title=(TextView) convertView.findViewById(R.id.account_title);
@@ -147,21 +143,6 @@ public class AccountMusicAdapter extends BaseAdapter {
 			}
 			break;
 		}
-		holder.button_start.setText("²¥·Å");
-		holder.button_start.setOnClickListener(new Button.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				Intent intent=new Intent(context, MusicBackgroundService.class);
-				Bundle bundle=new Bundle();
-				bundle.putString("name", model_list.get(position_).getName());
-				bundle.putString("url", ((KEApplication) context.getApplicationContext()).kidsIconUrl+model_list.get(position_).getFileUrl());
-				bundle.putBoolean("isNewStartFlag", true);
-				intent.putExtras(bundle);
-				context.startService(intent);
-				Conn.getInstance(context).insertMusicModel(model_list.get(position_));
-			}});
 		holder.button_remove.setText("É¾³ý");
 		holder.button_remove.setOnClickListener(new Button.OnClickListener() {
 
@@ -184,7 +165,6 @@ public class AccountMusicAdapter extends BaseAdapter {
 
 
 class Account_MusicList_Holder {
-	Button button_start=null;
 	Button button_remove=null;
 	ImageView account_image=null;
 	TextView account_title=null;

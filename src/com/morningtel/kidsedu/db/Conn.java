@@ -231,6 +231,28 @@ public class Conn extends SQLiteOpenHelper {
 	}
 	
 	/**
+	 * 根据包名查找文件的下载url，供删除使用
+	 * @param packageName
+	 * @return
+	 */
+	public String getFileName(String packageName) {
+		synchronized (this) {
+			String result=null;
+			SQLiteDatabase db=this.getReadableDatabase();
+			Cursor cs=db.query(APP_TABLE, null, APP_PACKAGENAME+"=?", new String[]{packageName}, null, null, null);
+			cs.moveToFirst();
+			if(cs.getCount()>0) {
+				cs.moveToFirst();
+				AppModel model=deserializeModel(cs.getBlob(1));
+				result=model.getFileUrl().substring(model.getFileUrl().indexOf("/")+1, model.getFileUrl().length());
+			}
+			cs.close();
+			db.close();
+			return result;
+		}
+	}
+	
+	/**
 	 * 根据类型获取全部相应信息
 	 * @return
 	 */

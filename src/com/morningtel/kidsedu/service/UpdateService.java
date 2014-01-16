@@ -8,6 +8,7 @@ import java.util.Map.Entry;
 import com.morningtel.kidsedu.KEApplication;
 import com.morningtel.kidsedu.R;
 import com.morningtel.kidsedu.commons.CommonUtils;
+import com.morningtel.kidsedu.commons.NotificationActivity;
 import com.morningtel.kidsedu.db.Conn;
 import com.morningtel.kidsedu.model.AppModel;
 import com.morningtel.kidsedu.model.JsonParse;
@@ -62,7 +63,7 @@ public class UpdateService extends Service {
 					
 					manager=(NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
 					no=new Notification();
-					no.flags=Notification.FLAG_ONGOING_EVENT;
+					no.flags=Notification.FLAG_AUTO_CANCEL;
 					no.icon=R.drawable.ic_launcher;
 					no.when=System.currentTimeMillis();
 					no.tickerText="易迪乐园更新提示";
@@ -76,16 +77,18 @@ public class UpdateService extends Service {
 					switch(package_map.size()) {
 					case 1:
 						view.setImageViewBitmap(R.id.update_image1, CommonUtils.drawableToBitmap(UpdateService.this, CommonUtils.getAPPIcon(UpdateService.this, package_map.get(0))));
+						break;
 					case 2:
 						view.setImageViewBitmap(R.id.update_image1, CommonUtils.drawableToBitmap(UpdateService.this, CommonUtils.getAPPIcon(UpdateService.this, package_map.get(0))));
 						view.setImageViewBitmap(R.id.update_image2, CommonUtils.drawableToBitmap(UpdateService.this, CommonUtils.getAPPIcon(UpdateService.this, package_map.get(1))));
+						break;
 					default:
 						view.setImageViewBitmap(R.id.update_image1, CommonUtils.drawableToBitmap(UpdateService.this, CommonUtils.getAPPIcon(UpdateService.this, package_map.get(0))));
 						view.setImageViewBitmap(R.id.update_image2, CommonUtils.drawableToBitmap(UpdateService.this, CommonUtils.getAPPIcon(UpdateService.this, package_map.get(1))));
 						view.setImageViewBitmap(R.id.update_image3, CommonUtils.drawableToBitmap(UpdateService.this, CommonUtils.getAPPIcon(UpdateService.this, package_map.get(2))));
 					}
 					no.contentView=view;
-					Intent intent_new=new Intent(UpdateService.this, MusicServiceActivity.class);
+					Intent intent_new=new Intent(UpdateService.this, NotificationActivity.class);
 					PendingIntent pi=PendingIntent.getActivity(UpdateService.this, 0, intent_new, 0);
 					no.contentIntent=pi;
 					manager.notify(0, no);

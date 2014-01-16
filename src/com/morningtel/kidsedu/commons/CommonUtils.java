@@ -37,6 +37,7 @@ import android.graphics.Canvas;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Environment;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.Toast;
@@ -328,7 +329,13 @@ public class CommonUtils {
     	drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
     	drawable.draw(canvas);
     	return bitmap;
-
+    }
+    
+    public static void deleteFile(String fileName) {
+    	File file=new File(Environment.getExternalStorageDirectory().getPath()+"/kidsedu/temp"+File.separator+fileName);
+    	if(file.exists()) {
+    		file.delete();
+    	}
     }
     
 }

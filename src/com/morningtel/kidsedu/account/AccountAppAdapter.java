@@ -65,7 +65,6 @@ public class AccountAppAdapter extends BaseAdapter {
 		if(convertView==null) {
 			holder=new Account_AppList_Holder();
 			convertView=LayoutInflater.from(context).inflate(R.layout.adapter_account_music, null);
-			holder.button_start=(Button) convertView.findViewById(R.id.button_start);
 			holder.button_remove=(Button) convertView.findViewById(R.id.button_remove);
 			holder.button_update=(Button) convertView.findViewById(R.id.button_update);
 			holder.account_image=(ImageView) convertView.findViewById(R.id.account_image);
@@ -143,14 +142,6 @@ public class AccountAppAdapter extends BaseAdapter {
 			}
 			break;
 		}
-		holder.button_start.setText("打开");
-		holder.button_start.setOnClickListener(new Button.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				CommonUtils.openApp(context, model_list.get(position_).getPackageName());
-			}});
 		holder.button_remove.setText("卸载");
 		holder.button_remove.setOnClickListener(new Button.OnClickListener() {
 
@@ -167,9 +158,14 @@ public class AccountAppAdapter extends BaseAdapter {
 				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
-					DownloadTask task=new DownloadTask();
-					task.setParams(context, model_list.get(position_).getId(), model_list.get(position_).getName(), model_list.get(position_).getPackageName());
-					task.execute(""+model_list.get(position_).getId());
+					if(((KEApplication) context.getApplicationContext()).download_maps.containsKey(model_list.get(position_).getPackageName())&&((KEApplication) context.getApplicationContext()).download_maps.get(model_list.get(position_).getPackageName())!=100) {
+						CommonUtils.showCustomToast(context, "正在下载中，请稍后");
+					}
+					else {
+						DownloadTask task=new DownloadTask();
+						task.setParams(context, model_list.get(position_).getId(), model_list.get(position_).getName(), model_list.get(position_).getPackageName());
+						task.execute(""+model_list.get(position_).getId());
+					}
 				}});
 		}
 		else {
@@ -181,7 +177,6 @@ public class AccountAppAdapter extends BaseAdapter {
 }
 
 class Account_AppList_Holder {
-	Button button_start=null;
 	Button button_remove=null;
 	Button button_update=null;
 	ImageView account_image=null;

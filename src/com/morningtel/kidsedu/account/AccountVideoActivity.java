@@ -2,6 +2,7 @@ package com.morningtel.kidsedu.account;
 
 import java.util.ArrayList;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -12,12 +13,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.AbsListView.OnScrollListener;
 
+import com.fortysevendeg.swipelistview.BaseSwipeListViewListener;
 import com.fortysevendeg.swipelistview.SwipeListView;
 import com.morningtel.kidsedu.BaseActivity;
 import com.morningtel.kidsedu.R;
 import com.morningtel.kidsedu.account.AccountVideoAdapter.OnRefreshListener;
 import com.morningtel.kidsedu.db.Conn;
 import com.morningtel.kidsedu.model.AppModel;
+import com.morningtel.kidsedu.videolist.VideoDetailActivity;
 
 public class AccountVideoActivity extends BaseActivity {
 	
@@ -81,6 +84,19 @@ public class AccountVideoActivity extends BaseActivity {
 				app_list.setSelection(firstItem);
 			}});
 		app_list.setAdapter(adapter);
+		app_list.setSwipeListViewListener(new BaseSwipeListViewListener() {
+			@Override
+			public void onClickFrontView(int position) {
+				// TODO Auto-generated method stub
+				super.onClickFrontView(position);
+				Intent intent=new Intent(AccountVideoActivity.this, VideoDetailActivity.class);
+				Bundle bundle=new Bundle();
+				bundle.putInt("id", model_list.get(position).getId());
+				bundle.putString("name", model_list.get(position).getName());
+				intent.putExtras(bundle);
+				startActivity(intent);
+			}
+		});
 	}
 	
 	public int convertDpToPixel(float dp) {

@@ -10,21 +10,22 @@
 		android:gravity="center"
 		android:layout_height="80dip" >
         <Button
-			android:layout_width="wrap_content"
-        	android:layout_height="wrap_content"
-        	android:id="@+id/button_start"
-            android:layout_margin="10dip"/>
-        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/button_remove"
-            android:layout_margin="10dip"/>
+            android:background="@drawable/titlebar_searchbox_bg"
+            android:layout_margin="10dip"
+            android:paddingLeft="30dip"
+            android:paddingRight="30dip"/>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/button_update"
             android:visibility="gone"
-            android:layout_margin="10dip"/>
+            android:id="@+id/button_update"
+            android:background="@drawable/titlebar_searchbox_bg"
+            android:layout_margin="10dip"
+            android:paddingLeft="30dip"
+            android:paddingRight="30dip"/>
     </LinearLayout>
     <LinearLayout 
     	android:id="@+id/front"

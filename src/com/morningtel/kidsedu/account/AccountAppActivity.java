@@ -16,9 +16,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.AbsListView.OnScrollListener;
 
+import com.fortysevendeg.swipelistview.BaseSwipeListViewListener;
 import com.fortysevendeg.swipelistview.SwipeListView;
 import com.morningtel.kidsedu.BaseActivity;
 import com.morningtel.kidsedu.R;
+import com.morningtel.kidsedu.commons.CommonUtils;
 import com.morningtel.kidsedu.db.Conn;
 import com.morningtel.kidsedu.model.AppModel;
 import com.morningtel.kidsedu.receiver.AppReceiver;
@@ -91,6 +93,14 @@ public class AccountAppActivity extends BaseActivity {
 		}
 		adapter=new AccountAppAdapter(model_list, AccountAppActivity.this);
 		app_list.setAdapter(adapter);
+		app_list.setSwipeListViewListener(new BaseSwipeListViewListener() {
+			@Override
+			public void onClickFrontView(int position) {
+				// TODO Auto-generated method stub
+				super.onClickFrontView(position);
+				CommonUtils.openApp(AccountAppActivity.this, model_list.get(position).getPackageName());
+			}
+		});
 	}
 	
 	public int convertDpToPixel(float dp) {

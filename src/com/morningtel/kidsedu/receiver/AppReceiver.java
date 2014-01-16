@@ -1,6 +1,7 @@
 package com.morningtel.kidsedu.receiver;
 
 import com.morningtel.kidsedu.KEApplication;
+import com.morningtel.kidsedu.commons.CommonUtils;
 import com.morningtel.kidsedu.db.Conn;
 
 import android.content.BroadcastReceiver;
@@ -26,6 +27,8 @@ public class AppReceiver extends BroadcastReceiver {
             System.out.println("---------------" + packageName);  
             sendBroadCast(context, packageName);
             Conn.getInstance(context).updateModel(packageName, 1);
+            //删除文件
+            CommonUtils.deleteFile(Conn.getInstance(context).getFileName(packageName));
         }      
         //接收广播：设备上删除了一个应用程序包。      
         if (intent.getAction().equals("android.intent.action.PACKAGE_REMOVED")) {      
