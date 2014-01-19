@@ -27,6 +27,7 @@ public class AppReceiver extends BroadcastReceiver {
             System.out.println("---------------" + packageName);  
             sendBroadCast(context, packageName);
             Conn.getInstance(context).updateModel(packageName, 1);
+            Conn.getInstance(context).updateOtherPlatformByApp(packageName, 1);
             //É¾³ýÎÄ¼þ
             CommonUtils.deleteFile(Conn.getInstance(context).getFileName(packageName));
         }      
@@ -37,6 +38,7 @@ public class AppReceiver extends BroadcastReceiver {
             ((KEApplication) context.getApplicationContext()).download_maps.remove(packageName);
             sendBroadCast(context, packageName);
             Conn.getInstance(context).updateModel(packageName, 0);
+            Conn.getInstance(context).updateOtherPlatformByApp(packageName, 0);
             if(((KEApplication) context.getApplicationContext()).update_maps.containsKey(packageName)) {
             	((KEApplication) context.getApplicationContext()).update_maps.remove(packageName);
             }

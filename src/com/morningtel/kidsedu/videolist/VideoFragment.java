@@ -36,6 +36,8 @@ public class VideoFragment extends Fragment {
     private int id=0;
     //Ò³Âë
     int page=1;
+    
+    View view=null;
 
     public static VideoFragment newInstance(int id) {
     	VideoFragment fragment = new VideoFragment();
@@ -55,41 +57,47 @@ public class VideoFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view=LayoutInflater.from(getActivity()).inflate(R.layout.fragment_apptabs, null);
-        fragment_apptabs_listview=(PullToRefreshListView) view.findViewById(R.id.fragment_apptabs_listview);
-        fragment_apptabs_listview.setOnRefreshListener(new OnRefreshListener<ListView>() {
-			@Override
-			public void onRefresh(PullToRefreshBase<ListView> refreshView) {
-				String label = DateUtils.formatDateTime(getActivity().getApplicationContext(), System.currentTimeMillis(),
-						DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_ABBREV_ALL);
-				refreshView.getLoadingLayoutProxy().setLastUpdatedLabel(label);
-				page=1;
-				getVideoFilter();
-			}
-		});
-        fragment_apptabs_listview.setOnLastItemVisibleListener(new OnLastItemVisibleListener() {
+    	if(view==null) {
+    		view=LayoutInflater.from(getActivity()).inflate(R.layout.fragment_apptabs, null);
+            fragment_apptabs_listview=(PullToRefreshListView) view.findViewById(R.id.fragment_apptabs_listview);
+            fragment_apptabs_listview.setOnRefreshListener(new OnRefreshListener<ListView>() {
+    			@Override
+    			public void onRefresh(PullToRefreshBase<ListView> refreshView) {
+    				String label = DateUtils.formatDateTime(getActivity().getApplicationContext(), System.currentTimeMillis(),
+    						DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_ABBREV_ALL);
+    				refreshView.getLoadingLayoutProxy().setLastUpdatedLabel(label);
+    				page=1;
+    				getVideoFilter();
+    			}
+    		});
+            fragment_apptabs_listview.setOnLastItemVisibleListener(new OnLastItemVisibleListener() {
 
-			@Override
-			public void onLastItemVisible() {
-				if(appfilter_list.size()%20==0) {
-					page++;
-					getVideoFilter();
-				}
-			}
-		});
-        ListView actualListView = fragment_apptabs_listview.getRefreshableView();
-        fragment_apptabs_listview.setOnItemClickListener(new OnItemClickListener() {
+    			@Override
+    			public void onLastItemVisible() {
+    				if(appfilter_list.size()%20==0) {
+    					page++;
+    					getVideoFilter();
+    				}
+    			}
+    		});
+            ListView actualListView = fragment_apptabs_listview.getRefreshableView();
+            fragment_apptabs_listview.setOnItemClickListener(new OnItemClickListener() {
 
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
-				// TODO Auto-generated method stub
-				Intent intent=new Intent(getActivity(), AppDetailActivity.class);
-				startActivity(intent);
-			}
-		});
-        actualListView.setAdapter(adapter);
-        getVideoFilter();
+    			@Override
+    			public void onItemClick(AdapterView<?> parent, View view,
+    					int position, long id) {
+    				// TODO Auto-generated method stub
+    				Intent intent=new Intent(getActivity(), AppDetailActivity.class);
+    				startActivity(intent);
+    			}
+    		});
+            actualListView.setAdapter(adapter);
+            getVideoFilter();
+    	}        
+        ViewGroup parent=(ViewGroup) view.getParent();  
+        if (parent!=null) {  
+            parent.removeView(view);  
+        } 
         return view;
     }
     

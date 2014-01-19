@@ -89,8 +89,8 @@ public class AppListActivity extends BaseActivity {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				// TODO Auto-generated method stub
-				Intent intent=new Intent(AppListActivity.this, AppDetailActivity.class);
-				startActivity(intent);
+//				Intent intent=new Intent(AppListActivity.this, AppDetailActivity.class);
+//				startActivity(intent);
 			}
 		});
         actualListView.setAdapter(adapter);

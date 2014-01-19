@@ -75,7 +75,7 @@ public class AppListAdapter extends BaseAdapter {
 			holder=(AppListHolder) convertView.getTag();
 		}
 		
-		bitmapUtils.display(holder.appfilter_image, ((KEApplication) context.getApplicationContext()).kidsIconUrl+appfilter_list.get(position).getIconUrl());
+		bitmapUtils.display(holder.appfilter_image, ((KEApplication) context.getApplicationContext()).kidsIconUrl+CommonUtils.getIconAdd(appfilter_list.get(position).getIconUrl()));
 		holder.appfilter_name.setText(appfilter_list.get(position).getName());
 		holder.appfilter_otherinfo.setText(appfilter_list.get(position).getDownloadCount()+"¥Œœ¬‘ÿ");
 		int index=appfilter_list.get(position).getMobiledesc().indexOf("°£");

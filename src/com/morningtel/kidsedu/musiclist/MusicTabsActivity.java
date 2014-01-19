@@ -18,6 +18,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.ViewGroup;
 import android.view.Window;
 
 public class MusicTabsActivity extends FragmentActivity {
@@ -114,5 +115,32 @@ public class MusicTabsActivity extends FragmentActivity {
         public int getCount() {
             return app_types_list.size();
         }
+
+		@Override
+		public void destroyItem(ViewGroup container, int position, Object object) {
+			// TODO Auto-generated method stub
+			super.destroyItem(container, position, object);
+		}
+
+		@Override
+		public void finishUpdate(ViewGroup container) {
+			// TODO Auto-generated method stub
+			super.finishUpdate(container);
+		}
+
+		@Override
+		public Object instantiateItem(ViewGroup container, int position) {
+			// TODO Auto-generated method stub
+			return super.instantiateItem(container, position);
+		}
+
+		@Override
+		public void setPrimaryItem(ViewGroup container, int position,
+				Object object) {
+			// TODO Auto-generated method stub
+			//super.setPrimaryItem(container, position, object);
+		}
+        
+        
     }
 }

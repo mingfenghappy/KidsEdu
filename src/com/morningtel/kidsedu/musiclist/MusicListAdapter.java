@@ -186,6 +186,7 @@ public class MusicListAdapter extends BaseAdapter {
 					intent.putExtras(bundle);
 					context.startService(intent);
 					Conn.getInstance(context).insertMusicModel(model);
+					Conn.getInstance(context).insertOtherPlatformByMusic(model.getId(), name, ((KEApplication) context.getApplicationContext()).kidsIconUrl+CommonUtils.getIconAdd(model.getIconUrl()), ((KEApplication) context.getApplicationContext()).kidsIconUrl+model.getFileUrl());
 				}
 			}
 		};

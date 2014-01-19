@@ -146,6 +146,7 @@ public class VideoDetailActivity extends BaseActivity {
 				intent.putExtras(bundle);
 				startActivity(intent);
 				Conn.getInstance(VideoDetailActivity.this).insertVideoModel(model, Integer.parseInt(item_list.get(position).getVersionCode()));
+				Conn.getInstance(VideoDetailActivity.this).insertOtherPlatformByVideo(getIntent().getExtras().getInt("id"), getIntent().getExtras().getString("name"), ((KEApplication) getApplicationContext()).kidsIconUrl+model.getIconUrl());
 			}
 		});
 		adapter=new SimpleAdapter(VideoDetailActivity.this, ui_list, R.layout.video_detail_grid_item, new String[]{"itemText"}, new int[]{R.id.itemText});

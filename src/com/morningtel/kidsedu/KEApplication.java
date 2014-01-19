@@ -3,6 +3,7 @@ package com.morningtel.kidsedu;
 import java.io.File;
 import java.util.HashMap;
 
+import com.morningtel.kidsedu.db.Conn;
 import com.morningtel.kidsedu.service.UpdateService;
 
 import android.app.Application;
@@ -37,6 +38,10 @@ public class KEApplication extends Application {
 			if(!file_.exists()) {
 				file_.mkdirs();
 			}
+			File file_cache=new File("/data/data/"+getApplicationContext().getPackageName()+"/kidsedu");
+			if(!file_cache.exists()) {
+				file_cache.mkdirs();
+			}
 		}
 		download_maps=new HashMap<String, Integer>();
 		update_maps=new HashMap<String, String>();
@@ -44,5 +49,7 @@ public class KEApplication extends Application {
 		//开启更新服务
 		Intent intent=new Intent(getApplicationContext(), UpdateService.class);
 		startService(intent);
+		
+		//Conn.getInstance(getApplicationContext()).insertOtherPlatform();
 	}
 }
