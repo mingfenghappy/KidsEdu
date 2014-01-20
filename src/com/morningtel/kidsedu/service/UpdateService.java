@@ -103,7 +103,7 @@ public class UpdateService extends Service {
 			public void run() {
 				// TODO Auto-generated method stub
 				Message m=new Message();
-				String info="13473,1|";
+				String info="";
 				ArrayList<AppModel> model_list=Conn.getInstance(UpdateService.this).getAppModelList("app");
 				HashMap<String, Integer> map_app=CommonUtils.getWholeAPPInfo(UpdateService.this);
 				for(int i=0;i<model_list.size();i++) {
@@ -111,11 +111,13 @@ public class UpdateService extends Service {
 						info+=model_list.get(i).getId()+","+map_app.get(model_list.get(i).getPackageName())+"|";
 					}
 				}
-				HashMap<String, String> map=new HashMap<String, String>();
-				map.put("code", info);
-				String result=CommonUtils.getWebData(map, ((KEApplication) getApplicationContext()).kidsDataUrl+"/data/json/app/AppsLatestFile_appFiles");
-				m.obj=result;
-				handler.sendMessage(m);
+				if(!info.equals("")) {
+					HashMap<String, String> map=new HashMap<String, String>();
+					map.put("code", info);
+					String result=CommonUtils.getWebData(map, ((KEApplication) getApplicationContext()).kidsDataUrl+"/data/json/app/AppsLatestFile_appFiles");
+					m.obj=result;
+					handler.sendMessage(m);
+				}				
 			}}).start();
 	}
 

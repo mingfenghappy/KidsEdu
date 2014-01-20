@@ -36,6 +36,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Environment;
 import android.util.DisplayMetrics;
@@ -336,6 +338,33 @@ public class CommonUtils {
     	if(file.exists()) {
     		file.delete();
     	}
+    }
+    
+    
+    final static int NETWORKSTATE_NULL=0;
+    final static int NETWORKSTATE_MOBILE=1;
+    final static int NETWORKSTATE_WIFI=2;
+    /**
+     * ÅÐ¶ÏÍøÂç×´Ì¬
+     * @param context
+     * @return
+     */
+    public static int checkNetWorkState(Context context) {
+    	ConnectivityManager connManager=(ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);  
+        if(connManager.getActiveNetworkInfo()!=null) {
+        	 NetworkInfo ni_wifi=connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        	 if(ni_wifi.isAvailable()&&ni_wifi.isConnected()) {
+        		 return NETWORKSTATE_WIFI;
+        	 }
+        	 NetworkInfo ni_mobile=connManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+        	 if(ni_mobile.isAvailable()&&ni_mobile.isConnected()) {
+        		 return NETWORKSTATE_MOBILE;
+        	 }
+        	 return NETWORKSTATE_NULL;
+        }
+        else {
+        	return NETWORKSTATE_NULL;
+        }
     }
     
 }

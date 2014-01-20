@@ -3,7 +3,11 @@ package com.morningtel.kidsedu;
 import java.io.File;
 import java.util.HashMap;
 
+import org.json.JSONObject;
+
+import com.morningtel.kidsedu.commons.CommonUtils;
 import com.morningtel.kidsedu.db.Conn;
+import com.morningtel.kidsedu.model.AppModel;
 import com.morningtel.kidsedu.service.UpdateService;
 
 import android.app.Application;
@@ -42,6 +46,20 @@ public class KEApplication extends Application {
 			if(!file_cache.exists()) {
 				file_cache.mkdirs();
 			}
+
+			//初次创建信息
+			AppModel model=new AppModel();
+			model.setFileSize(0);
+			model.setPackageName("com.morningtel.kidsedu");
+			model.setFileUrl("appfiles/8650d94c-0670-4f7a-b21b-46132a9dd366.apk");
+			model.setName("易迪乐园");
+			model.setId(13471);
+			model.setIconUrl("pics/6d0cb871-c6f5-4512-af8b-5a2c6aab4fa3.png");
+			model.setMobiledesc("");
+			model.setDownloadCount(1036);
+			model.setResourceType(8);
+			Conn.getInstance(getApplicationContext()).insertAppModel(model);
+			Conn.getInstance(getApplicationContext()).updateModel("com.morningtel.kidsedu", 1);
 		}
 		download_maps=new HashMap<String, Integer>();
 		update_maps=new HashMap<String, String>();
@@ -50,6 +68,5 @@ public class KEApplication extends Application {
 		Intent intent=new Intent(getApplicationContext(), UpdateService.class);
 		startService(intent);
 		
-		//Conn.getInstance(getApplicationContext()).insertOtherPlatform();
 	}
 }
