@@ -87,8 +87,8 @@ public class VideoFragment extends Fragment {
     			public void onItemClick(AdapterView<?> parent, View view,
     					int position, long id) {
     				// TODO Auto-generated method stub
-    				Intent intent=new Intent(getActivity(), AppDetailActivity.class);
-    				startActivity(intent);
+//    				Intent intent=new Intent(getActivity(), AppDetailActivity.class);
+//    				startActivity(intent);
     			}
     		});
             actualListView.setAdapter(adapter);
