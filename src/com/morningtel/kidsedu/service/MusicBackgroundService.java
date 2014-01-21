@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.widget.RemoteViews;
 
@@ -27,7 +28,11 @@ public class MusicBackgroundService extends Service {
 	//相关缓存数据
 	String name="";
 	String url="";
+	String image="";
 	boolean isNewStartFlag=false;
+	
+	public final static String MusicBackgroundStartAction="MusicBackgroundStartAction";
+	public final static String MusicBackgroundStopAction="MusicBackgroundStopAction";
 
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -50,6 +55,8 @@ public class MusicBackgroundService extends Service {
 				view.setImageViewResource(R.id.play_state, R.drawable.play_sel);
 				no.contentView=view;
 				manager.notify(0, no);
+				
+				controlToolBarPause();
 			}});
 		mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
 			
@@ -61,6 +68,8 @@ public class MusicBackgroundService extends Service {
 				view.setImageViewResource(R.id.play_state, R.drawable.pause_sel);
 				no.contentView=view;
 				manager.notify(0, no);
+				
+				controlToolBarStart();
 			}
 		});
 	}
@@ -76,6 +85,7 @@ public class MusicBackgroundService extends Service {
 			if(isNewStartFlag) {
 				name=intent.getExtras().getString("name");
 				url=intent.getExtras().getString("url");
+				image=intent.getExtras().getString("image");
 				
 				if(isFirstLoad) {
 					manager=(NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
@@ -100,6 +110,8 @@ public class MusicBackgroundService extends Service {
 					view.setImageViewResource(R.id.play_state, R.drawable.play_sel);
 					no.contentView=view;
 					manager.notify(0, no);
+					
+					controlToolBarPause();
 				}
 				
 				try {
@@ -108,14 +120,15 @@ public class MusicBackgroundService extends Service {
 					mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC); 
 					if(!mediaPlayer.isPlaying()) {				
 						if(mediaPlayer!=null) {
-							mediaPlayer.prepareAsync();
-							
+							mediaPlayer.prepareAsync();							
 						}
 					}
 				} catch (Exception e) {
 					view.setImageViewResource(R.id.play_state, R.drawable.play_sel);
 					no.contentView=view;
 					manager.notify(0, no);
+					
+					controlToolBarPause();
 					
 					e.printStackTrace();
 				}
@@ -127,6 +140,8 @@ public class MusicBackgroundService extends Service {
 					view.setImageViewResource(R.id.play_state, R.drawable.pause_sel);
 					no.contentView=view;
 					manager.notify(0, no);
+					
+					controlToolBarStart();
 				}
 				else {
 					mediaPlayer.pause();
@@ -134,6 +149,8 @@ public class MusicBackgroundService extends Service {
 					view.setImageViewResource(R.id.play_state, R.drawable.play_sel);
 					no.contentView=view;
 					manager.notify(0, no);
+					
+					controlToolBarPause();
 				}
 			}
 		} catch(Exception e) {
@@ -153,6 +170,22 @@ public class MusicBackgroundService extends Service {
 			mediaPlayer.release();
 			mediaPlayer=null;
          }
+	}
+	
+	public void controlToolBarStart() {
+		Intent intent=new Intent();
+		Bundle bundle=new Bundle();
+		bundle.putString("name", name);
+		bundle.putString("image", image);
+		intent.putExtras(bundle);
+		intent.setAction(MusicBackgroundStartAction);
+		sendBroadcast(intent);
+	}
+	
+	public void controlToolBarPause() {
+		Intent intent=new Intent();
+		intent.setAction(MusicBackgroundStopAction);
+		sendBroadcast(intent);
 	}
 
 }

@@ -8,7 +8,7 @@ import com.morningtel.kidsedu.KEApplication;
 import com.morningtel.kidsedu.R;
 import com.morningtel.kidsedu.commons.BitmapHelp;
 import com.morningtel.kidsedu.commons.CommonUtils;
-import com.morningtel.kidsedu.commons.DownloadTask;
+import com.morningtel.kidsedu.commons.DownloadAppTask;
 import com.morningtel.kidsedu.model.AppsFilterModel;
 
 import android.content.Context;
@@ -142,7 +142,7 @@ public class AppListAdapter extends BaseAdapter {
 					CommonUtils.uninstall(appfilter_list.get(position_).getPackageName(), context);
 				}});
 		}
-		else if(!CommonUtils.checkAppInstall(appfilter_list.get(position_).getPackageName(), context)&&((KEApplication) context.getApplicationContext()).download_maps.containsKey(appfilter_list.get(position_).getPackageName())) {
+		else if(!CommonUtils.checkAppInstall(appfilter_list.get(position_).getPackageName(), context)&&((KEApplication) context.getApplicationContext()).download_app_maps.containsKey(appfilter_list.get(position_).getPackageName())) {
 			holder.appfilter_download.setImageResource(R.drawable.myapp_item_action_resume_image);
 		}
 		else {
@@ -152,11 +152,10 @@ public class AppListAdapter extends BaseAdapter {
 				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
-					DownloadTask task=new DownloadTask();
+					DownloadAppTask task=new DownloadAppTask();
 					task.setParams(context, appfilter_list.get(position_).getId(), appfilter_list.get(position_).getName(), appfilter_list.get(position_).getPackageName());
 					task.execute(""+appfilter_list.get(position_).getId());
-					imageview.setImageResource(R.drawable.myapp_item_action_resume_image);
-					
+					imageview.setImageResource(R.drawable.myapp_item_action_resume_image);					
 				}});
 		}
 		

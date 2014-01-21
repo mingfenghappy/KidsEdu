@@ -35,7 +35,7 @@ public class AppReceiver extends BroadcastReceiver {
         if (intent.getAction().equals("android.intent.action.PACKAGE_REMOVED")) {      
         	String packageName=intent.getDataString().substring(8);      
             System.out.println("---------------" + packageName); 
-            ((KEApplication) context.getApplicationContext()).download_maps.remove(packageName);
+            ((KEApplication) context.getApplicationContext()).download_app_maps.remove(packageName);
             sendBroadCast(context, packageName);
             Conn.getInstance(context).updateModel(packageName, 0);
             Conn.getInstance(context).updateOtherPlatformByApp(packageName, 0);

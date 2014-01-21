@@ -19,6 +19,7 @@ import com.morningtel.kidsedu.BaseActivity;
 import com.morningtel.kidsedu.KEApplication;
 import com.morningtel.kidsedu.R;
 import com.morningtel.kidsedu.account.AccountMusicAdapter.OnRefreshListener;
+import com.morningtel.kidsedu.commons.CommonUtils;
 import com.morningtel.kidsedu.db.Conn;
 import com.morningtel.kidsedu.model.AppModel;
 import com.morningtel.kidsedu.service.MusicBackgroundService;
@@ -92,12 +93,12 @@ public class AccountMusicActivity extends BaseActivity {
 				super.onClickFrontView(position);
 				Intent intent=new Intent(AccountMusicActivity.this, MusicBackgroundService.class);
 				Bundle bundle=new Bundle();
+				bundle.putString("image", ((KEApplication) getApplicationContext()).kidsIconUrl+CommonUtils.getIconAdd(model_list.get(position).getIconUrl()));
 				bundle.putString("name", model_list.get(position).getName());
 				bundle.putString("url", ((KEApplication) getApplicationContext()).kidsIconUrl+model_list.get(position).getFileUrl());
 				bundle.putBoolean("isNewStartFlag", true);
 				intent.putExtras(bundle);
 				startService(intent);
-				Conn.getInstance(AccountMusicActivity.this).insertMusicModel(model_list.get(position));
 			}
 		});
 	}

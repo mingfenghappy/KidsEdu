@@ -9,12 +9,18 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.OnLastItemVisibleLis
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.morningtel.kidsedu.KEApplication;
 import com.morningtel.kidsedu.R;
-import com.morningtel.kidsedu.applist.AppDetailActivity;
 import com.morningtel.kidsedu.commons.CommonUtils;
+import com.morningtel.kidsedu.commons.DownloadMusicTask;
+import com.morningtel.kidsedu.db.Conn;
+import com.morningtel.kidsedu.model.AppModel;
 import com.morningtel.kidsedu.model.AppsFilterModel;
 import com.morningtel.kidsedu.model.JsonParse;
+import com.morningtel.kidsedu.service.MusicBackgroundService;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -53,6 +59,8 @@ public class MusicFragment extends Fragment {
         this.id=getArguments().getInt("id");
         appfilter_list=new ArrayList<AppsFilterModel>();
         adapter=new MusicListAdapter(appfilter_list, getActivity());
+        
+        
     }
 
     @Override
@@ -87,8 +95,13 @@ public class MusicFragment extends Fragment {
     			public void onItemClick(AdapterView<?> parent, View view,
     					int position, long id) {
     				// TODO Auto-generated method stub
-    				Intent intent=new Intent(getActivity(), AppDetailActivity.class);
-    				startActivity(intent);
+    				if(((KEApplication) getActivity().getApplicationContext()).isMusicPlay) {
+    					playMusic(appfilter_list.get(position-1).getId(), appfilter_list.get(position-1).getName(), appfilter_list.get(position-1).getIconUrl());
+    					((KEApplication) getActivity().getApplicationContext()).musicName=appfilter_list.get(position-1).getName();
+    				}
+    				else {
+    					CommonUtils.showCustomToast(getActivity(), "正在加载中，请稍后");
+    				}
     			}
     		});
             actualListView.setAdapter(adapter);
@@ -98,6 +111,10 @@ public class MusicFragment extends Fragment {
         if (parent!=null) {  
             parent.removeView(view);  
         } 
+        
+        IntentFilter filter=new IntentFilter();
+        filter.addAction(DownloadMusicTask.musicChange);
+        getActivity().registerReceiver(receiver, filter);
         
         return view;
     }
@@ -152,4 +169,71 @@ public class MusicFragment extends Fragment {
 			}}).start();
     }
     
+    /**
+     * 播放音乐
+     * @param id
+     * @param name
+     */
+	private void playMusic(final int id, final String name, final String imageUrl) {
+		((KEApplication) getActivity().getApplicationContext()).isMusicPlay=false;
+		final Handler handler=new Handler() {
+			@Override
+			public void handleMessage(Message msg) {
+				// TODO Auto-generated method stub
+				super.handleMessage(msg);
+				if(msg.obj==null) {
+					((KEApplication) getActivity().getApplicationContext()).isMusicPlay=true;
+    				CommonUtils.showCustomToast(getActivity(), "网络异常，请稍后再试");
+				}
+				else {
+					Intent intent=new Intent(getActivity(), MusicBackgroundService.class);
+					Bundle bundle=new Bundle();
+					bundle.putString("image", ((KEApplication) getActivity().getApplicationContext()).kidsIconUrl+CommonUtils.getIconAdd(imageUrl));
+					bundle.putString("name", name);
+					AppModel model=JsonParse.getAppModelByAid(msg.obj.toString());
+					bundle.putString("url", ((KEApplication) getActivity().getApplicationContext()).kidsIconUrl+model.getFileUrl());
+					bundle.putBoolean("isNewStartFlag", true);
+					intent.putExtras(bundle);
+					getActivity().startService(intent);
+					Conn.getInstance(getActivity()).insertMusicModel(model);
+					Conn.getInstance(getActivity()).insertOtherPlatformByMusic(model.getId(), name, ((KEApplication) getActivity().getApplicationContext()).kidsIconUrl+CommonUtils.getIconAdd(model.getIconUrl()), ((KEApplication) getActivity().getApplicationContext()).kidsIconUrl+model.getFileUrl());
+				}
+			}
+		};
+		
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				HashMap<String, String> map=new HashMap<String, String>();
+				map.put("aid", ""+id);
+				String webResult=CommonUtils.getWebData(map, ((KEApplication) getActivity().getApplicationContext()).kidsDataUrl+"/data/json/app/AppByAid");
+				Message m=new Message();
+				m.obj=webResult;
+				handler.sendMessage(m);
+			}
+		}).start();
+	}
+	
+	@Override
+	public void onDestroyView() {
+		// TODO Auto-generated method stub
+		super.onDestroyView();
+		getActivity().unregisterReceiver(receiver);
+	}
+
+    BroadcastReceiver receiver=new BroadcastReceiver() {
+		
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			// TODO Auto-generated method stub
+			for(int i=0;i<appfilter_list.size();i++) {
+				if(appfilter_list.get(i).getName().equals(intent.getExtras().getString("name"))) {
+					adapter.notifyDataSetChanged();
+					break;
+				}
+			}
+		}
+	};
 }

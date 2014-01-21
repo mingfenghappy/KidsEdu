@@ -303,6 +303,26 @@ public class Conn extends SQLiteOpenHelper {
 	}
 	
 	/**
+	 * 判断音乐是否在存在
+	 * @param name
+	 * @return
+	 */
+	public AppModel isMusicExists(String name) {
+		synchronized (this) {
+			SQLiteDatabase db=this.getReadableDatabase();
+			Cursor cs=db.query(MUSIC_TABLE, null, MUSIC_NAME+"=?", new String[]{name}, null, null, null);
+			cs.moveToFirst();
+			AppModel model=null;
+			if(cs.getCount()>0) {
+				model=deserializeModel(cs.getBlob(1));
+			}
+			cs.close();
+			db.close();
+			return model;
+		}
+	}
+	
+	/**
 	 * 儿童界面数据操作-音乐
 	 */
 	public void insertOtherPlatformByMusic(int id, String name, String url, String fileUrl) {
@@ -319,7 +339,7 @@ public class Conn extends SQLiteOpenHelper {
 			cv.put("ZSTATUS", 1);
 			cv.put("ZDESC", "");
 			cv.put("ZNAME", name);
-			cv.put("ZMP3URL", fileUrl);
+			cv.put("ZMP3URL", fileUrl.substring(fileUrl.lastIndexOf("/")+1));
 			cv.put("ZICONURL", url.substring(url.lastIndexOf("/")+1));
 			cv.put("ZPATH", "");
 			db.insert("ZCACHEDAUDIOBOOKITEM2", null, cv);

@@ -3,9 +3,6 @@ package com.morningtel.kidsedu;
 import java.io.File;
 import java.util.HashMap;
 
-import org.json.JSONObject;
-
-import com.morningtel.kidsedu.commons.CommonUtils;
 import com.morningtel.kidsedu.db.Conn;
 import com.morningtel.kidsedu.model.AppModel;
 import com.morningtel.kidsedu.service.UpdateService;
@@ -20,14 +17,16 @@ public class KEApplication extends Application {
 	public String kidsDataUrl="http://www.kidsedu.com";
 	public String kidsVideoUrl="http://res.kidsedu.com/mp4video";
 	
-	//下载信息记录
-	public HashMap<String, Integer> download_maps=null;
+	//下载应用信息记录
+	public HashMap<String, Integer> download_app_maps=null;
 	//升级信息
 	public HashMap<String, String> update_maps=null;
 	//允许切换播放标志
 	public boolean isMusicPlay=true;
 	//当前正在播放的音乐
 	public String musicName="";
+	//下载音乐信息记录
+	public HashMap<String, Integer> download_music_maps=null;
 
 	@Override
 	public void onCreate() {
@@ -61,8 +60,9 @@ public class KEApplication extends Application {
 			Conn.getInstance(getApplicationContext()).insertAppModel(model);
 			Conn.getInstance(getApplicationContext()).updateModel("com.morningtel.kidsedu", 1);
 		}
-		download_maps=new HashMap<String, Integer>();
+		download_app_maps=new HashMap<String, Integer>();
 		update_maps=new HashMap<String, String>();
+		download_music_maps=new HashMap<String, Integer>();
 		
 		//开启更新服务
 		Intent intent=new Intent(getApplicationContext(), UpdateService.class);

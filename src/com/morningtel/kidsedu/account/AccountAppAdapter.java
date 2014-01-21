@@ -9,7 +9,7 @@ import com.morningtel.kidsedu.KEApplication;
 import com.morningtel.kidsedu.R;
 import com.morningtel.kidsedu.commons.BitmapHelp;
 import com.morningtel.kidsedu.commons.CommonUtils;
-import com.morningtel.kidsedu.commons.DownloadTask;
+import com.morningtel.kidsedu.commons.DownloadAppTask;
 import com.morningtel.kidsedu.model.AppModel;
 
 import android.content.Context;
@@ -158,11 +158,11 @@ public class AccountAppAdapter extends BaseAdapter {
 				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
-					if(((KEApplication) context.getApplicationContext()).download_maps.containsKey(model_list.get(position_).getPackageName())&&((KEApplication) context.getApplicationContext()).download_maps.get(model_list.get(position_).getPackageName())!=100) {
+					if(((KEApplication) context.getApplicationContext()).download_app_maps.containsKey(model_list.get(position_).getPackageName())&&((KEApplication) context.getApplicationContext()).download_app_maps.get(model_list.get(position_).getPackageName())!=100) {
 						CommonUtils.showCustomToast(context, "正在下载中，请稍后");
 					}
 					else {
-						DownloadTask task=new DownloadTask();
+						DownloadAppTask task=new DownloadAppTask();
 						task.setParams(context, model_list.get(position_).getId(), model_list.get(position_).getName(), model_list.get(position_).getPackageName());
 						task.execute(""+model_list.get(position_).getId());
 					}

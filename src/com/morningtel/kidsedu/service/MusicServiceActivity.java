@@ -16,6 +16,7 @@ public class MusicServiceActivity extends BaseActivity {
 		
 		Intent intent=new Intent(MusicServiceActivity.this, MusicBackgroundService.class);
 		Bundle bundle=new Bundle();
+		bundle.putString("image", "");
 		bundle.putString("name", "");
 		bundle.putString("url", "");
 		bundle.putBoolean("isNewStartFlag", false);

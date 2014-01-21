@@ -10,13 +10,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
 
-import com.morningtel.kidsedu.KEApplication;
-import com.morningtel.kidsedu.R;
-import com.morningtel.kidsedu.db.Conn;
-import com.morningtel.kidsedu.model.AppModel;
-import com.morningtel.kidsedu.model.JsonParse;
-import com.morningtel.kidsedu.receiver.AppReceiver;
-
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -27,29 +20,35 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.widget.RemoteViews;
 
-public class DownloadTask extends AsyncTask<String, Integer, String> {
+import com.morningtel.kidsedu.KEApplication;
+import com.morningtel.kidsedu.R;
+import com.morningtel.kidsedu.db.Conn;
+import com.morningtel.kidsedu.model.AppModel;
+import com.morningtel.kidsedu.model.JsonParse;
+
+public class DownloadMusicTask extends AsyncTask<String, Integer, String> {
 	
 	Context context=null;
 	int id=0;
 	String name="";
-	String packageName="";
 	
 	NotificationManager manager=null;
 	Notification no=null;
 	RemoteViews view=null;
 	
-	public void setParams(Context context, int id, String name, String packageName) {
+	public final static String musicChange="music_change";
+	
+	public void setParams(Context context, int id, String name) {
 		this.context=context;
 		this.id=id;
 		this.name=name;
-		this.packageName=packageName;
 	}
 
 	@Override
 	protected void onPreExecute() {
 		// TODO Auto-generated method stub
 		super.onPreExecute();
-		((KEApplication) context.getApplicationContext()).download_maps.put(packageName, 0);
+		((KEApplication) context.getApplicationContext()).download_music_maps.put(name, 0);
 		
 		manager=(NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
 		no=new Notification();
@@ -74,24 +73,22 @@ public class DownloadTask extends AsyncTask<String, Integer, String> {
 		super.onPostExecute(result);
 		switch(Integer.parseInt(result)) {
 		case 2:
+			sendBroadCast(name);
 			break;
 		case 1:
+			sendBroadCast(name);
 			break;
 		case -1:
 			CommonUtils.showCustomToast(context, "获取下载文件信息出现异常");
-			sendBroadCast(packageName);
 			break;
 		case -2:
 			CommonUtils.showCustomToast(context, "解析下载文件信息出现异常");
-			sendBroadCast(packageName);
 			break;
 		case -3:
 			CommonUtils.showCustomToast(context, "下载文件出现异常");
-			sendBroadCast(packageName);
 			break;
 		case -4:
 			CommonUtils.showCustomToast(context, "下载文件出现异常");
-			sendBroadCast(packageName);
 			break;
 		}
 		no.defaults=Notification.DEFAULT_SOUND;
@@ -130,9 +127,9 @@ public class DownloadTask extends AsyncTask<String, Integer, String> {
 			return result;
 		}
 
-		Conn.getInstance(context).insertAppModel(model);
-		Conn.getInstance(context).insertOtherPlatformByApp(model.getId(), model.getResourceType(), model.getPackageName(), model.getName(), ((KEApplication) context.getApplicationContext()).kidsIconUrl+CommonUtils.getIconAdd(model.getIconUrl()));
-		
+		Conn.getInstance(context).insertMusicModel(model);
+		Conn.getInstance(context).insertOtherPlatformByMusic(model.getId(), name, ((KEApplication) context.getApplicationContext()).kidsIconUrl+CommonUtils.getIconAdd(model.getIconUrl()), ((KEApplication) context.getApplicationContext()).kidsIconUrl+model.getFileUrl());
+	
 		String url_=((KEApplication) context.getApplicationContext()).kidsIconUrl+model.getFileUrl();
 		final String filePath=Environment.getExternalStorageDirectory().getAbsolutePath()+"/kidsedu/temp/"+model.getFileUrl().substring(model.getFileUrl().indexOf("/")+1, model.getFileUrl().length());
 		File file=new File(filePath);
@@ -187,21 +184,20 @@ public class DownloadTask extends AsyncTask<String, Integer, String> {
 					if(percent-downloadPercent>5) {
 						publishProgress(percent);
 						downloadPercent=percent;
-						((KEApplication) context.getApplicationContext()).download_maps.put(model.getPackageName(), percent);
+						((KEApplication) context.getApplicationContext()).download_music_maps.put(model.getPackageName(), percent);
 					}
             	}
 				publishProgress(100);
 				result="2";
-				((KEApplication) context.getApplicationContext()).download_maps.put(model.getPackageName(), 100);
+				((KEApplication) context.getApplicationContext()).download_music_maps.put(model.getPackageName(), 100);
+				
+				File file_kids=new File("/data/data/"+context.getPackageName()+"/kidsedu/"+model.getFileUrl().substring(model.getFileUrl().indexOf("/")+1, model.getFileUrl().length()));
+				if(file_kids.exists()) {
+					file_kids.delete();
+				}
+				file_kids.createNewFile();
+				CommonUtils.copyFile(file_new.getPath(), file_kids.getPath());
 			}
-			//下载完成之后直接安装
-			new Thread(new Runnable() {
-
-				@Override
-				public void run() {
-					// TODO Auto-generated method stub
-					CommonUtils.install(filePath, context);
-				}}).start();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -245,14 +241,14 @@ public class DownloadTask extends AsyncTask<String, Integer, String> {
 	 * 发送广播
 	 * @param context
 	 */
-	public void sendBroadCast(String packageName) {
-		((KEApplication) context.getApplicationContext()).download_maps.remove(packageName);
+	public void sendBroadCast(String name) {
+		((KEApplication) context.getApplicationContext()).download_music_maps.remove(name);
 		Intent intent=new Intent();
-		intent.setAction(AppReceiver.appChange);
+		intent.setAction(musicChange);
 		Bundle bundle=new Bundle();
-		bundle.putString("packageName", packageName);
+		bundle.putString("name", name);
 		intent.putExtras(bundle);
 		context.sendBroadcast(intent);
 	}
-
+	
 }

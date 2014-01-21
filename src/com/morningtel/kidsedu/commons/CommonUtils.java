@@ -3,7 +3,10 @@ package com.morningtel.kidsedu.commons;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -366,5 +369,32 @@ public class CommonUtils {
         	return NETWORKSTATE_NULL;
         }
     }
+    
+    /** 
+     * 复制单个文件 
+     * @param oldPath 
+     * @param newPath 
+     * @return  
+     */ 
+    public static void copyFile(String oldPath, String newPath) { 
+    	try { 
+    		int bytesum=0; 
+    		int byteread=0; 
+    		File oldfile=new File(oldPath); 
+    		if (oldfile.exists()) { 
+    			InputStream inStream=new FileInputStream(oldPath); 
+    			FileOutputStream fs=new FileOutputStream(newPath); 
+    			byte[] buffer=new byte[1444]; 
+    			while ((byteread = inStream.read(buffer))!=-1) { 
+    				bytesum+=byteread; 
+    				fs.write(buffer, 0, byteread); 
+    			} 
+    			inStream.close(); 
+    		} 
+    	} catch (Exception e) { 
+           e.printStackTrace(); 
+       } 
+
+   } 
     
 }

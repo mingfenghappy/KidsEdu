@@ -2,25 +2,23 @@ package com.morningtel.kidsedu.musiclist;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import com.lidroid.xutils.BitmapUtils;
 import com.morningtel.kidsedu.KEApplication;
 import com.morningtel.kidsedu.R;
 import com.morningtel.kidsedu.commons.BitmapHelp;
 import com.morningtel.kidsedu.commons.CommonUtils;
+import com.morningtel.kidsedu.commons.DownloadMusicTask;
 import com.morningtel.kidsedu.db.Conn;
 import com.morningtel.kidsedu.model.AppModel;
 import com.morningtel.kidsedu.model.AppsFilterModel;
-import com.morningtel.kidsedu.model.JsonParse;
 import com.morningtel.kidsedu.service.MusicBackgroundService;
 
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
+import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -146,66 +144,47 @@ public class MusicListAdapter extends BaseAdapter {
 			}
 			break;
 		}
-		holder.appfilter_download.setImageResource(R.drawable.play_sel);
 		final ImageView imageview=holder.appfilter_download;
-		imageview.setOnClickListener(new ImageView.OnClickListener() {
+		final AppModel model=Conn.getInstance(context).isMusicExists(appfilter_list.get(position_).getName());
+		if(model!=null) {
+			holder.appfilter_download.setImageResource(R.drawable.media_play_icon);
+			imageview.setOnClickListener(new ImageView.OnClickListener() {
 
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				if(((KEApplication) context.getApplicationContext()).isMusicPlay) {
-					playMusic(appfilter_list.get(position_).getId(), appfilter_list.get(position_).getName());
-					((KEApplication) context.getApplicationContext()).musicName=appfilter_list.get(position_).getName();
-				}
-				else {
-					CommonUtils.showCustomToast(context, "正在加载中，请稍后");
-				}
-			}});
-		
-		return convertView;
-	}
-	
-	private void playMusic(final int id, final String name) {
-		((KEApplication) context.getApplicationContext()).isMusicPlay=false;
-		final Handler handler=new Handler() {
-			@Override
-			public void handleMessage(Message msg) {
-				// TODO Auto-generated method stub
-				super.handleMessage(msg);
-				if(msg.obj==null) {
-					((KEApplication) context.getApplicationContext()).isMusicPlay=true;
-    				CommonUtils.showCustomToast(context, "网络异常，请稍后再试");
-				}
-				else {
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
 					Intent intent=new Intent(context, MusicBackgroundService.class);
 					Bundle bundle=new Bundle();
-					bundle.putString("name", name);
-					AppModel model=JsonParse.getAppModelByAid(msg.obj.toString());
-					bundle.putString("url", ((KEApplication) context.getApplicationContext()).kidsIconUrl+model.getFileUrl());
+					bundle.putString("image", ((KEApplication) context.getApplicationContext()).kidsIconUrl+CommonUtils.getIconAdd(appfilter_list.get(position_).getIconUrl()));
+					bundle.putString("name", appfilter_list.get(position_).getName());
+					bundle.putString("url", Environment.getExternalStorageDirectory().getAbsolutePath()+"/kidsedu/temp/"+model.getFileUrl().substring(model.getFileUrl().lastIndexOf("/")+1));
 					bundle.putBoolean("isNewStartFlag", true);
 					intent.putExtras(bundle);
 					context.startService(intent);
-					Conn.getInstance(context).insertMusicModel(model);
-					Conn.getInstance(context).insertOtherPlatformByMusic(model.getId(), name, ((KEApplication) context.getApplicationContext()).kidsIconUrl+CommonUtils.getIconAdd(model.getIconUrl()), ((KEApplication) context.getApplicationContext()).kidsIconUrl+model.getFileUrl());
-				}
-			}
-		};
-		
-		new Thread(new Runnable() {
-			
-			@Override
-			public void run() {
-				// TODO Auto-generated method stub
-				HashMap<String, String> map=new HashMap<String, String>();
-				map.put("aid", ""+id);
-				String webResult=CommonUtils.getWebData(map, ((KEApplication) context.getApplicationContext()).kidsDataUrl+"/data/json/app/AppByAid");
-				Message m=new Message();
-				m.obj=webResult;
-				handler.sendMessage(m);
-			}
-		}).start();
-	}
+				}});
+		}
+		else if(((KEApplication) context.getApplicationContext()).download_music_maps.containsKey(appfilter_list.get(position_).getName())) {
+			holder.appfilter_download.setImageResource(R.drawable.media_add_icon);
+		}
+		else {
+			holder.appfilter_download.setImageResource(R.drawable.media_add_icon);
+			imageview.setOnClickListener(new ImageView.OnClickListener() {
 
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					if(((KEApplication) context.getApplicationContext()).download_music_maps.containsKey(appfilter_list.get(position_).getName())) {
+						CommonUtils.showCustomToast(context, appfilter_list.get(position_).getName()+"正在下载中");
+						return;
+					}
+					DownloadMusicTask task=new DownloadMusicTask();
+					task.setParams(context, appfilter_list.get(position_).getId(), appfilter_list.get(position_).getName());
+					task.execute(""+appfilter_list.get(position_).getId());
+				}});
+		}
+		return convertView;
+	}
+	
 }
 
 class MusicListHolder {
