@@ -45,7 +45,6 @@ public class VideoDetailActivity extends BaseActivity {
 	TextView video_detail_provider=null;
 	TextView video_detail_resolution=null;
 	Button video_detail_playButton=null;
-	Button video_detail_downloadButton=null;
 	TextView video_detail_reviews=null;
 	TextView video_detail_summary=null;
 	TextView video_detail_desp=null;
@@ -54,6 +53,8 @@ public class VideoDetailActivity extends BaseActivity {
 	ArrayList<HashMap<String, Object>> ui_list=null;
 	//当前页面对象
 	AppModel model=null;
+	//第一集播放url
+	String firstUrl="";
 	
 	public static BitmapUtils bitmapUtils;
 
@@ -91,7 +92,13 @@ public class VideoDetailActivity extends BaseActivity {
 		video_detail_provider=(TextView) findViewById(R.id.video_detail_provider);
 		video_detail_resolution=(TextView) findViewById(R.id.video_detail_resolution);
 		video_detail_playButton=(Button) findViewById(R.id.video_detail_playButton);
-		video_detail_downloadButton=(Button) findViewById(R.id.video_detail_downloadButton);
+		video_detail_playButton.setOnClickListener(new Button.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				loadPlayData(0);
+			}});
 		video_detail_reviews=(TextView) findViewById(R.id.video_detail_reviews);
 		video_detail_reviews.setOnClickListener(new TextView.OnClickListener() {
 
@@ -130,23 +137,7 @@ public class VideoDetailActivity extends BaseActivity {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				// TODO Auto-generated method stub
-				String[] versionCode_array=new String[item_list.size()];
-				String[] fileUrl_array=new String[item_list.size()];
-				for(int i=0;i<item_list.size();i++) {
-					versionCode_array[i]=item_list.get(i).getVersionCode();
-					fileUrl_array[i]=item_list.get(i).getFileUrl();
-				}
-				
-				Intent intent=new Intent(VideoDetailActivity.this, PlayerActivity.class);
-				Bundle bundle=new Bundle();
-				bundle.putString("name", getIntent().getExtras().getString("name"));
-				bundle.putStringArray("VersionCode", versionCode_array);
-				bundle.putStringArray("FileUrl", fileUrl_array);
-				bundle.putString("url", ((KEApplication) getApplicationContext()).kidsVideoUrl+item_list.get(position).getFileUrl().substring(6, item_list.get(position).getFileUrl().length())+".mp4");
-				intent.putExtras(bundle);
-				startActivity(intent);
-				Conn.getInstance(VideoDetailActivity.this).insertVideoModel(model, Integer.parseInt(item_list.get(position).getVersionCode()));
-				Conn.getInstance(VideoDetailActivity.this).insertOtherPlatformByVideo(getIntent().getExtras().getInt("id"), getIntent().getExtras().getString("name"), ((KEApplication) getApplicationContext()).kidsIconUrl+model.getIconUrl());
+				loadPlayData(position);
 			}
 		});
 		adapter=new SimpleAdapter(VideoDetailActivity.this, ui_list, R.layout.video_detail_grid_item, new String[]{"itemText"}, new int[]{R.id.itemText});
@@ -171,7 +162,6 @@ public class VideoDetailActivity extends BaseActivity {
 					video_detail_provider.setText("提供者："+model.getProvider());
 					video_detail_resolution.setText("剧集：共"+model.getModel_list().size()+"集");
 					video_detail_playButton.setVisibility(View.VISIBLE);
-					video_detail_downloadButton.setVisibility(View.VISIBLE);
 					item_list.addAll(model.getModel_list());
 					for(int i=0;i<item_list.size();i++) {
 						VideoItemModel item=item_list.get(i);
@@ -219,5 +209,30 @@ public class VideoDetailActivity extends BaseActivity {
 				handler.sendMessage(m);
 			}
 		}).start();
+	}
+	
+	/**
+	 * 调用播放器前准备
+	 * @param position
+	 */
+	public void loadPlayData(int position) {
+
+		String[] versionCode_array=new String[item_list.size()];
+		String[] fileUrl_array=new String[item_list.size()];
+		for(int i=0;i<item_list.size();i++) {
+			versionCode_array[i]=item_list.get(i).getVersionCode();
+			fileUrl_array[i]=item_list.get(i).getFileUrl();
+		}
+		
+		Intent intent=new Intent(VideoDetailActivity.this, PlayerActivity.class);
+		Bundle bundle=new Bundle();
+		bundle.putString("name", getIntent().getExtras().getString("name"));
+		bundle.putStringArray("VersionCode", versionCode_array);
+		bundle.putStringArray("FileUrl", fileUrl_array);
+		bundle.putString("url", ((KEApplication) getApplicationContext()).kidsVideoUrl+item_list.get(position).getFileUrl().substring(6, item_list.get(position).getFileUrl().length())+".mp4");
+		intent.putExtras(bundle);
+		startActivity(intent);
+		Conn.getInstance(VideoDetailActivity.this).insertVideoModel(model, Integer.parseInt(item_list.get(position).getVersionCode()));
+		Conn.getInstance(VideoDetailActivity.this).insertOtherPlatformByVideo(getIntent().getExtras().getInt("id"), getIntent().getExtras().getString("name"), ((KEApplication) getApplicationContext()).kidsIconUrl+model.getIconUrl());	
 	}
 }

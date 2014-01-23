@@ -370,9 +370,16 @@ public class Conn extends SQLiteOpenHelper {
 		try {
 			File file=new File("/data/data/"+context.getPackageName()+"/CachedAudiobookItem2-iPad.sqlite");
 			SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(file.getPath(), null); 
+			Cursor cs=db.query("ZCACHEDAUDIOBOOKITEM2", null, "ZAID=?", new String[]{""+id}, null, null, null);
+			cs.moveToFirst();
+			if(cs.getCount()>0) {
+				cs.close();
+				db.close();
+			}
+			else {
+				cs.close();
+			}
 			ContentValues cv=new ContentValues();
-			cv.put("Z_ENT", 1);
-			cv.put("Z_OPT", 2);
 			cv.put("ZUSERID", 0);
 			cv.put("ZAID", id);
 			cv.put("ZMODIFYTIME", Integer.parseInt((""+System.currentTimeMillis()).substring(0, 10)));
@@ -380,9 +387,9 @@ public class Conn extends SQLiteOpenHelper {
 			cv.put("ZSTATUS", 1);
 			cv.put("ZDESC", "");
 			cv.put("ZNAME", name);
-			cv.put("ZMP3URL", fileUrl.substring(fileUrl.lastIndexOf("/")+1));
+			cv.put("ZMP3URL", fileUrl);
 			cv.put("ZICONURL", url.substring(url.lastIndexOf("/")+1));
-			cv.put("ZPATH", "");
+			cv.put("ZPATH", fileUrl.substring(fileUrl.lastIndexOf("/")+1));
 			db.insert("ZCACHEDAUDIOBOOKITEM2", null, cv);
 			db.close();	
 		} catch(Exception e) {
@@ -397,6 +404,15 @@ public class Conn extends SQLiteOpenHelper {
 		try {
 			File file=new File("/data/data/"+context.getPackageName()+"/ChildMovieItem2-iPad.sqlite");
 			SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(file.getPath(), null); 
+			Cursor cs=db.query("ZCHILDMOVIEITEM2", null, "ZAID=?", new String[]{""+id}, null, null, null);
+			cs.moveToFirst();
+			if(cs.getCount()>0) {
+				cs.close();
+				db.close();
+			}
+			else {
+				cs.close();
+			}
 			ContentValues cv=new ContentValues();
 			cv.put("Z_ENT", 1);
 			cv.put("Z_OPT", 1);
@@ -422,6 +438,15 @@ public class Conn extends SQLiteOpenHelper {
 		try {
 			File file=new File("/data/data/"+context.getPackageName()+"/CachedAppItem.sqlite");
 			SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(file.getPath(), null); 
+			Cursor cs=db.query("CachedAppItem", null, "ZAID=?", new String[]{""+id}, null, null, null);
+			cs.moveToFirst();
+			if(cs.getCount()>0) {
+				cs.close();
+				db.close();
+			}
+			else {
+				cs.close();
+			}
 			ContentValues cv=new ContentValues();
 			cv.put("appID", id);
 			cv.put("appType", type);

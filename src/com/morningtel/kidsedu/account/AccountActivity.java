@@ -49,6 +49,14 @@ public class AccountActivity extends BaseActivity {
 		user_nickname=(TextView) findViewById(R.id.user_nickname);
 		account_coin=(TextView) findViewById(R.id.account_coin);
 		account_coin_recharge=(Button) findViewById(R.id.account_coin_recharge);
+		account_coin_recharge.setOnClickListener(new Button.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent intent=new Intent(AccountActivity.this, WebInfoActivity.class);
+				startActivity(intent);
+			}});
 		account_tt=(TextView) findViewById(R.id.account_tt);
 		account_tt.setOnClickListener(new TextView.OnClickListener() {
 

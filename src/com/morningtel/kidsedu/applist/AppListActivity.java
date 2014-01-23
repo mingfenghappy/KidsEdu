@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.format.DateUtils;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
@@ -33,6 +34,7 @@ public class AppListActivity extends BaseActivity {
 	
 	PullToRefreshListView fragment_apptabs_listview=null;
 	AppListAdapter adapter=null;
+	ListView actualListView=null;
 	
 	ArrayList<AppsFilterModel> appfilter_list=null;
 	//当前包名对象集合
@@ -40,6 +42,11 @@ public class AppListActivity extends BaseActivity {
     private int id=0;
     //页码
     int page=1;
+    //正在加载标志位
+    boolean isLoad=false;
+    
+    //底部footview
+    View v=null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +54,8 @@ public class AppListActivity extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.fragment_apptabs);
+		
+		v=LayoutInflater.from(AppListActivity.this).inflate(R.layout.view_footer, null);
 		
 		id=getIntent().getExtras().getInt("id");
         packageList=new ArrayList<String>();
@@ -65,6 +74,10 @@ public class AppListActivity extends BaseActivity {
         fragment_apptabs_listview.setOnRefreshListener(new OnRefreshListener<ListView>() {
 			@Override
 			public void onRefresh(PullToRefreshBase<ListView> refreshView) {
+				if(isLoad) {
+					CommonUtils.showCustomToast(AppListActivity.this, "正在加载中，请稍后");
+					return;
+				}
 				String label = DateUtils.formatDateTime(getApplicationContext(), System.currentTimeMillis(),
 						DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_ABBREV_ALL);
 				refreshView.getLoadingLayoutProxy().setLastUpdatedLabel(label);
@@ -76,13 +89,17 @@ public class AppListActivity extends BaseActivity {
 
 			@Override
 			public void onLastItemVisible() {
+				if(isLoad) {
+					CommonUtils.showCustomToast(AppListActivity.this, "正在加载中，请稍后");
+					return;
+				}
 				if(appfilter_list.size()%20==0) {
 					page++;
 					getAppsFilter();
 				}
 			}
 		});
-        ListView actualListView = fragment_apptabs_listview.getRefreshableView();
+        actualListView = fragment_apptabs_listview.getRefreshableView();
         fragment_apptabs_listview.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
@@ -105,10 +122,12 @@ public class AppListActivity extends BaseActivity {
     }
     
     public void getAppsFilter() {
+    	isLoad=true;
     	final Handler handler=new Handler() {
     		@Override
     		public void handleMessage(Message msg) {
     			// TODO Auto-generated method stub
+    			isLoad=false;
     			super.handleMessage(msg);
     			if(msg.obj==null) {
     				CommonUtils.showCustomToast(AppListActivity.this, "网络异常，请稍后再试");
@@ -126,14 +145,18 @@ public class AppListActivity extends BaseActivity {
 						if(page==1) {
 							appfilter_list.clear();
 							fragment_apptabs_listview.onRefreshComplete();
+							if(actualListView.getFooterViewsCount()>0) {
+								actualListView.removeFooterView(v);
+							}
+				            actualListView.addFooterView(v);
 						}
 						appfilter_list.addAll(appfilter_list_temp);
-						if(appfilter_list.size()==0) {
-							CommonUtils.showCustomToast(AppListActivity.this, "暂无相关信息");
-						}
-						else {
+						if(appfilter_list.size()!=0) {
 							adapter.notifyDataSetChanged();
-						}					
+						}	
+						if(appfilter_list.size()%20!=0||appfilter_list.size()==0) {
+							actualListView.removeFooterView(v);							
+						}
 					}
 				}
     		}

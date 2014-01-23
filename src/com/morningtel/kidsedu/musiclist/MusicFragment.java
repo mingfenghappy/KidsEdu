@@ -9,6 +9,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.OnLastItemVisibleLis
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.morningtel.kidsedu.KEApplication;
 import com.morningtel.kidsedu.R;
+import com.morningtel.kidsedu.applist.AppListActivity;
 import com.morningtel.kidsedu.commons.CommonUtils;
 import com.morningtel.kidsedu.commons.DownloadMusicTask;
 import com.morningtel.kidsedu.db.Conn;
@@ -37,13 +38,18 @@ public class MusicFragment extends Fragment {
 	
 	PullToRefreshListView fragment_apptabs_listview=null;
 	MusicListAdapter adapter=null;
+	ListView actualListView=null;
 	
 	ArrayList<AppsFilterModel> appfilter_list=null;
     private int id=0;
     //页码
     int page=1;
+    //正在加载标志位
+    boolean isLoad=false;
     
     private View view;
+    //底部footview
+    View v=null;
 
     public static MusicFragment newInstance(int id) {
     	MusicFragment fragment = new MusicFragment();
@@ -59,18 +65,21 @@ public class MusicFragment extends Fragment {
         this.id=getArguments().getInt("id");
         appfilter_list=new ArrayList<AppsFilterModel>();
         adapter=new MusicListAdapter(appfilter_list, getActivity());
-        
-        
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     	if(view==null) {
+    		v=LayoutInflater.from(getActivity()).inflate(R.layout.view_footer, null);
     		view=LayoutInflater.from(getActivity()).inflate(R.layout.fragment_apptabs, null);
     		fragment_apptabs_listview=(PullToRefreshListView) view.findViewById(R.id.fragment_apptabs_listview);
             fragment_apptabs_listview.setOnRefreshListener(new OnRefreshListener<ListView>() {
     			@Override
     			public void onRefresh(PullToRefreshBase<ListView> refreshView) {
+    				if(isLoad) {
+    					CommonUtils.showCustomToast(getActivity(), "正在加载中，请稍后");
+    					return;
+    				}
     				String label = DateUtils.formatDateTime(getActivity().getApplicationContext(), System.currentTimeMillis(),
     						DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_ABBREV_ALL);
     				refreshView.getLoadingLayoutProxy().setLastUpdatedLabel(label);
@@ -82,13 +91,17 @@ public class MusicFragment extends Fragment {
 
     			@Override
     			public void onLastItemVisible() {
+    				if(isLoad) {
+    					CommonUtils.showCustomToast(getActivity(), "正在加载中，请稍后");
+    					return;
+    				}
     				if(appfilter_list.size()%20==0) {
     					page++;
     					getMusicFilter();
     				}
     			}
     		});
-            ListView actualListView = fragment_apptabs_listview.getRefreshableView();
+            actualListView = fragment_apptabs_listview.getRefreshableView();
             fragment_apptabs_listview.setOnItemClickListener(new OnItemClickListener() {
 
     			@Override
@@ -120,10 +133,12 @@ public class MusicFragment extends Fragment {
     }
     
     public void getMusicFilter() {
+    	isLoad=true;
     	final Handler handler=new Handler() {
     		@Override
     		public void handleMessage(Message msg) {
     			// TODO Auto-generated method stub
+    			isLoad=false;
     			super.handleMessage(msg);
     			if(msg.obj==null) {
     				CommonUtils.showCustomToast(getActivity(), "网络异常，请稍后再试");
@@ -138,14 +153,18 @@ public class MusicFragment extends Fragment {
 						if(page==1) {
 							appfilter_list.clear();
 							fragment_apptabs_listview.onRefreshComplete();
+							if(actualListView.getFooterViewsCount()>0) {
+								actualListView.removeFooterView(v);
+							}
+				            actualListView.addFooterView(v);
 						}
 						appfilter_list.addAll(appfilter_list_temp);
-						if(appfilter_list.size()==0) {
-							CommonUtils.showCustomToast(getActivity(), "暂无相关信息");
-						}
-						else {
+						if(appfilter_list.size()!=0) {
 							adapter.notifyDataSetChanged();
-						}					
+						}	
+						if(appfilter_list.size()%20!=0||appfilter_list.size()==0) {
+							actualListView.removeFooterView(v);							
+						}
 					}
 				}
     		}

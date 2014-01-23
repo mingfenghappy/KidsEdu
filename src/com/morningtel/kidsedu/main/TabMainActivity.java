@@ -124,20 +124,30 @@ public class TabMainActivity extends TabActivity {
 	}
 	
 	public void setTab(int index) {
+		music_layout.setBackgroundResource(R.drawable.main_tab_indicator_background);
+		video_layout.setBackgroundResource(R.drawable.main_tab_indicator_background);
+		read_layout.setBackgroundResource(R.drawable.main_tab_indicator_background);
+		study_layout.setBackgroundResource(R.drawable.main_tab_indicator_background);
+		game_layout.setBackgroundResource(R.drawable.main_tab_indicator_background);
 		switch(index) {
 		case 0:
+			video_layout.setBackgroundResource(R.drawable.main_tab_indicator_bg_pressed);
 			host.setCurrentTabByTag("spec1");
 			break;
 		case 1:
+			music_layout.setBackgroundResource(R.drawable.main_tab_indicator_bg_pressed);
 			host.setCurrentTabByTag("spec2");
 			break;
 		case 2:
+			read_layout.setBackgroundResource(R.drawable.main_tab_indicator_bg_pressed);
 			host.setCurrentTabByTag("spec3");
 			break;
 		case 3:
+			study_layout.setBackgroundResource(R.drawable.main_tab_indicator_bg_pressed);
 			host.setCurrentTabByTag("spec4");
 			break;
 		case 4:
+			game_layout.setBackgroundResource(R.drawable.main_tab_indicator_bg_pressed);
 			host.setCurrentTabByTag("spec5");
 			break;
 		}
