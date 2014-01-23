@@ -183,7 +183,6 @@ public class DownloadAppTask extends AsyncTask<String, Integer, String> {
             	int count=0;
             	//记录上一次下载的百分比
 				int downloadPercent=0;
-				sendBroadCast(packageName);
 				while((count=is.read(b, 0, 1024))!=-1) {
 					if(((KEApplication) context.getApplicationContext()).getDownload_stop_list().contains(model.getPackageName())) {
 						result="-5";

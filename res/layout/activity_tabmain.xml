@@ -45,7 +45,8 @@
 	        	    android:background="@null"
 	        	    android:singleLine="true" 
 	        	    android:layout_toRightOf="@id/titlebar_searchbox_search" 
-	        	    android:layout_centerVertical="true" />
+	        	    android:layout_centerVertical="true"
+	        	    android:imeOptions="actionDone" />
 	    	</RelativeLayout>
 	    	<ImageView 
 	            android:id="@+id/tab_account"

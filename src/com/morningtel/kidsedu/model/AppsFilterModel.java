@@ -9,6 +9,9 @@ public class AppsFilterModel implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	
+	public static final int ITEM=0;
+	public static final int SECTION=1;
+	
 	int commentCount=0;
 	double commentGrade=0;
 	long downloadCount=0;
@@ -22,9 +25,24 @@ public class AppsFilterModel implements Serializable {
 	String packageName="";
 	String provider="";
 	int viewCount=0;
+	int resourceType=0;
 	//音乐播放器的时候作为正在播放的标志
 	boolean isPlay=false;
+	//搜索时候用来标识是表头还是表内容
+	int search_type=1;
 	
+	public int getResourceType() {
+		return resourceType;
+	}
+	public void setResourceType(int resourceType) {
+		this.resourceType = resourceType;
+	}
+	public int getSearch_type() {
+		return search_type;
+	}
+	public void setSearch_type(int search_type) {
+		this.search_type = search_type;
+	}
 	public boolean isPlay() {
 		return isPlay;
 	}

@@ -59,6 +59,8 @@ public class JsonParse {
 				model.setPackageName(model_obj.getString("packageName"));
 				model.setProvider(model_obj.getString("provider"));
 				model.setViewCount(model_obj.getInt("viewCount"));
+				JSONObject model_obj_resourceType=new JSONObject(model_obj.getString("resourceType"));
+				model.setResourceType(model_obj_resourceType.getInt("id"));
 				model_list.add(model);
 			}
 		} catch (JSONException e) {

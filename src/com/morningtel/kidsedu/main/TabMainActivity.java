@@ -10,13 +10,17 @@ import com.morningtel.kidsedu.videolist.VideoTabsActivity;
 import android.app.TabActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TabHost;
+import android.widget.TextView;
 import android.widget.TabHost.TabSpec;
+import android.widget.TextView.OnEditorActionListener;
 
 public class TabMainActivity extends TabActivity {
 
@@ -90,6 +94,21 @@ public class TabMainActivity extends TabActivity {
 		addTab("spec5", AppListActivity.class, R.drawable.ic_launcher);
 		setTab(0);
 		tab_search=(EditText) findViewById(R.id.tab_search);
+		tab_search.setOnEditorActionListener(new OnEditorActionListener() {
+			
+			@Override
+			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+				// TODO Auto-generated method stub
+				if(actionId==EditorInfo.IME_ACTION_DONE) {
+					Intent intent=new Intent(TabMainActivity.this, SearchActivity.class);
+					Bundle bundle=new Bundle();
+					bundle.putString("searchKey", tab_search.getText().toString());
+					intent.putExtras(bundle);
+					startActivity(intent);
+				}
+				return false;
+			}
+		});
 		tab_account=(ImageView) findViewById(R.id.tab_account);
 		tab_account.setOnClickListener(new ImageView.OnClickListener() {
 
@@ -170,4 +189,5 @@ public class TabMainActivity extends TabActivity {
 		Intent intent=new Intent(TabMainActivity.this, MusicBackgroundService.class);
 		stopService(intent);
 	}
+	
 }

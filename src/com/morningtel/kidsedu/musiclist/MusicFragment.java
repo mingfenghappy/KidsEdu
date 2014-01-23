@@ -247,12 +247,14 @@ public class MusicFragment extends Fragment {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			// TODO Auto-generated method stub
-			for(int i=0;i<appfilter_list.size();i++) {
-				if(appfilter_list.get(i).getName().equals(intent.getExtras().getString("name"))) {
-					adapter.notifyDataSetChanged();
-					break;
+			if(intent.getAction().equals(DownloadMusicTask.musicChange)) {
+				for(int i=0;i<appfilter_list.size();i++) {
+					if(appfilter_list.get(i).getName().equals(intent.getExtras().getString("name"))) {
+						adapter.notifyDataSetChanged();
+						break;
+					}
 				}
-			}
+			}			
 		}
 	};
 }

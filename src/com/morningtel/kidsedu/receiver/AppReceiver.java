@@ -12,6 +12,7 @@ import android.os.Bundle;
 public class AppReceiver extends BroadcastReceiver {
 	
 	public final static String appChange="app_change";
+	public final static String appChangeSearch="app_change_search";
 	public final static String appUpdate="app_update";
 
 	@Override
@@ -56,6 +57,10 @@ public class AppReceiver extends BroadcastReceiver {
 		bundle.putString("packageName", packageName);
 		intent.putExtras(bundle);
 		context.sendBroadcast(intent);
+		
+		Intent intent_search=new Intent();
+		intent_search.setAction(appChangeSearch);
+		context.sendBroadcast(intent_search);
 	}
 
 }

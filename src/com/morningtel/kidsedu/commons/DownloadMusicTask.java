@@ -37,6 +37,7 @@ public class DownloadMusicTask extends AsyncTask<String, Integer, String> {
 	RemoteViews view=null;
 	
 	public final static String musicChange="music_change";
+	public final static String musicChangeSearch="music_change_search";
 	
 	public void setParams(Context context, int id, String name) {
 		this.context=context;
@@ -260,6 +261,10 @@ public class DownloadMusicTask extends AsyncTask<String, Integer, String> {
 		bundle.putString("name", name);
 		intent.putExtras(bundle);
 		context.sendBroadcast(intent);
+		
+		Intent intent_search=new Intent();
+		intent_search.setAction(musicChangeSearch);
+		context.sendBroadcast(intent_search);
 	}
 	
 }
