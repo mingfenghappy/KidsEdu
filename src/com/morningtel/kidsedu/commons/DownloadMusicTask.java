@@ -48,7 +48,6 @@ public class DownloadMusicTask extends AsyncTask<String, Integer, String> {
 	protected void onPreExecute() {
 		// TODO Auto-generated method stub
 		super.onPreExecute();
-		((KEApplication) context.getApplicationContext()).download_music_maps.put(name, 0);
 		
 		manager=(NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
 		no=new Notification();
@@ -90,6 +89,10 @@ public class DownloadMusicTask extends AsyncTask<String, Integer, String> {
 		case -4:
 			CommonUtils.showCustomToast(context, "下载文件出现异常");
 			break;
+		case -5:
+			((KEApplication) context.getApplicationContext()).getDownload_stop_list().remove(name);
+			CommonUtils.showCustomToast(context, "已经停止下载文件"+name);
+			sendBroadCast(name);
 		}
 		no.defaults=Notification.DEFAULT_SOUND;
 		manager.cancel(id);
@@ -178,6 +181,10 @@ public class DownloadMusicTask extends AsyncTask<String, Integer, String> {
             	//记录上一次下载的百分比
 				int downloadPercent=0;
 				while((count=is.read(b, 0, 1024))!=-1) {
+					if(((KEApplication) context.getApplicationContext()).getDownload_stop_list().contains(model.getName())) {
+						result="-5";
+						break;
+					}
             		raf.write(b, 0, count);
             		total+=count;
 					int percent=(int) (total*100/fileSize);
@@ -187,16 +194,20 @@ public class DownloadMusicTask extends AsyncTask<String, Integer, String> {
 						((KEApplication) context.getApplicationContext()).download_music_maps.put(model.getPackageName(), percent);
 					}
             	}
-				publishProgress(100);
-				result="2";
-				((KEApplication) context.getApplicationContext()).download_music_maps.put(model.getPackageName(), 100);
-				
+				if(!result.equals("-5")) {
+					publishProgress(100);
+					result="2";
+					((KEApplication) context.getApplicationContext()).download_music_maps.put(model.getPackageName(), 100);					
+				}				
+			}
+			if(!result.equals("-5")) {
 				File file_kids=new File("/data/data/"+context.getPackageName()+"/kidsedu/"+model.getFileUrl().substring(model.getFileUrl().indexOf("/")+1, model.getFileUrl().length()));
 				if(file_kids.exists()) {
 					file_kids.delete();
 				}
 				file_kids.createNewFile();
-				CommonUtils.copyFile(file_new.getPath(), file_kids.getPath());
+				CommonUtils.copyFile(file.getPath(), file_kids.getPath());
+				Conn.getInstance(context).updateMusic(name, 1);
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

@@ -28,8 +28,10 @@ import org.apache.http.util.EntityUtils;
 
 import com.morningtel.kidsedu.R;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -394,7 +396,36 @@ public class CommonUtils {
     	} catch (Exception e) { 
            e.printStackTrace(); 
        } 
-
-   } 
+    } 
+    
+    /**
+     * 更新人员信息
+     * @param context
+     * @param userId
+     * @param userName
+     * @param userIcon
+     */
+    public static void insertUserInfo(Context context, int userId, String userName, String userIcon) {
+    	SharedPreferences sp=context.getSharedPreferences("kidsedu", Activity.MODE_PRIVATE);
+    	SharedPreferences.Editor editor=sp.edit();
+    	editor.putInt("userId", userId);
+    	editor.putString("userName", userName);
+    	editor.putString("userIcon", userIcon);
+    	editor.commit();
+    }
+    
+    /**
+     * 获取人员信息
+     * @param context
+     * @return
+     */
+    public static HashMap<String, String> getUserInfo(Context context) {
+    	HashMap<String, String> map=new HashMap<String, String>();
+    	SharedPreferences sp=context.getSharedPreferences("kidsedu", Activity.MODE_PRIVATE);
+    	map.put("userId", ""+sp.getInt("userId", 0));
+    	map.put("userName", sp.getString("userName", ""));
+    	map.put("userIcon", ""+sp.getString("userIcon", ""));
+    	return map;
+    }
     
 }

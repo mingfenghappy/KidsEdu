@@ -131,19 +131,34 @@ public class AppListAdapter extends BaseAdapter {
 			}
 			break;
 		}
+		System.out.println(appfilter_list.get(position_).getPackageName()+" "+!CommonUtils.checkAppInstall(appfilter_list.get(position_).getPackageName(), context)+" "+((KEApplication) context.getApplicationContext()).download_app_maps.containsKey(appfilter_list.get(position_).getPackageName()));
 		final ImageView imageview=holder.appfilter_download;
 		if(CommonUtils.checkAppInstall(appfilter_list.get(position_).getPackageName(), context)) {
-			holder.appfilter_download.setImageResource(R.drawable.myapp_item_action_uninstall_image);
+			holder.appfilter_download.setImageResource(R.drawable.app_open_icon);
 			holder.appfilter_download.setOnClickListener(new ImageView.OnClickListener() {
 
 				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
-					CommonUtils.uninstall(appfilter_list.get(position_).getPackageName(), context);
+					CommonUtils.openApp(context, appfilter_list.get(position_).getPackageName());
 				}});
 		}
 		else if(!CommonUtils.checkAppInstall(appfilter_list.get(position_).getPackageName(), context)&&((KEApplication) context.getApplicationContext()).download_app_maps.containsKey(appfilter_list.get(position_).getPackageName())) {
-			holder.appfilter_download.setImageResource(R.drawable.myapp_item_action_resume_image);
+			holder.appfilter_download.setImageResource(R.drawable.download_cancle);
+			holder.appfilter_download.setOnClickListener(new ImageView.OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					if(!((KEApplication) context.getApplicationContext()).getDownload_stop_list().contains(appfilter_list.get(position_).getPackageName())) {
+						((KEApplication) context.getApplicationContext()).getDownload_stop_list().add(appfilter_list.get(position_).getPackageName());
+						CommonUtils.showCustomToast(context, "即将停止下载"+appfilter_list.get(position_).getName());
+						notifyDataSetChanged();
+					}
+					else {
+						CommonUtils.showCustomToast(context, "正在停止下载"+appfilter_list.get(position_).getName()+"，请稍后");
+					}
+				}});
 		}
 		else {
 			holder.appfilter_download.setImageResource(R.drawable.myapp_item_action_download_image);
@@ -152,10 +167,15 @@ public class AppListAdapter extends BaseAdapter {
 				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
+					if(((KEApplication) context.getApplicationContext()).download_app_maps.containsKey(appfilter_list.get(position_).getPackageName())) {
+						return;
+					}
 					DownloadAppTask task=new DownloadAppTask();
 					task.setParams(context, appfilter_list.get(position_).getId(), appfilter_list.get(position_).getName(), appfilter_list.get(position_).getPackageName());
 					task.execute(""+appfilter_list.get(position_).getId());
-					imageview.setImageResource(R.drawable.myapp_item_action_resume_image);					
+					imageview.setImageResource(R.drawable.myapp_item_action_redownload_image);	
+					((KEApplication) context.getApplicationContext()).download_app_maps.put(appfilter_list.get(position_).getPackageName(), 0);
+					notifyDataSetChanged();				
 				}});
 		}
 		

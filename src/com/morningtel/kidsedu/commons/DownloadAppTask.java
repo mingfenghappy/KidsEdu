@@ -49,7 +49,6 @@ public class DownloadAppTask extends AsyncTask<String, Integer, String> {
 	protected void onPreExecute() {
 		// TODO Auto-generated method stub
 		super.onPreExecute();
-		((KEApplication) context.getApplicationContext()).download_app_maps.put(packageName, 0);
 		
 		manager=(NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
 		no=new Notification();
@@ -93,6 +92,10 @@ public class DownloadAppTask extends AsyncTask<String, Integer, String> {
 			CommonUtils.showCustomToast(context, "下载文件出现异常");
 			sendBroadCast(packageName);
 			break;
+		case -5:
+			((KEApplication) context.getApplicationContext()).getDownload_stop_list().remove(packageName);
+			CommonUtils.showCustomToast(context, "已经停止下载文件"+name);
+			sendBroadCast(packageName);
 		}
 		no.defaults=Notification.DEFAULT_SOUND;
 		manager.cancel(id);
@@ -180,7 +183,12 @@ public class DownloadAppTask extends AsyncTask<String, Integer, String> {
             	int count=0;
             	//记录上一次下载的百分比
 				int downloadPercent=0;
+				sendBroadCast(packageName);
 				while((count=is.read(b, 0, 1024))!=-1) {
+					if(((KEApplication) context.getApplicationContext()).getDownload_stop_list().contains(model.getPackageName())) {
+						result="-5";
+						break;
+					}
             		raf.write(b, 0, count);
             		total+=count;
 					int percent=(int) (total*100/fileSize);
@@ -190,18 +198,22 @@ public class DownloadAppTask extends AsyncTask<String, Integer, String> {
 						((KEApplication) context.getApplicationContext()).download_app_maps.put(model.getPackageName(), percent);
 					}
             	}
-				publishProgress(100);
-				result="2";
-				((KEApplication) context.getApplicationContext()).download_app_maps.put(model.getPackageName(), 100);
+				if(!result.equals("-5")) {
+					publishProgress(100);
+					result="2";
+					((KEApplication) context.getApplicationContext()).download_app_maps.put(model.getPackageName(), 100);
+				}				
 			}
-			//下载完成之后直接安装
-			new Thread(new Runnable() {
+			if(!result.equals("-5")) {
+				//下载完成之后直接安装
+				new Thread(new Runnable() {
 
-				@Override
-				public void run() {
-					// TODO Auto-generated method stub
-					CommonUtils.install(filePath, context);
-				}}).start();
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						CommonUtils.install(filePath, context);
+					}}).start();
+			}			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

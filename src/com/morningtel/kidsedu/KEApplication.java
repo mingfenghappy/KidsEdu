@@ -1,6 +1,7 @@
 package com.morningtel.kidsedu;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.morningtel.kidsedu.db.Conn;
@@ -27,6 +28,8 @@ public class KEApplication extends Application {
 	public String musicName="";
 	//下载音乐信息记录
 	public HashMap<String, Integer> download_music_maps=null;
+	//需要停止的列表记录
+	public ArrayList<String> download_stop_list=null;
 
 	@Override
 	public void onCreate() {
@@ -63,10 +66,18 @@ public class KEApplication extends Application {
 		download_app_maps=new HashMap<String, Integer>();
 		update_maps=new HashMap<String, String>();
 		download_music_maps=new HashMap<String, Integer>();
+		download_stop_list=new ArrayList<String>();
 		
 		//开启更新服务
 		Intent intent=new Intent(getApplicationContext(), UpdateService.class);
-		startService(intent);
-		
+		startService(intent);		
+	}
+	
+	/**
+	 * 获取停止下载列表
+	 * @return
+	 */
+	public synchronized ArrayList<String> getDownload_stop_list() {
+		return download_stop_list;
 	}
 }

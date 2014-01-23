@@ -32,6 +32,7 @@ public class Conn extends SQLiteOpenHelper {
 	private static final String	MUSIC_TABLE="musictable";
 	private static final String MUSIC_NAME="musicname";
 	private static final String MUSIC_INFO="musicinfo";
+	private static final String MUSIC_FLAG="musicflag";
 	
 	private static final String	VIDEO_TABLE="videotable";
 	private static final String VIDEO_NAME="videoname";
@@ -59,7 +60,7 @@ public class Conn extends SQLiteOpenHelper {
 	public void onCreate(SQLiteDatabase db) {
 		// TODO Auto-generated method stub
 		db.execSQL("create table if not exists "+APP_TABLE+"("+_ID+" integer primary key autoincrement not null, "+APP_INFO+" blob, "+APP_PACKAGENAME+" text, "+APP_FLAG+" INTEGER)");
-		db.execSQL("create table if not exists "+MUSIC_TABLE+"("+_ID+" integer primary key autoincrement not null, "+MUSIC_INFO+" blob, "+MUSIC_NAME+" text)");
+		db.execSQL("create table if not exists "+MUSIC_TABLE+"("+_ID+" integer primary key autoincrement not null, "+MUSIC_INFO+" blob, "+MUSIC_NAME+" text, "+MUSIC_FLAG+" INTEGER)");
 		db.execSQL("create table if not exists "+VIDEO_TABLE+"("+_ID+" integer primary key autoincrement not null, "+VIDEO_INFO+" blob, "+VIDEO_NAME+" text, "+VIDEO_NUM+" INTEGER)");
 	}
 
@@ -122,9 +123,10 @@ public class Conn extends SQLiteOpenHelper {
 			}
 			ContentValues values=null;
 			byte[] bytes=serialize((AppModel) obj);
-			values=new ContentValues(2);
+			values=new ContentValues(3);
 			values.put(MUSIC_INFO, bytes);
 			values.put(MUSIC_NAME, ((AppModel) obj).getName());
+			values.put(MUSIC_FLAG, 0);
 			SQLiteDatabase db=this.getWritableDatabase();
 			db.beginTransaction();
 			db.insert(MUSIC_TABLE, null, values);
@@ -232,6 +234,21 @@ public class Conn extends SQLiteOpenHelper {
 	}
 	
 	/**
+	 * 音乐下载复制完成更新数据库
+	 * @param name
+	 * @param flag
+	 */
+	public void updateMusic(String name, int flag) {
+		synchronized (this) {
+			SQLiteDatabase db=this.getWritableDatabase();
+			ContentValues cv=new ContentValues();
+			cv.put(MUSIC_FLAG, flag);
+			db.update(MUSIC_TABLE, cv, MUSIC_NAME+"=?", new String[]{name});
+			db.close();
+		}
+	}
+	
+	/**
 	 * 根据包名查找文件的下载url，供删除使用
 	 * @param packageName
 	 * @return
@@ -283,6 +300,30 @@ public class Conn extends SQLiteOpenHelper {
 	}
 	
 	/**
+	 * 获取单一视频播放信息
+	 * @param id
+	 * @return
+	 */
+	public AppModel getSingleAppModel(int id) {
+		synchronized (this) {
+			AppModel model=new AppModel();
+			SQLiteDatabase db=this.getReadableDatabase();
+			Cursor cs=db.query(VIDEO_TABLE, null, null, null, null, null, null);
+			cs.moveToFirst();
+			for(int i=0;i<cs.getCount();i++) {
+				cs.moveToPosition(i);
+				AppModel temp=deserializeModel(cs.getBlob(1));
+				if(temp.getId()==id) {
+					model=temp;
+				}
+			}
+			cs.close();
+			db.close();
+			return model;
+		}
+	}
+	
+	/**
 	 * 根据类型删除某一个数据
 	 * @param name
 	 */
@@ -310,7 +351,7 @@ public class Conn extends SQLiteOpenHelper {
 	public AppModel isMusicExists(String name) {
 		synchronized (this) {
 			SQLiteDatabase db=this.getReadableDatabase();
-			Cursor cs=db.query(MUSIC_TABLE, null, MUSIC_NAME+"=?", new String[]{name}, null, null, null);
+			Cursor cs=db.query(MUSIC_TABLE, null, MUSIC_NAME+"=? and "+MUSIC_FLAG+"=?", new String[]{name, "1"}, null, null, null);
 			cs.moveToFirst();
 			AppModel model=null;
 			if(cs.getCount()>0) {

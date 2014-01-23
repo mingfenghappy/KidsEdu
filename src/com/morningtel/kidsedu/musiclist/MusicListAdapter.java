@@ -164,7 +164,21 @@ public class MusicListAdapter extends BaseAdapter {
 				}});
 		}
 		else if(((KEApplication) context.getApplicationContext()).download_music_maps.containsKey(appfilter_list.get(position_).getName())) {
-			holder.appfilter_download.setImageResource(R.drawable.media_add_icon);
+			holder.appfilter_download.setImageResource(R.drawable.download_cancle);
+			holder.appfilter_download.setOnClickListener(new ImageView.OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					if(!((KEApplication) context.getApplicationContext()).getDownload_stop_list().contains(appfilter_list.get(position_).getName())) {
+						((KEApplication) context.getApplicationContext()).getDownload_stop_list().add(appfilter_list.get(position_).getName());
+						CommonUtils.showCustomToast(context, "即将停止下载"+appfilter_list.get(position_).getName());
+						notifyDataSetChanged();
+					}
+					else {
+						CommonUtils.showCustomToast(context, "正在停止下载"+appfilter_list.get(position_).getName()+"，请稍后");
+					}
+				}});
 		}
 		else {
 			holder.appfilter_download.setImageResource(R.drawable.media_add_icon);
@@ -179,7 +193,10 @@ public class MusicListAdapter extends BaseAdapter {
 					}
 					DownloadMusicTask task=new DownloadMusicTask();
 					task.setParams(context, appfilter_list.get(position_).getId(), appfilter_list.get(position_).getName());
-					task.execute(""+appfilter_list.get(position_).getId());
+					task.execute(""+appfilter_list.get(position_).getId());			
+					imageview.setImageResource(R.drawable.myapp_item_action_redownload_image);	
+					((KEApplication) context.getApplicationContext()).download_music_maps.put(appfilter_list.get(position_).getName(), 0);					
+					notifyDataSetChanged();	
 				}});
 		}
 		return convertView;

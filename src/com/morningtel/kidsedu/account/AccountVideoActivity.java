@@ -16,11 +16,13 @@ import android.widget.AbsListView.OnScrollListener;
 import com.fortysevendeg.swipelistview.BaseSwipeListViewListener;
 import com.fortysevendeg.swipelistview.SwipeListView;
 import com.morningtel.kidsedu.BaseActivity;
+import com.morningtel.kidsedu.KEApplication;
 import com.morningtel.kidsedu.R;
 import com.morningtel.kidsedu.account.AccountVideoAdapter.OnRefreshListener;
 import com.morningtel.kidsedu.db.Conn;
+import com.morningtel.kidsedu.mediaplayer.PlayerActivity;
 import com.morningtel.kidsedu.model.AppModel;
-import com.morningtel.kidsedu.videolist.VideoDetailActivity;
+import com.morningtel.kidsedu.model.VideoItemModel;
 
 public class AccountVideoActivity extends BaseActivity {
 	
@@ -89,10 +91,21 @@ public class AccountVideoActivity extends BaseActivity {
 			public void onClickFrontView(int position) {
 				// TODO Auto-generated method stub
 				super.onClickFrontView(position);
-				Intent intent=new Intent(AccountVideoActivity.this, VideoDetailActivity.class);
+				
+				ArrayList<VideoItemModel> item_list=model_list.get(position).getModel_list();
+				String[] versionCode_array=new String[item_list.size()];
+				String[] fileUrl_array=new String[item_list.size()];
+				for(int i=0;i<item_list.size();i++) {
+					versionCode_array[i]=item_list.get(i).getVersionCode();
+					fileUrl_array[i]=item_list.get(i).getFileUrl();
+				}
+				
+				Intent intent=new Intent(AccountVideoActivity.this, PlayerActivity.class);
 				Bundle bundle=new Bundle();
-				bundle.putInt("id", model_list.get(position).getId());
 				bundle.putString("name", model_list.get(position).getName());
+				bundle.putStringArray("VersionCode", versionCode_array);
+				bundle.putStringArray("FileUrl", fileUrl_array);
+				bundle.putString("url", ((KEApplication) getApplicationContext()).kidsVideoUrl+item_list.get(position).getFileUrl().substring(6, item_list.get(position).getFileUrl().length())+".mp4");
 				intent.putExtras(bundle);
 				startActivity(intent);
 			}
