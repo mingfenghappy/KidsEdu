@@ -29,6 +29,7 @@ public class TabMainActivity extends TabActivity {
 	LinearLayout game_layout=null;
 	EditText tab_search=null;
 	ImageView tab_account=null;
+	ImageView tab_back=null;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +99,14 @@ public class TabMainActivity extends TabActivity {
 				Intent intent=new Intent(TabMainActivity.this, AccountActivity.class);
 				startActivity(intent);
 			}});
+		tab_back=(ImageView) findViewById(R.id.tab_back);
+		tab_back.setOnClickListener(new ImageView.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				finish();
+			}});
 	}
 	
 	public void addTab(String tag, Class<?> cls, int drawable) {
@@ -131,23 +140,23 @@ public class TabMainActivity extends TabActivity {
 		game_layout.setBackgroundResource(R.drawable.main_tab_indicator_background);
 		switch(index) {
 		case 0:
-			video_layout.setBackgroundResource(R.drawable.main_tab_indicator_bg_pressed);
+			video_layout.setBackgroundResource(R.drawable.main_tab_indicator_bg_choice);
 			host.setCurrentTabByTag("spec1");
 			break;
 		case 1:
-			music_layout.setBackgroundResource(R.drawable.main_tab_indicator_bg_pressed);
+			music_layout.setBackgroundResource(R.drawable.main_tab_indicator_bg_choice);
 			host.setCurrentTabByTag("spec2");
 			break;
 		case 2:
-			read_layout.setBackgroundResource(R.drawable.main_tab_indicator_bg_pressed);
+			read_layout.setBackgroundResource(R.drawable.main_tab_indicator_bg_choice);
 			host.setCurrentTabByTag("spec3");
 			break;
 		case 3:
-			study_layout.setBackgroundResource(R.drawable.main_tab_indicator_bg_pressed);
+			study_layout.setBackgroundResource(R.drawable.main_tab_indicator_bg_choice);
 			host.setCurrentTabByTag("spec4");
 			break;
 		case 4:
-			game_layout.setBackgroundResource(R.drawable.main_tab_indicator_bg_pressed);
+			game_layout.setBackgroundResource(R.drawable.main_tab_indicator_bg_choice);
 			host.setCurrentTabByTag("spec5");
 			break;
 		}
