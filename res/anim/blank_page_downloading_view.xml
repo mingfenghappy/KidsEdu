@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animation-list android:oneshot="false"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:duration="70" android:drawable="@drawable/blank_page_downloading_one_and_five" />
+    <item android:duration="70" android:drawable="@drawable/blank_page_downloading_two_and_four" />
+    <item android:duration="70" android:drawable="@drawable/blank_page_downloading_three" />
+    <item android:duration="70" android:drawable="@drawable/blank_page_downloading_two_and_four" />
+    <item android:duration="70" android:drawable="@drawable/blank_page_downloading_one_and_five" />
+    <item android:duration="70" android:drawable="@drawable/blank_page_downloading_six_and_eight" />
+    <item android:duration="70" android:drawable="@drawable/blank_page_downloading_seven" />
+    <item android:duration="70" android:drawable="@drawable/blank_page_downloading_six_and_eight" />
+</animation-list>
