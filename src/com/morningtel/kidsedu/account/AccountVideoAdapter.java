@@ -150,6 +150,7 @@ public class AccountVideoAdapter extends BaseAdapter {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Conn.getInstance(context).deleteAppModel(model_list.get(position_).getName(), "video");
+				Conn.getInstance(context).deleteOtherPlatformByVideo(model_list.get(position_).getId());
 				model_list.remove(position_);
 				lis.refreshListView();
 			}});

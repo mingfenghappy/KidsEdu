@@ -474,4 +474,24 @@ public class Conn extends SQLiteOpenHelper {
 		}
 	}
 	
+	/**
+	 * 删除儿童界面视频播放
+	 * @param id
+	 */
+	public void deleteOtherPlatformByVideo(int id) {
+		File file=new File("/data/data/"+context.getPackageName()+"/ChildMovieItem2-iPad.sqlite");
+		SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(file.getPath(), null); 
+		db.delete("ZCHILDMOVIEITEM2", "ZAID=?", new String[]{""+id});
+	}
+	
+	/**
+	 * 删除儿童界面音乐播放
+	 * @param id
+	 */
+	public void deleteOtherPlatformByMusic(int id) {
+		File file=new File("/data/data/"+context.getPackageName()+"/CachedAudiobookItem2-iPad.sqlite");
+		SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(file.getPath(), null); 
+		db.delete("ZCACHEDAUDIOBOOKITEM2", "ZAID=?", new String[]{""+id});
+	}
+	
 }
