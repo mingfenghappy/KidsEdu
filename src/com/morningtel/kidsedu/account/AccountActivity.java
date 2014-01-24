@@ -1,5 +1,7 @@
 package com.morningtel.kidsedu.account;
 
+import java.util.HashMap;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -10,6 +12,7 @@ import android.widget.TextView;
 
 import com.morningtel.kidsedu.BaseActivity;
 import com.morningtel.kidsedu.R;
+import com.morningtel.kidsedu.commons.CommonUtils;
 
 public class AccountActivity extends BaseActivity {
 	
@@ -25,12 +28,16 @@ public class AccountActivity extends BaseActivity {
 	TextView account_xx=null;
 	TextView account_ww=null;
 	
+	HashMap<String, String> userInfo_map=null;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_account_profile);
+		
+		userInfo_map=CommonUtils.getUserInfo(AccountActivity.this);
 		
 		init();
 	}
@@ -47,6 +54,7 @@ public class AccountActivity extends BaseActivity {
 			}});
 		account_avatar=(ImageView) findViewById(R.id.account_avatar);
 		user_nickname=(TextView) findViewById(R.id.user_nickname);
+		user_nickname.setText(userInfo_map.get("userName"));
 		account_coin=(TextView) findViewById(R.id.account_coin);
 		account_coin_recharge=(Button) findViewById(R.id.account_coin_recharge);
 		account_coin_recharge.setOnClickListener(new Button.OnClickListener() {
