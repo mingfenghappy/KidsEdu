@@ -9,7 +9,6 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.OnLastItemVisibleLis
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.morningtel.kidsedu.KEApplication;
 import com.morningtel.kidsedu.R;
-import com.morningtel.kidsedu.applist.AppListActivity;
 import com.morningtel.kidsedu.commons.CommonUtils;
 import com.morningtel.kidsedu.commons.DownloadMusicTask;
 import com.morningtel.kidsedu.db.Conn;
@@ -22,6 +21,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -31,6 +31,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
 
@@ -39,6 +40,7 @@ public class MusicFragment extends Fragment {
 	PullToRefreshListView fragment_apptabs_listview=null;
 	MusicListAdapter adapter=null;
 	ListView actualListView=null;
+	ImageView dataLoadingImage=null;
 	
 	ArrayList<AppsFilterModel> appfilter_list=null;
     private int id=0;
@@ -72,6 +74,9 @@ public class MusicFragment extends Fragment {
     	if(view==null) {
     		v=LayoutInflater.from(getActivity()).inflate(R.layout.view_footer, null);
     		view=LayoutInflater.from(getActivity()).inflate(R.layout.fragment_apptabs, null);
+    		dataLoadingImage=(ImageView) view.findViewById(R.id.dataLoadingImage);
+    		AnimationDrawable animationDrawable = (AnimationDrawable) dataLoadingImage.getDrawable();  
+            animationDrawable.start();
     		fragment_apptabs_listview=(PullToRefreshListView) view.findViewById(R.id.fragment_apptabs_listview);
             fragment_apptabs_listview.setOnRefreshListener(new OnRefreshListener<ListView>() {
     			@Override
@@ -142,13 +147,16 @@ public class MusicFragment extends Fragment {
     			super.handleMessage(msg);
     			if(msg.obj==null) {
     				CommonUtils.showCustomToast(getActivity(), "Õ¯¬Á“Ï≥££¨«Î…‘∫Û‘Ÿ ‘");
+    				dataLoadingImage.setImageResource(R.drawable.blank_page_network_fail);
 				}
 				else {
 					String str=msg.obj.toString();
 					if(CommonUtils.convertNull(str).equals("")) {
 						CommonUtils.showCustomToast(getActivity(), "Õ¯¬Á“Ï≥££¨«Î…‘∫Û‘Ÿ ‘");
+						dataLoadingImage.setImageResource(R.drawable.blank_page_network_fail);
 					}
 					else {
+						dataLoadingImage.setVisibility(View.GONE);
 						ArrayList<AppsFilterModel> appfilter_list_temp=JsonParse.getAppsFilterModelList(str);
 						if(page==1) {
 							appfilter_list.clear();

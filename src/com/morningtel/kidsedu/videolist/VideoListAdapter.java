@@ -139,7 +139,7 @@ public class VideoListAdapter extends BaseAdapter {
 			}
 			break;
 		}
-		holder.appfilter_download.setImageResource(R.drawable.play_sel);
+		holder.appfilter_download.setImageResource(R.drawable.media_video_icon);
 		holder.appfilter_download.setOnClickListener(new ImageView.OnClickListener() {
 
 			@Override

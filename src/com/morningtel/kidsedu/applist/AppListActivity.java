@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -15,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
 
@@ -35,6 +37,7 @@ public class AppListActivity extends BaseActivity {
 	PullToRefreshListView fragment_apptabs_listview=null;
 	AppListAdapter adapter=null;
 	ListView actualListView=null;
+	ImageView dataLoadingImage=null;
 	
 	ArrayList<AppsFilterModel> appfilter_list=null;
 	//当前包名对象集合
@@ -112,6 +115,10 @@ public class AppListActivity extends BaseActivity {
 		});
         actualListView.setAdapter(adapter);
         getAppsFilter();
+        
+        dataLoadingImage=(ImageView) findViewById(R.id.dataLoadingImage);
+		AnimationDrawable animationDrawable = (AnimationDrawable) dataLoadingImage.getDrawable();  
+        animationDrawable.start();
 	}
 	
 	@Override
@@ -131,13 +138,16 @@ public class AppListActivity extends BaseActivity {
     			super.handleMessage(msg);
     			if(msg.obj==null) {
     				CommonUtils.showCustomToast(AppListActivity.this, "网络异常，请稍后再试");
+    				dataLoadingImage.setImageResource(R.drawable.blank_page_network_fail);
 				}
 				else {
 					String str=msg.obj.toString();
 					if(CommonUtils.convertNull(str).equals("")) {
 						CommonUtils.showCustomToast(AppListActivity.this, "网络异常，请稍后再试");
+						dataLoadingImage.setImageResource(R.drawable.blank_page_network_fail);
 					}
 					else {
+						dataLoadingImage.setVisibility(View.GONE);
 						ArrayList<AppsFilterModel> appfilter_list_temp=JsonParse.getAppsFilterModelList(str);
 						for(int i=0;i<appfilter_list_temp.size();i++) {
 							packageList.add(appfilter_list_temp.get(i).getPackageName());

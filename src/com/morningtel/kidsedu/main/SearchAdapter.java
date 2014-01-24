@@ -2,6 +2,9 @@ package com.morningtel.kidsedu.main;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map.Entry;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +12,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,38 +47,41 @@ public class SearchAdapter extends BaseAdapter implements
 	
 	public static BitmapUtils bitmapUtils;
 	
-	public SearchAdapter(Context context, ArrayList<AppsFilterModel> appfilter_list_temp) {
+	public SearchAdapter(Context context, HashMap<String, ArrayList<AppsFilterModel>> map) {
 		this.context=context;
 		
 		appfilter_list=new ArrayList<AppsFilterModel>();
 		
-		for(int i=0;i<appfilter_list_temp.size();i++) {
-			AppsFilterModel model=appfilter_list_temp.get(i);
-			if(appfilter_list_temp.get(i).getResourceType()!=currentResourceType) {
-				AppsFilterModel model_temp=new AppsFilterModel();
-				switch(appfilter_list_temp.get(i).getResourceType()) {
-				case 3:
-					model_temp.setName("¿´¿´");
-					break;
-				case 4:
-					model_temp.setName("ÌýÌý");
-					break;
-				case 8:
-					model_temp.setName("Ñ§Ñ§");
-					break;
-				case 9:
-					model_temp.setName("¶Á¶Á");
-					break;
-				case 10:
-					model_temp.setName("ÍæÍæ");
-					break;
-				}			
-				model_temp.setSearch_type(AppsFilterModel.SECTION);
-				appfilter_list.add(model_temp);
-				currentResourceType=appfilter_list_temp.get(i).getResourceType();
+		Iterator<Entry<String, ArrayList<AppsFilterModel>>> it=map.entrySet().iterator();
+		while(it.hasNext()) {
+			Entry<String, ArrayList<AppsFilterModel>> entry=it.next();
+			AppsFilterModel model_temp=new AppsFilterModel();
+			switch(Integer.parseInt(entry.getKey())) {
+			case 3:
+				model_temp.setName("¿´¿´");
+				break;
+			case 4:
+				model_temp.setName("ÌýÌý");
+				break;
+			case 8:
+				model_temp.setName("Ñ§Ñ§");
+				break;
+			case 9:
+				model_temp.setName("¶Á¶Á");
+				break;
+			case 10:
+				model_temp.setName("ÍæÍæ");
+				break;
 			}
-			model.setSearch_type(AppsFilterModel.ITEM);
-			appfilter_list.add(model);
+			model_temp.setSearch_type(AppsFilterModel.SECTION);
+			model_temp.setResourceType(Integer.parseInt(entry.getKey()));
+			appfilter_list.add(model_temp);
+			ArrayList<AppsFilterModel> appfilter_list_temp=entry.getValue();
+			for(int i=0;i<appfilter_list_temp.size();i++) {
+				AppsFilterModel model=appfilter_list_temp.get(i);
+				model.setSearch_type(AppsFilterModel.ITEM);
+				appfilter_list.add(model);
+			}
 		}
 		
 		bitmapUtils = BitmapHelp.getBitmapUtils(context.getApplicationContext());
@@ -122,9 +129,27 @@ public class SearchAdapter extends BaseAdapter implements
 			holder=(SearchAppListHolder) convertView.getTag();
 		}
 		if (appfilter_list.get(position).getSearch_type()==AppsFilterModel.SECTION) {
-			convertView.setBackgroundColor(parent.getResources().getColor(COLORS[0]));
+			switch(appfilter_list.get(position).getResourceType()) {
+			case 3:
+				convertView.setBackgroundColor(parent.getResources().getColor(COLORS[0]));
+				break;
+			case 4:
+				convertView.setBackgroundColor(parent.getResources().getColor(COLORS[1]));
+				break;
+			case 8:
+				convertView.setBackgroundColor(parent.getResources().getColor(COLORS[2]));
+				break;
+			case 9:
+				convertView.setBackgroundColor(parent.getResources().getColor(COLORS[2]));
+				break;
+			case 10:
+				convertView.setBackgroundColor(parent.getResources().getColor(COLORS[2]));
+				break;
+			}			
 			holder.search_section_layout.setVisibility(View.GONE);
 			holder.appfilter_detailinfo.setText(""+appfilter_list.get(position).getName());
+			holder.appfilter_detailinfo.setTextColor(Color.WHITE);
+			holder.appfilter_detailinfo.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
 			holder.appfilter_name.setText("");
         }
 		else {
@@ -140,6 +165,8 @@ public class SearchAdapter extends BaseAdapter implements
 			else {
 				holder.appfilter_detailinfo.setText(appfilter_list.get(position).getMobiledesc().substring(0, index));
 			}
+			holder.appfilter_detailinfo.setTextColor(context.getResources().getColor(R.color.playunchoice));
+			holder.appfilter_detailinfo.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
 			BigDecimal bd=new BigDecimal(""+appfilter_list.get(position).getCommentGrade()).setScale(1, BigDecimal.ROUND_HALF_UP);
 			switch(bd.intValue()) {
 			case 5:
@@ -235,7 +262,7 @@ public class SearchAdapter extends BaseAdapter implements
 				}
 			}
 			else if(appfilter_list.get(position).getResourceType()==3) {
-				holder.appfilter_download.setImageResource(R.drawable.play_sel);
+				holder.appfilter_download.setImageResource(R.drawable.media_video_icon);
 				holder.appfilter_download.setOnClickListener(new ImageView.OnClickListener() {
 
 					@Override
@@ -250,6 +277,13 @@ public class SearchAdapter extends BaseAdapter implements
 					}});
 			}
 			else if(appfilter_list.get(position).getResourceType()==4) {
+				holder.search_section_layout.setOnClickListener(new LinearLayout.OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+						// TODO Auto-generated method stub
+						
+					}});
 				final AppModel model=Conn.getInstance(context).isMusicExists(appfilter_list.get(position_).getName());
 				if(model!=null) {
 					holder.appfilter_download.setImageResource(R.drawable.media_play_icon);

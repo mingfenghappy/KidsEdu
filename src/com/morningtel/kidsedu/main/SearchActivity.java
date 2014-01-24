@@ -7,10 +7,14 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.View;
 import android.view.Window;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.hb.views.PinnedSectionListView;
 import com.morningtel.kidsedu.BaseActivity;
@@ -24,12 +28,14 @@ import com.morningtel.kidsedu.receiver.AppReceiver;
 
 public class SearchActivity extends BaseActivity {
 	
+	TextView nav_title=null;
+	ImageView dataLoadingImage=null;
 	PinnedSectionListView search_listview=null; 
 	SearchAdapter adapter=null;
 	
 	String searchKey="";
 	
-	ArrayList<AppsFilterModel> appfilter_list=null;
+	HashMap<String, ArrayList<AppsFilterModel>> appfilter_map=null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +45,7 @@ public class SearchActivity extends BaseActivity {
 		setContentView(R.layout.activity_search);
 		
 		searchKey=getIntent().getExtras().getString("searchKey");
-		appfilter_list=new ArrayList<AppsFilterModel>();
+		appfilter_map=new HashMap<String, ArrayList<AppsFilterModel>>();
 		
 		init();
 		
@@ -50,6 +56,19 @@ public class SearchActivity extends BaseActivity {
 	}
 	
 	public void init() {
+		nav_title=(TextView) findViewById(R.id.nav_title);
+		nav_title.setText(" ◊“≥");
+		nav_title.setOnClickListener(new TextView.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				finish();
+			}});
+		
+		dataLoadingImage=(ImageView) findViewById(R.id.dataLoadingImage);
+		AnimationDrawable animationDrawable = (AnimationDrawable) dataLoadingImage.getDrawable();  
+        animationDrawable.start();
 		search_listview=(PinnedSectionListView) findViewById(R.id.search_listview);
 		
 		searchData();
@@ -63,13 +82,16 @@ public class SearchActivity extends BaseActivity {
     			super.handleMessage(msg);
     			if(msg.obj==null) {
     				CommonUtils.showCustomToast(SearchActivity.this, "Õ¯¬Á“Ï≥££¨«Î…‘∫Û‘Ÿ ‘");
+    				dataLoadingImage.setImageResource(R.drawable.blank_page_network_fail);
 				}
 				else {
 					String str=msg.obj.toString();
 					if(CommonUtils.convertNull(str).equals("")) {
 						CommonUtils.showCustomToast(SearchActivity.this, "Õ¯¬Á“Ï≥££¨«Î…‘∫Û‘Ÿ ‘");
+	    				dataLoadingImage.setImageResource(R.drawable.blank_page_network_fail);
 					}
 					else {
+						dataLoadingImage.setVisibility(View.GONE);
 						ArrayList<AppsFilterModel> appfilter_list_temp=JsonParse.getAppsFilterModelList(str);
 						for(int i=0;i<appfilter_list_temp.size();i++) {
 							if(appfilter_list_temp.get(i).getResourceType()==8||
@@ -77,13 +99,21 @@ public class SearchActivity extends BaseActivity {
 									appfilter_list_temp.get(i).getResourceType()==10||
 									appfilter_list_temp.get(i).getResourceType()==3||
 									appfilter_list_temp.get(i).getResourceType()==4) {
-								appfilter_list.add(appfilter_list_temp.get(i));
+								ArrayList<AppsFilterModel> model_list=null;
+								if(appfilter_map.containsKey(""+appfilter_list_temp.get(i).getResourceType())) {
+									model_list=appfilter_map.get(""+appfilter_list_temp.get(i).getResourceType());
+								}	
+								else {
+									model_list=new ArrayList<AppsFilterModel>();
+								}
+								model_list.add(appfilter_list_temp.get(i));
+								appfilter_map.put(""+appfilter_list_temp.get(i).getResourceType(), model_list);
 							}
 							else {
 								continue;
 							}
 						}
-						adapter=new SearchAdapter(SearchActivity.this, appfilter_list);
+						adapter=new SearchAdapter(SearchActivity.this, appfilter_map);
 						search_listview.setAdapter(adapter);
 						
 					}

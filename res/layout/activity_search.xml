@@ -5,12 +5,24 @@
     android:orientation="vertical" >
     <include 
         layout="@layout/view_title"/>
-    <com.hb.views.PinnedSectionListView
-	    android:id="@+id/search_listview"
+    <RelativeLayout 
 	    android:layout_width="match_parent"
-	    android:layout_height="wrap_content" 
-	    android:headerDividersEnabled="false"
-	    android:footerDividersEnabled="false"
-	    android:divider="@null" />
+	    android:layout_height="match_parent">
+        <com.hb.views.PinnedSectionListView
+		    android:id="@+id/search_listview"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content" 
+		    android:headerDividersEnabled="false"
+		    android:footerDividersEnabled="false"
+		    android:divider="@null" />
+        <ImageView 
+	        android:id="@+id/dataLoadingImage" 
+	        android:layout_centerInParent="true"
+	        android:clickable="false" 
+	        android:layout_width="wrap_content" 
+	        android:layout_height="wrap_content" 
+	        android:src="@anim/blank_page_downloading_view" />
+    </RelativeLayout>
+    
 
 </LinearLayout>

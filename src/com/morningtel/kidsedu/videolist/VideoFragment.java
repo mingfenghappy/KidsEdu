@@ -13,6 +13,7 @@ import com.morningtel.kidsedu.commons.CommonUtils;
 import com.morningtel.kidsedu.model.AppsFilterModel;
 import com.morningtel.kidsedu.model.JsonParse;
 
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -22,6 +23,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
 
@@ -30,6 +32,7 @@ public class VideoFragment extends Fragment {
 	PullToRefreshListView fragment_apptabs_listview=null;
 	VideoListAdapter adapter=null;
 	ListView actualListView=null;
+	ImageView dataLoadingImage=null;
 	
 	ArrayList<AppsFilterModel> appfilter_list=null;
     private int id=0;
@@ -63,6 +66,9 @@ public class VideoFragment extends Fragment {
     	if(view==null) {
     		v=LayoutInflater.from(getActivity()).inflate(R.layout.view_footer, null);
     		view=LayoutInflater.from(getActivity()).inflate(R.layout.fragment_apptabs, null);
+    		dataLoadingImage=(ImageView) view.findViewById(R.id.dataLoadingImage);
+    		AnimationDrawable animationDrawable = (AnimationDrawable) dataLoadingImage.getDrawable();  
+            animationDrawable.start();
             fragment_apptabs_listview=(PullToRefreshListView) view.findViewById(R.id.fragment_apptabs_listview);
             fragment_apptabs_listview.setOnRefreshListener(new OnRefreshListener<ListView>() {
     			@Override
@@ -123,13 +129,16 @@ public class VideoFragment extends Fragment {
     			super.handleMessage(msg);
     			if(msg.obj==null) {
     				CommonUtils.showCustomToast(getActivity(), "Õ¯¬Á“Ï≥££¨«Î…‘∫Û‘Ÿ ‘");
+    				dataLoadingImage.setImageResource(R.drawable.blank_page_network_fail);
 				}
 				else {
 					String str=msg.obj.toString();
 					if(CommonUtils.convertNull(str).equals("")) {
 						CommonUtils.showCustomToast(getActivity(), "Õ¯¬Á“Ï≥££¨«Î…‘∫Û‘Ÿ ‘");
+						dataLoadingImage.setImageResource(R.drawable.blank_page_network_fail);
 					}
 					else {
+						dataLoadingImage.setVisibility(View.GONE);
 						ArrayList<AppsFilterModel> appfilter_list_temp=JsonParse.getAppsFilterModelList(str);
 						if(page==1) {
 							appfilter_list.clear();
