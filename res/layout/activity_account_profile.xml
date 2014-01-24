@@ -144,7 +144,7 @@
 	               	android:layout_width="fill_parent" 
 	               	android:layout_height="@dimen/account_profile_item_height" 
 	               	android:layout_marginLeft="@dimen/small_margin" 
-	               	android:text="我听过的听听资源" />
+	               	android:text="听听资源管理" />
 	           	<ImageView 
 	               	android:layout_width="fill_parent" 
 	               	android:layout_height="1dip"
@@ -159,7 +159,7 @@
 	               	android:layout_width="fill_parent" 
 	               	android:layout_height="@dimen/account_profile_item_height" 
 	               	android:layout_marginLeft="@dimen/small_margin" 
-	               	android:text="我收看的看看资源" />
+	               	android:text="看看资源管理" />
 	           	<ImageView 
 	               	android:layout_width="fill_parent" 
 	               	android:layout_height="1dip"
@@ -174,7 +174,7 @@
 	               	android:layout_width="fill_parent" 
 	               	android:layout_height="@dimen/account_profile_item_height" 
 	               	android:layout_marginLeft="@dimen/small_margin" 
-	               	android:text="我下载的读读资源" />	
+	               	android:text="读读资源管理" />	
 	            <ImageView 
 	               	android:layout_width="fill_parent" 
 	               	android:layout_height="1dip"
@@ -189,7 +189,7 @@
 	               	android:layout_width="fill_parent" 
 	               	android:layout_height="@dimen/account_profile_item_height" 
 	               	android:layout_marginLeft="@dimen/small_margin" 
-	               	android:text="我下载的学学资源" />
+	               	android:text="学学资源管理" />
 	           	<ImageView 
 	               	android:layout_width="fill_parent" 
 	               	android:layout_height="1dip"
@@ -204,7 +204,7 @@
 	               	android:layout_width="fill_parent" 
 	               	android:layout_height="@dimen/account_profile_item_height" 
 	               	android:layout_marginLeft="@dimen/small_margin" 
-	               	android:text="我下载的玩玩资源" />   	           
+	               	android:text="玩玩资源管理" />   	           
 	       	</LinearLayout>
 	   	</LinearLayout>
 	</ScrollView>	   	
