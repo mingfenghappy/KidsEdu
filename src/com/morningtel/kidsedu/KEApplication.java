@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.morningtel.kidsedu.commons.CommonUtils;
 import com.morningtel.kidsedu.db.Conn;
 import com.morningtel.kidsedu.model.AppModel;
 import com.morningtel.kidsedu.service.UpdateService;
@@ -71,6 +72,8 @@ public class KEApplication extends Application {
 		//开启更新服务
 		Intent intent=new Intent(getApplicationContext(), UpdateService.class);
 		startService(intent);		
+		
+		sendUserInfo();
 	}
 	
 	/**
@@ -79,5 +82,22 @@ public class KEApplication extends Application {
 	 */
 	public synchronized ArrayList<String> getDownload_stop_list() {
 		return download_stop_list;
+	}
+	
+	public void sendUserInfo() {
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				HashMap<String, String> map=new HashMap<String, String>();
+				map.put("deviceToken.token", CommonUtils.getMacAddress(getApplicationContext()));
+				map.put("token", CommonUtils.getUserInfo(getApplicationContext()).get("userToken"));
+				if(!CommonUtils.getMacAddress(getApplicationContext()).equals("")&&!CommonUtils.getUserInfo(getApplicationContext()).get("userToken").equals("")) {
+					CommonUtils.getWebData(map, kidsDataUrl+"/api/json/deviceToken_checkDeviceToken_feedback");
+				}
+				
+			}
+		}).start();
 	}
 }

@@ -44,6 +44,8 @@ import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Environment;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -405,12 +407,13 @@ public class CommonUtils {
      * @param userName
      * @param userIcon
      */
-    public static void insertUserInfo(Context context, int userId, String userName, String userIcon) {
+    public static void insertUserInfo(Context context, int userId, String userName, String userIcon, String userToken) {
     	SharedPreferences sp=context.getSharedPreferences("kidsedu", Activity.MODE_PRIVATE);
     	SharedPreferences.Editor editor=sp.edit();
     	editor.putInt("userId", userId);
     	editor.putString("userName", userName);
     	editor.putString("userIcon", userIcon);
+    	editor.putString("userToken", userToken);
     	editor.commit();
     }
     
@@ -425,7 +428,33 @@ public class CommonUtils {
     	map.put("userId", ""+sp.getInt("userId", 0));
     	map.put("userName", sp.getString("userName", ""));
     	map.put("userIcon", ""+sp.getString("userIcon", ""));
+    	map.put("userToken", ""+sp.getString("userToken", ""));
     	return map;
     }
+    
+    /**
+     * ªÒ»°wifi macµÿ÷∑
+     * @param context
+     * @return
+     */
+    public static String getMacAddress(Context context) {
+    	try {
+    		String macAddress = "";
+    	    WifiManager wifiMgr=(WifiManager)context.getSystemService(Context.WIFI_SERVICE);
+    	    WifiInfo info=(null==wifiMgr?null:wifiMgr.getConnectionInfo());
+    	    if (null!=info) {
+    	        macAddress=info.getMacAddress();
+    	    }
+    	    if(!convertNull(macAddress).equals("")) {
+    	    	if(macAddress.indexOf(":")!=-1) {
+    	    		macAddress=macAddress.replace(":", "");
+    	    		return macAddress;
+    	    	}
+    	    }
+    	    return "";
+    	} catch(Exception e) {
+    		return "";
+    	}   	
+	}
     
 }

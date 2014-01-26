@@ -45,6 +45,7 @@ public class VideoDetailActivity extends BaseActivity {
 	TextView video_detail_provider=null;
 	TextView video_detail_resolution=null;
 	Button video_detail_playButton=null;
+	Button video_detail_add=null;
 	TextView video_detail_reviews=null;
 	TextView video_detail_summary=null;
 	TextView video_detail_desp=null;
@@ -99,6 +100,13 @@ public class VideoDetailActivity extends BaseActivity {
 				// TODO Auto-generated method stub
 				loadPlayData(0);
 			}});
+		video_detail_add=(Button) findViewById(R.id.video_detail_add);
+		if(Conn.getInstance(VideoDetailActivity.this).getSingleAppModel(getIntent().getExtras().getInt("id"))==null) {
+			video_detail_add.setText("添加");
+		}
+		else {
+			video_detail_add.setText("删除");
+		}
 		video_detail_reviews=(TextView) findViewById(R.id.video_detail_reviews);
 		video_detail_reviews.setOnClickListener(new TextView.OnClickListener() {
 
@@ -162,6 +170,7 @@ public class VideoDetailActivity extends BaseActivity {
 					video_detail_provider.setText("提供者："+model.getProvider());
 					video_detail_resolution.setText("剧集：共"+model.getModel_list().size()+"集");
 					video_detail_playButton.setVisibility(View.VISIBLE);
+					video_detail_add.setVisibility(View.VISIBLE);
 					item_list.addAll(model.getModel_list());
 					for(int i=0;i<item_list.size();i++) {
 						VideoItemModel item=item_list.get(i);
@@ -191,6 +200,22 @@ public class VideoDetailActivity extends BaseActivity {
 						break;
 					}
 					video_detail_desp.setText(model.getMobiledesc());
+					video_detail_add.setOnClickListener(new Button.OnClickListener() {
+
+						@Override
+						public void onClick(View v) {
+							// TODO Auto-generated method stub
+							if(Conn.getInstance(VideoDetailActivity.this).getSingleAppModel(getIntent().getExtras().getInt("id"))==null) {
+								Conn.getInstance(VideoDetailActivity.this).insertVideoModel(model, 1);
+								Conn.getInstance(VideoDetailActivity.this).insertOtherPlatformByVideo(getIntent().getExtras().getInt("id"), getIntent().getExtras().getString("name"), ((KEApplication) getApplicationContext()).kidsIconUrl+model.getIconUrl());	
+								video_detail_add.setText("删除");
+							}
+							else {
+								Conn.getInstance(VideoDetailActivity.this).deleteAppModel(model.getName(), "video");
+								Conn.getInstance(VideoDetailActivity.this).deleteOtherPlatformByVideo(getIntent().getExtras().getInt("id"));
+								video_detail_add.setText("添加");
+							}
+						}});
 					adapter.notifyDataSetChanged();
 				}
 			}

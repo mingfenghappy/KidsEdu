@@ -100,13 +100,30 @@
                        android:layout_gravity="center" 
                        android:id="@+id/video_detail_playButton" 
                        android:background="@drawable/play_button_bg_selector" 
-                       android:layout_width="wrap_content" 
+                       android:layout_width="fill_parent" 
                        android:layout_height="wrap_content" 
                        android:layout_marginLeft="2.0dip" 
                        android:layout_marginRight="2.0dip" 
                        android:text="播放" 
                        android:drawableLeft="@drawable/play_icon" 
-                       android:drawablePadding="@dimen/video_detail_play_drawable_padding"/>
+                       android:drawablePadding="@dimen/video_detail_play_drawable_padding" 
+                       android:layout_weight="1.0" />
+                   <Button 
+                       android:visibility="invisible"
+                       android:textSize="13sp" 
+                       android:textColor="@color/video_source_color" 
+                       android:gravity="center_vertical" 
+                       android:layout_gravity="center" 
+                       android:id="@+id/video_detail_add" 
+                       android:background="@drawable/offline_button_selector" 
+                       android:layout_width="fill_parent" 
+                       android:layout_height="wrap_content" 
+                       android:layout_marginLeft="2.0dip" 
+                       android:layout_marginRight="2.0dip" 
+                       android:text="添加" 
+                       android:drawableLeft="@drawable/offline_icon_selector" 
+                       android:drawablePadding="@dimen/video_detail_play_drawable_padding" 
+                       android:layout_weight="1.0" />
                </LinearLayout>
            </LinearLayout>
        </LinearLayout>
