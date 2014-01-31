@@ -35,7 +35,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>        
-        <activity android:name=".main.SearchActivity" android:screenOrientation="portrait" android:configChanges="orientation|keyboardHidden|navigation" ></activity>                       
+        <activity android:name=".search.SearchActivity" android:screenOrientation="portrait" android:configChanges="orientation|keyboardHidden|navigation" ></activity>                       
         <activity android:name=".BaseActivity" android:screenOrientation="portrait" android:configChanges="orientation|keyboardHidden|navigation" ></activity>               
         <activity android:name=".applist.AppDetailActivity" android:screenOrientation="portrait" android:configChanges="orientation|keyboardHidden|navigation" ></activity>        
         <activity android:name=".applist.AppListActivity" android:screenOrientation="portrait" android:configChanges="orientation|keyboardHidden|navigation" ></activity>        

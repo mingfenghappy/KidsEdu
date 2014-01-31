@@ -4,6 +4,7 @@ import com.morningtel.kidsedu.R;
 import com.morningtel.kidsedu.account.AccountActivity;
 import com.morningtel.kidsedu.applist.AppListActivity;
 import com.morningtel.kidsedu.musiclist.MusicTabsActivity;
+import com.morningtel.kidsedu.search.SearchActivity;
 import com.morningtel.kidsedu.service.MusicBackgroundService;
 import com.morningtel.kidsedu.videolist.VideoTabsActivity;
 

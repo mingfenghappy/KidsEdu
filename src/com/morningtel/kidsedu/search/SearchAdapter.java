@@ -1,4 +1,4 @@
-package com.morningtel.kidsedu.main;
+package com.morningtel.kidsedu.search;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
