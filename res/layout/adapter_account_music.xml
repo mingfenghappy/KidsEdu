@@ -7,25 +7,25 @@
 		android:id="@+id/back"
 		android:background="@drawable/background_item"
 		android:layout_width="fill_parent"
-		android:gravity="center"
+		android:gravity="right|center"
 		android:layout_height="80dip" >
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/button_remove"
             android:background="@drawable/titlebar_searchbox_bg"
-            android:layout_margin="10dip"
-            android:paddingLeft="30dip"
-            android:paddingRight="30dip"/>
+            android:layout_margin="3dip"
+            android:paddingLeft="15dip"
+            android:paddingRight="15dip"/>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
             android:id="@+id/button_update"
             android:background="@drawable/titlebar_searchbox_bg"
-            android:layout_margin="10dip"
-            android:paddingLeft="30dip"
-            android:paddingRight="30dip"/>
+            android:layout_margin="3dip"
+            android:paddingLeft="15dip"
+            android:paddingRight="15dip"/>
     </LinearLayout>
     <LinearLayout 
     	android:id="@+id/front"

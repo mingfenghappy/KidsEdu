@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
@@ -19,8 +18,10 @@ import android.widget.ImageView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 import com.lidroid.xutils.BitmapUtils;
-import com.morningtel.kidsedu.BaseActivity;
 import com.morningtel.kidsedu.KEApplication;
 import com.morningtel.kidsedu.R;
 import com.morningtel.kidsedu.commons.BitmapHelp;
@@ -31,11 +32,9 @@ import com.morningtel.kidsedu.model.AppModel;
 import com.morningtel.kidsedu.model.JsonParse;
 import com.morningtel.kidsedu.model.VideoItemModel;
 
-public class VideoDetailActivity extends BaseActivity {
+public class VideoDetailActivity extends SherlockActivity {
 	
 	ArrayList<VideoItemModel> item_list=null;
-	
-	TextView nav_title=null;
 	
 	AudioManager mAudioManager=null;
 	
@@ -62,9 +61,12 @@ public class VideoDetailActivity extends BaseActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
+		setTheme(R.style.Theme_Sherlock_Light);
 		super.onCreate(savedInstanceState);
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_video_detail);
+		
+		getSupportActionBar().setTitle("心心");
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		
 		bitmapUtils = BitmapHelp.getBitmapUtils(getApplicationContext());
         bitmapUtils.configDefaultLoadingImage(R.drawable.ic_launcher);
@@ -77,16 +79,25 @@ public class VideoDetailActivity extends BaseActivity {
 		init();
 	}
 	
-	public void init() {
-		nav_title=(TextView) findViewById(R.id.nav_title);
-		nav_title.setText("心心");
-		nav_title.setOnClickListener(new TextView.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// TODO Auto-generated method stub
+		return super.onCreateOptionsMenu(menu);
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// TODO Auto-generated method stub
+		switch(item.getItemId()) {
+			case android.R.id.home:
 				finish();
-			}});
+				break;
+		}
+		
+		return true;
+	}
+	
+	public void init() {
 		video_detail_image=(ImageView) findViewById(R.id.video_detail_image);
 		video_detail_grade=(ImageView) findViewById(R.id.video_detail_grade);
 		video_detail_num=(TextView) findViewById(R.id.video_detail_num);

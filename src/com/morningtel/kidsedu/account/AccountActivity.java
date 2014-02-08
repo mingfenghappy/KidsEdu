@@ -5,19 +5,18 @@ import java.util.HashMap;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.morningtel.kidsedu.BaseActivity;
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 import com.morningtel.kidsedu.R;
 import com.morningtel.kidsedu.commons.CommonUtils;
 
-public class AccountActivity extends BaseActivity {
-	
-	TextView nav_title=null;
-	
+public class AccountActivity extends SherlockActivity {
+		
 	ImageView account_avatar=null;
 	TextView user_nickname=null;
 	TextView account_coin=null;
@@ -33,25 +32,37 @@ public class AccountActivity extends BaseActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
+		setTheme(R.style.Theme_Sherlock_Light);
 		super.onCreate(savedInstanceState);
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_account_profile);
+		
+		getSupportActionBar().setTitle("Ê×Ò³");
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		
 		userInfo_map=CommonUtils.getUserInfo(AccountActivity.this);
 		
 		init();
 	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// TODO Auto-generated method stub
+		return super.onCreateOptionsMenu(menu);
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// TODO Auto-generated method stub
+		switch(item.getItemId()) {
+			case android.R.id.home:
+				finish();
+				break;
+		}
+		
+		return true;
+	}
 
 	public void init() {
-		nav_title=(TextView) findViewById(R.id.nav_title);
-		nav_title.setText("Ê×Ò³");
-		nav_title.setOnClickListener(new TextView.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				finish();
-			}});
 		account_avatar=(ImageView) findViewById(R.id.account_avatar);
 		user_nickname=(TextView) findViewById(R.id.user_nickname);
 		user_nickname.setText(userInfo_map.get("userName"));

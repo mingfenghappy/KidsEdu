@@ -12,12 +12,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
-import android.view.Window;
 import android.widget.ImageView;
-import android.widget.TextView;
 
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 import com.hb.views.PinnedSectionListView;
-import com.morningtel.kidsedu.BaseActivity;
 import com.morningtel.kidsedu.KEApplication;
 import com.morningtel.kidsedu.R;
 import com.morningtel.kidsedu.commons.CommonUtils;
@@ -26,9 +26,8 @@ import com.morningtel.kidsedu.model.AppsFilterModel;
 import com.morningtel.kidsedu.model.JsonParse;
 import com.morningtel.kidsedu.receiver.AppReceiver;
 
-public class SearchActivity extends BaseActivity {
+public class SearchActivity extends SherlockActivity {
 	
-	TextView nav_title=null;
 	ImageView dataLoadingImage=null;
 	PinnedSectionListView search_listview=null; 
 	SearchAdapter adapter=null;
@@ -40,9 +39,12 @@ public class SearchActivity extends BaseActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
+		setTheme(R.style.Theme_Sherlock_Light);
 		super.onCreate(savedInstanceState);
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_search);
+		
+		getSupportActionBar().setTitle("Ê×Ò³");
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		
 		searchKey=getIntent().getExtras().getString("searchKey");
 		appfilter_map=new HashMap<String, ArrayList<AppsFilterModel>>();
@@ -55,16 +57,25 @@ public class SearchActivity extends BaseActivity {
         registerReceiver(receiver, filter);
 	}
 	
-	public void init() {
-		nav_title=(TextView) findViewById(R.id.nav_title);
-		nav_title.setText("Ê×Ò³");
-		nav_title.setOnClickListener(new TextView.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// TODO Auto-generated method stub
+		return super.onCreateOptionsMenu(menu);
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// TODO Auto-generated method stub
+		switch(item.getItemId()) {
+			case android.R.id.home:
 				finish();
-			}});
+				break;
+		}
+		
+		return true;
+	}
+	
+	public void init() {
 		
 		dataLoadingImage=(ImageView) findViewById(R.id.dataLoadingImage);
 		AnimationDrawable animationDrawable = (AnimationDrawable) dataLoadingImage.getDrawable();  

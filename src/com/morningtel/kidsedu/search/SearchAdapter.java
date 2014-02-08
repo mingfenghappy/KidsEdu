@@ -149,7 +149,7 @@ public class SearchAdapter extends BaseAdapter implements
 			holder.search_section_layout.setVisibility(View.GONE);
 			holder.appfilter_detailinfo.setText(""+appfilter_list.get(position).getName());
 			holder.appfilter_detailinfo.setTextColor(Color.WHITE);
-			holder.appfilter_detailinfo.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+			holder.appfilter_detailinfo.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
 			holder.appfilter_name.setText("");
         }
 		else {

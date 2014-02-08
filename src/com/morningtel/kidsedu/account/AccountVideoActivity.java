@@ -6,28 +6,26 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.view.View;
-import android.view.Window;
 import android.widget.AbsListView;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.AbsListView.OnScrollListener;
 
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 import com.fortysevendeg.swipelistview.BaseSwipeListViewListener;
 import com.fortysevendeg.swipelistview.SwipeListView;
-import com.morningtel.kidsedu.BaseActivity;
 import com.morningtel.kidsedu.KEApplication;
 import com.morningtel.kidsedu.R;
 import com.morningtel.kidsedu.account.AccountVideoAdapter.OnRefreshListener;
+import com.morningtel.kidsedu.commons.CommonUtils;
 import com.morningtel.kidsedu.db.Conn;
 import com.morningtel.kidsedu.mediaplayer.PlayerActivity;
 import com.morningtel.kidsedu.model.AppModel;
 import com.morningtel.kidsedu.model.VideoItemModel;
 
-public class AccountVideoActivity extends BaseActivity {
-	
-	TextView nav_title=null;
-	
+public class AccountVideoActivity extends SherlockActivity {
+		
 	SwipeListView app_list=null;
 	AccountVideoAdapter adapter=null;
 	
@@ -38,27 +36,40 @@ public class AccountVideoActivity extends BaseActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
+		setTheme(R.style.Theme_Sherlock_Light);
 		super.onCreate(savedInstanceState);
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_account_app);
+		
+		getSupportActionBar().setTitle("账户信息");
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		
 		model_list=Conn.getInstance(getApplicationContext()).getAppModelList("video");
 		
 		init();
 	}
 	
-	public void init() {
-		nav_title=(TextView) findViewById(R.id.nav_title);
-		nav_title.setText("账户信息");
-		nav_title.setOnClickListener(new TextView.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// TODO Auto-generated method stub
+		return super.onCreateOptionsMenu(menu);
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// TODO Auto-generated method stub
+		switch(item.getItemId()) {
+			case android.R.id.home:
 				finish();
-			}});
+				break;
+		}
 		
+		return true;
+	}
+	
+	public void init() {
 		app_list=(SwipeListView) findViewById(R.id.app_list);
+		app_list.setSwipeMode(SwipeListView.SWIPE_MODE_LEFT);
+		app_list.setOffsetLeft(CommonUtils.dip2px(AccountVideoActivity.this, 200));
 		app_list.setOnScrollListener(new OnScrollListener() {
 			
 			@Override

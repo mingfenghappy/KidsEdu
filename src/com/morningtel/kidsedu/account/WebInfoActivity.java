@@ -4,17 +4,18 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.Window;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 import com.handmark.pulltorefresh.library.PullToRefreshWebView;
-import com.morningtel.kidsedu.BaseActivity;
 import com.morningtel.kidsedu.R;
 
-public class WebInfoActivity extends BaseActivity {
+public class WebInfoActivity extends SherlockActivity {
 	
 	PullToRefreshWebView mPullRefreshWebView=null;
 	WebView activity_webview=null;
@@ -23,11 +24,32 @@ public class WebInfoActivity extends BaseActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
+		setTheme(R.style.Theme_Sherlock_Light);
 		super.onCreate(savedInstanceState);
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_web);
 		
+		getSupportActionBar().setTitle("’Àªß–≈œ¢");
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		
 		init();
+	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// TODO Auto-generated method stub
+		return super.onCreateOptionsMenu(menu);
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// TODO Auto-generated method stub
+		switch(item.getItemId()) {
+			case android.R.id.home:
+				finish();
+				break;
+		}
+		
+		return true;
 	}
 	
 	public void init() {
