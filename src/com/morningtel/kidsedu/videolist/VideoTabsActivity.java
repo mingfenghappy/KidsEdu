@@ -8,8 +8,10 @@ import com.morningtel.kidsedu.R;
 import com.morningtel.kidsedu.commons.CommonUtils;
 import com.morningtel.kidsedu.model.AppTypesModel;
 import com.morningtel.kidsedu.model.JsonParse;
+import com.morningtel.kidsedu.service.MusicBackgroundService;
 import com.viewpagerindicator.TabPageIndicator;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -18,6 +20,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.KeyEvent;
 import android.view.Window;
 
 public class VideoTabsActivity extends FragmentActivity {
@@ -115,4 +118,15 @@ public class VideoTabsActivity extends FragmentActivity {
             return app_types_list.size();
         }
     }
+    
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		// TODO Auto-generated method stub
+		if(keyCode==KeyEvent.KEYCODE_BACK) {
+			Intent intent=new Intent(VideoTabsActivity.this, MusicBackgroundService.class);
+			stopService(intent);
+		}
+		return super.onKeyDown(keyCode, event);
+	}
+	
 }

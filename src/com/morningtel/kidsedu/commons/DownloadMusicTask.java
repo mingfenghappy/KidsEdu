@@ -132,7 +132,7 @@ public class DownloadMusicTask extends AsyncTask<String, Integer, String> {
 		}
 
 		Conn.getInstance(context).insertMusicModel(model);
-		Conn.getInstance(context).insertOtherPlatformByMusic(model.getId(), name, ((KEApplication) context.getApplicationContext()).kidsIconUrl+CommonUtils.getIconAdd(model.getIconUrl()), ((KEApplication) context.getApplicationContext()).kidsIconUrl+model.getFileUrl());
+		Conn.getInstance(context).insertOtherPlatformByMusic(model.getId(), name, ((KEApplication) context.getApplicationContext()).kidsIconUrl+model.getIconUrl(), ((KEApplication) context.getApplicationContext()).kidsIconUrl+model.getFileUrl());
 	
 		String url_=((KEApplication) context.getApplicationContext()).kidsIconUrl+model.getFileUrl();
 		final String filePath=Environment.getExternalStorageDirectory().getAbsolutePath()+"/kidsedu/temp/"+model.getFileUrl().substring(model.getFileUrl().indexOf("/")+1, model.getFileUrl().length());

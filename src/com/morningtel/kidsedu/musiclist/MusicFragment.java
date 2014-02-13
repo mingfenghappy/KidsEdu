@@ -71,6 +71,7 @@ public class MusicFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    	System.out.println("onCreateView");
     	if(view==null) {
     		v=LayoutInflater.from(getActivity()).inflate(R.layout.view_footer, null);
     		view=LayoutInflater.from(getActivity()).inflate(R.layout.fragment_apptabs, null);

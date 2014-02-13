@@ -74,6 +74,11 @@ public class KEApplication extends Application {
 		startService(intent);		
 		
 		sendUserInfo();
+		
+		//将儿童模式内置数据复制进入
+		copyOtherPlatformData("CachedAppItem.sqlite");
+		copyOtherPlatformData("CachedAudiobookItem2-iPad.sqlite");
+		copyOtherPlatformData("ChildMovieItem2-iPad.sqlite");
 	}
 	
 	/**
@@ -99,5 +104,20 @@ public class KEApplication extends Application {
 				
 			}
 		}).start();
+	}
+	
+	/**
+	 * 将儿童模式内置数据复制进入
+	 * @param sqliteName
+	 */
+	public void copyOtherPlatformData(String sqliteName) {
+		File file=new File("/data/data/"+getApplicationContext().getPackageName()+"/"+sqliteName);
+		if(!file.exists()) {
+			CommonUtils.copyAssetsFile(sqliteName, file.getPath(), getApplicationContext());
+			if(sqliteName.equals("CachedAudiobookItem2-iPad.sqlite")) {
+				Conn.getInstance(getApplicationContext()).readOtherPlatformByMusic();
+			}
+			
+		}
 	}
 }

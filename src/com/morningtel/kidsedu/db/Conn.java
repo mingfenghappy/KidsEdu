@@ -9,6 +9,7 @@ import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
 import java.util.ArrayList;
 
+import com.morningtel.kidsedu.KEApplication;
 import com.morningtel.kidsedu.model.AppModel;
 
 import android.content.ContentValues;
@@ -367,33 +368,67 @@ public class Conn extends SQLiteOpenHelper {
 	 * 儿童界面数据操作-音乐
 	 */
 	public void insertOtherPlatformByMusic(int id, String name, String url, String fileUrl) {
-		try {
+		synchronized (this) {
+			try {
+				File file=new File("/data/data/"+context.getPackageName()+"/CachedAudiobookItem2-iPad.sqlite");
+				SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(file.getPath(), null); 
+				Cursor cs=db.query("ZCACHEDAUDIOBOOKITEM2", null, "ZAID=?", new String[]{""+id}, null, null, null);
+				cs.moveToFirst();
+				if(cs.getCount()>0) {
+					cs.close();
+					db.close();
+					return;
+				}
+				else {
+					cs.close();
+				}
+				ContentValues cv=new ContentValues();
+				cv.put("ZAID", id);
+				cv.put("ZICONURL", url.substring(url.lastIndexOf("/")+1));
+				cv.put("ZNAME", name);
+				cv.put("ZDESC", "");
+				cv.put("ZPATH", fileUrl.substring(fileUrl.lastIndexOf("/")+1));
+				cv.put("ZMP3URL", fileUrl);
+				cv.put("ZDOWNPER", 1.0);
+				cv.put("ZMODIFYTIME", Integer.parseInt((""+System.currentTimeMillis()).substring(0, 10)));
+				cv.put("ZSTATUS", 1);
+				cv.put("ZUSERID", 0);
+				db.insert("ZCACHEDAUDIOBOOKITEM2", null, cv);
+				db.close();	
+			} catch(Exception e) {
+				
+			}
+		}				
+	}
+	
+	/**
+	 * 将儿童模式的数据库信息写入到后台
+	 */
+	public void readOtherPlatformByMusic() {
+		synchronized (this) {
 			File file=new File("/data/data/"+context.getPackageName()+"/CachedAudiobookItem2-iPad.sqlite");
 			SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(file.getPath(), null); 
-			Cursor cs=db.query("ZCACHEDAUDIOBOOKITEM2", null, "ZAID=?", new String[]{""+id}, null, null, null);
+			Cursor cs=db.query("ZCACHEDAUDIOBOOKITEM2", null, null, null, null, null, null);
 			cs.moveToFirst();
-			if(cs.getCount()>0) {
-				cs.close();
-				db.close();
+			for(int i=0;i<cs.getCount();i++) {
+				cs.moveToPosition(i);
+				
+				AppModel model=new AppModel();
+				model.setFileSize(0);
+				model.setPackageName("");
+				int startFileUrlPos=(((KEApplication) context.getApplicationContext())).kidsIconUrl.length();			
+				model.setFileUrl(cs.getString(cs.getColumnIndex("ZMP3URL")).substring(startFileUrlPos));
+				model.setName(cs.getString(cs.getColumnIndex("ZNAME")));
+				model.setId(cs.getInt(cs.getColumnIndex("ZAID")));
+				model.setIconUrl("audiopic/"+cs.getString(cs.getColumnIndex("ZICONURL")));
+				model.setMobiledesc("");
+				model.setDownloadCount(0);
+				model.setResourceType(4);
+				Conn.getInstance(context).insertMusicModel(model);
+				Conn.getInstance(context).updateMusic(cs.getString(cs.getColumnIndex("ZNAME")), 1);
 			}
-			else {
-				cs.close();
-			}
-			ContentValues cv=new ContentValues();
-			cv.put("ZUSERID", 0);
-			cv.put("ZAID", id);
-			cv.put("ZMODIFYTIME", Integer.parseInt((""+System.currentTimeMillis()).substring(0, 10)));
-			cv.put("ZDOWNPER", 1.0);
-			cv.put("ZSTATUS", 1);
-			cv.put("ZDESC", "");
-			cv.put("ZNAME", name);
-			cv.put("ZMP3URL", fileUrl);
-			cv.put("ZICONURL", url.substring(url.lastIndexOf("/")+1));
-			cv.put("ZPATH", fileUrl.substring(fileUrl.lastIndexOf("/")+1));
-			db.insert("ZCACHEDAUDIOBOOKITEM2", null, cv);
-			db.close();	
-		} catch(Exception e) {
-			
+			cs.close();
+			db.close();
 		}		
 	}
 	
@@ -401,77 +436,83 @@ public class Conn extends SQLiteOpenHelper {
 	 * 儿童界面数据操作-视频
 	 */
 	public void insertOtherPlatformByVideo(int id, String name, String url) {
-		try {
-			File file=new File("/data/data/"+context.getPackageName()+"/ChildMovieItem2-iPad.sqlite");
-			SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(file.getPath(), null); 
-			Cursor cs=db.query("ZCHILDMOVIEITEM2", null, "ZAID=?", new String[]{""+id}, null, null, null);
-			cs.moveToFirst();
-			if(cs.getCount()>0) {
-				cs.close();
+		synchronized (this) {
+			try {
+				File file=new File("/data/data/"+context.getPackageName()+"/ChildMovieItem2-iPad.sqlite");
+				SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(file.getPath(), null); 
+				Cursor cs=db.query("ZCHILDMOVIEITEM2", null, "ZAID=?", new String[]{""+id}, null, null, null);
+				cs.moveToFirst();
+				if(cs.getCount()>0) {
+					cs.close();
+					db.close();
+					return;
+				}
+				else {
+					cs.close();
+				}
+				ContentValues cv=new ContentValues();
+				cv.put("ZUSERID", 0);
+				cv.put("ZAID", id);
+				cv.put("ZMODIFYTIME", Integer.parseInt((""+System.currentTimeMillis()).substring(0, 10)));
+				cv.put("ZLASTSET", 0);
+				cv.put("ZSTATUS", 1);
+				cv.put("ZLASTTIME", 0.0);
+				cv.put("ZNAME", name);
+				cv.put("ZICONURL", url.substring(url.lastIndexOf("/")+1));
+				db.insert("ZCHILDMOVIEITEM2", null, cv);
 				db.close();
+			} catch(Exception e) {
+				
 			}
-			else {
-				cs.close();
-			}
-			ContentValues cv=new ContentValues();
-			cv.put("Z_ENT", 1);
-			cv.put("Z_OPT", 1);
-			cv.put("ZUSERID", 0);
-			cv.put("ZAID", id);
-			cv.put("ZMODIFYTIME", Integer.parseInt((""+System.currentTimeMillis()).substring(0, 10)));
-			cv.put("ZLASTSET", 0);
-			cv.put("ZSTATUS", 1);
-			cv.put("ZLASTTIME", 0.0);
-			cv.put("ZNAME", name);
-			cv.put("ZICONURL", url.substring(url.lastIndexOf("/")+1));
-			db.insert("ZCHILDMOVIEITEM2", null, cv);
-			db.close();
-		} catch(Exception e) {
-			
-		}		
+		}				
 	}
 	
 	/**
 	 * 儿童界面数据操作-应用
 	 */
 	public void insertOtherPlatformByApp(int id, int type, String packageName,  String name, String url) {
-		try {
-			File file=new File("/data/data/"+context.getPackageName()+"/CachedAppItem.sqlite");
-			SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(file.getPath(), null); 
-			Cursor cs=db.query("CachedAppItem", null, "ZAID=?", new String[]{""+id}, null, null, null);
-			cs.moveToFirst();
-			if(cs.getCount()>0) {
-				cs.close();
-				db.close();
+		synchronized (this) {
+			try {
+				File file=new File("/data/data/"+context.getPackageName()+"/CachedAppItem.sqlite");
+				SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(file.getPath(), null); 
+				Cursor cs=db.query("CachedAppItem", null, "appID=?", new String[]{""+id}, null, null, null);
+				cs.moveToFirst();
+				if(cs.getCount()>0) {
+					cs.close();
+					db.close();
+					return;
+				}
+				else {
+					cs.close();
+				}
+				ContentValues cv=new ContentValues();
+				cv.put("appID", id);
+				cv.put("appType", type);
+				cv.put("appPriority", 0);
+				cv.put("appInternalUrl", packageName);
+				cv.put("appStoreUrl", url.substring(url.lastIndexOf("/")+1));
+				cv.put("appName", name);
+				db.insert("CachedAppItem", null, cv);
+				db.close();	
+			} catch(Exception e) {
+				
 			}
-			else {
-				cs.close();
-			}
-			ContentValues cv=new ContentValues();
-			cv.put("appID", id);
-			cv.put("appType", type);
-			cv.put("appPriority", 0);
-			cv.put("appInternalUrl", packageName);
-			cv.put("appStoreUrl", url.substring(url.lastIndexOf("/")+1));
-			cv.put("appName", name);
-			db.insert("CachedAppItem", null, cv);
-			db.close();	
-		} catch(Exception e) {
-			
-		}		
+		}				
 	}
 	
 	public void updateOtherPlatformByApp(String packageName, int type) {
-		try {
-			File file=new File("/data/data/"+context.getPackageName()+"/CachedAppItem.sqlite");
-			SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(file.getPath(), null); 
-			ContentValues cv=new ContentValues();
-			cv.put("appPriority", type);
-			db.update("CachedAppItem", cv, "appInternalUrl=?" , new String[]{packageName});
-			db.close();			
-		} catch(Exception e) {
-			
-		}
+		synchronized (this) {
+			try {
+				File file=new File("/data/data/"+context.getPackageName()+"/CachedAppItem.sqlite");
+				SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(file.getPath(), null); 
+				ContentValues cv=new ContentValues();
+				cv.put("appPriority", type);
+				db.update("CachedAppItem", cv, "appInternalUrl=?" , new String[]{packageName});
+				db.close();			
+			} catch(Exception e) {
+				
+			}
+		}		
 	}
 	
 	/**
@@ -479,13 +520,15 @@ public class Conn extends SQLiteOpenHelper {
 	 * @param id
 	 */
 	public void deleteOtherPlatformByVideo(int id) {
-		try {
-			File file=new File("/data/data/"+context.getPackageName()+"/ChildMovieItem2-iPad.sqlite");
-			SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(file.getPath(), null); 
-			db.delete("ZCHILDMOVIEITEM2", "ZAID=?", new String[]{""+id});
-		} catch(Exception e) {
-			
-		}		
+		synchronized (this) {
+			try {
+				File file=new File("/data/data/"+context.getPackageName()+"/ChildMovieItem2-iPad.sqlite");
+				SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(file.getPath(), null); 
+				db.delete("ZCHILDMOVIEITEM2", "ZAID=?", new String[]{""+id});
+			} catch(Exception e) {
+				
+			}
+		}				
 	}
 	
 	/**
@@ -493,13 +536,15 @@ public class Conn extends SQLiteOpenHelper {
 	 * @param id
 	 */
 	public void deleteOtherPlatformByMusic(int id) {
-		try {
-			File file=new File("/data/data/"+context.getPackageName()+"/CachedAudiobookItem2-iPad.sqlite");
-			SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(file.getPath(), null); 
-			db.delete("ZCACHEDAUDIOBOOKITEM2", "ZAID=?", new String[]{""+id});
-		} catch(Exception e) {
-			
-		}
+		synchronized (this) {
+			try {
+				File file=new File("/data/data/"+context.getPackageName()+"/CachedAudiobookItem2-iPad.sqlite");
+				SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(file.getPath(), null); 
+				db.delete("ZCACHEDAUDIOBOOKITEM2", "ZAID=?", new String[]{""+id});
+			} catch(Exception e) {
+				
+			}
+		}		
 	}
 	
 }

@@ -26,6 +26,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -217,4 +218,14 @@ public class MusicTabsActivity extends FragmentActivity {
     	super.onDestroy();
     	unregisterReceiver(receiver);
     }
+    
+    @Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		// TODO Auto-generated method stub
+		if(keyCode==KeyEvent.KEYCODE_BACK) {
+			Intent intent=new Intent(MusicTabsActivity.this, MusicBackgroundService.class);
+			stopService(intent);
+		}
+		return super.onKeyDown(keyCode, event);
+	}
 }

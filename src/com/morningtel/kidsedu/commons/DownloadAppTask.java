@@ -134,7 +134,7 @@ public class DownloadAppTask extends AsyncTask<String, Integer, String> {
 		}
 
 		Conn.getInstance(context).insertAppModel(model);
-		Conn.getInstance(context).insertOtherPlatformByApp(model.getId(), model.getResourceType(), model.getPackageName(), model.getName(), ((KEApplication) context.getApplicationContext()).kidsIconUrl+CommonUtils.getIconAdd(model.getIconUrl()));
+		Conn.getInstance(context).insertOtherPlatformByApp(model.getId(), model.getResourceType(), model.getPackageName(), model.getName(), ((KEApplication) context.getApplicationContext()).kidsIconUrl+model.getIconUrl());
 		
 		String url_=((KEApplication) context.getApplicationContext()).kidsIconUrl+model.getFileUrl();
 		final String filePath=Environment.getExternalStorageDirectory().getAbsolutePath()+"/kidsedu/temp/"+model.getFileUrl().substring(model.getFileUrl().indexOf("/")+1, model.getFileUrl().length());

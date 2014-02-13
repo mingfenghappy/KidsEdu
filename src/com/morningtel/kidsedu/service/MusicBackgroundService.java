@@ -54,7 +54,7 @@ public class MusicBackgroundService extends Service {
 				// TODO Auto-generated method stub
 				view.setImageViewResource(R.id.play_state, R.drawable.play_sel);
 				no.contentView=view;
-				manager.notify(0, no);
+				manager.notify(100, no);
 				
 				controlToolBarPause();
 			}});
@@ -67,7 +67,7 @@ public class MusicBackgroundService extends Service {
 				
 				view.setImageViewResource(R.id.play_state, R.drawable.pause_sel);
 				no.contentView=view;
-				manager.notify(0, no);
+				manager.notify(100, no);
 				
 				controlToolBarStart();
 			}
@@ -101,7 +101,7 @@ public class MusicBackgroundService extends Service {
 					Intent intent_new=new Intent(MusicBackgroundService.this, MusicServiceActivity.class);
 					PendingIntent pi=PendingIntent.getActivity(MusicBackgroundService.this, 0, intent_new, 0);
 					no.contentIntent=pi;
-					manager.notify(0, no);
+					manager.notify(100, no);
 					
 					isFirstLoad=false;
 				}
@@ -109,7 +109,7 @@ public class MusicBackgroundService extends Service {
 					view.setTextViewText(R.id.play_name, name);
 					view.setImageViewResource(R.id.play_state, R.drawable.play_sel);
 					no.contentView=view;
-					manager.notify(0, no);
+					manager.notify(100, no);
 					
 					controlToolBarPause();
 				}
@@ -126,7 +126,7 @@ public class MusicBackgroundService extends Service {
 				} catch (Exception e) {
 					view.setImageViewResource(R.id.play_state, R.drawable.play_sel);
 					no.contentView=view;
-					manager.notify(0, no);
+					manager.notify(100, no);
 					
 					controlToolBarPause();
 					
@@ -139,7 +139,7 @@ public class MusicBackgroundService extends Service {
 					
 					view.setImageViewResource(R.id.play_state, R.drawable.pause_sel);
 					no.contentView=view;
-					manager.notify(0, no);
+					manager.notify(100, no);
 					
 					controlToolBarStart();
 				}
@@ -148,7 +148,7 @@ public class MusicBackgroundService extends Service {
 					
 					view.setImageViewResource(R.id.play_state, R.drawable.play_sel);
 					no.contentView=view;
-					manager.notify(0, no);
+					manager.notify(100, no);
 					
 					controlToolBarPause();
 				}
@@ -164,7 +164,7 @@ public class MusicBackgroundService extends Service {
 	public void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
-		manager.cancel(0);
+		manager.cancel(100);
 		if(mediaPlayer!=null){
 			mediaPlayer.stop();
 			mediaPlayer.release();

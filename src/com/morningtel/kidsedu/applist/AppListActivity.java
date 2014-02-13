@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.format.DateUtils;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -31,6 +32,7 @@ import com.morningtel.kidsedu.commons.CommonUtils;
 import com.morningtel.kidsedu.model.AppsFilterModel;
 import com.morningtel.kidsedu.model.JsonParse;
 import com.morningtel.kidsedu.receiver.AppReceiver;
+import com.morningtel.kidsedu.service.MusicBackgroundService;
 
 public class AppListActivity extends BaseActivity {
 	
@@ -202,4 +204,14 @@ public class AppListActivity extends BaseActivity {
 				}
 			}
 		}};
+		
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		// TODO Auto-generated method stub
+		if(keyCode==KeyEvent.KEYCODE_BACK) {
+			Intent intent=new Intent(AppListActivity.this, MusicBackgroundService.class);
+			stopService(intent);
+		}
+		return super.onKeyDown(keyCode, event);
+	}	
 }

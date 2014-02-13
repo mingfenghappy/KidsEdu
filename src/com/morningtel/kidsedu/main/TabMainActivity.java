@@ -125,6 +125,8 @@ public class TabMainActivity extends TabActivity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
+				Intent intent=new Intent(TabMainActivity.this, MusicBackgroundService.class);
+				stopService(intent);
 				finish();
 			}});
 	}
@@ -180,15 +182,6 @@ public class TabMainActivity extends TabActivity {
 			host.setCurrentTabByTag("spec5");
 			break;
 		}
-	}
-	
-	@Override
-	protected void onDestroy() {
-		// TODO Auto-generated method stub
-		super.onDestroy();
-		
-		Intent intent=new Intent(TabMainActivity.this, MusicBackgroundService.class);
-		stopService(intent);
 	}
 	
 }

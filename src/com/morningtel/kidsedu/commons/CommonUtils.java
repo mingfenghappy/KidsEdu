@@ -36,6 +36,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -399,6 +400,31 @@ public class CommonUtils {
            e.printStackTrace(); 
        } 
     } 
+    
+    /**
+     * 通过assets复制文件
+     * @param oldName
+     * @param newPath
+     * @param context
+     */
+    public static void copyAssetsFile(String oldName, String newPath, Context context) {
+    	AssetManager manager=context.getAssets();
+    	try {
+    		int bytesum=0; 
+    		int byteread=0; 
+			InputStream inStream=manager.open(oldName);
+			FileOutputStream fs=new FileOutputStream(newPath); 
+			byte[] buffer=new byte[1444]; 
+			while ((byteread = inStream.read(buffer))!=-1) { 
+				bytesum+=byteread; 
+				fs.write(buffer, 0, byteread); 
+			} 
+			inStream.close(); 
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
     
     /**
      * 更新人员信息
