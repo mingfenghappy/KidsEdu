@@ -89,7 +89,7 @@
 	                   	android:layout_marginLeft="@dimen/small_margin" 
 	                   	android:layout_marginRight="@dimen/normal_margin" 
 	                   	android:text="余额" />
-	               	<TextView 
+	               	<com.morningtel.kidsedu.myview.MyTextView 
 	                   	android:textSize="@dimen/middle_text_size" 
 	                   	android:textColor="@color/ade_dark_green" 
 	                   	android:ellipsize="marquee" 

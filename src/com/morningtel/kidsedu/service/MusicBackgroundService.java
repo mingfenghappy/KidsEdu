@@ -169,7 +169,7 @@ public class MusicBackgroundService extends Service {
 			mediaPlayer.stop();
 			mediaPlayer.release();
 			mediaPlayer=null;
-         }
+        }
 	}
 	
 	public void controlToolBarStart() {

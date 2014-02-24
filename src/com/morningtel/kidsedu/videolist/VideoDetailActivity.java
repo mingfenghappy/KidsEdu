@@ -21,6 +21,7 @@ import android.widget.TextView;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.view.SubMenu;
 import com.lidroid.xutils.BitmapUtils;
 import com.morningtel.kidsedu.KEApplication;
 import com.morningtel.kidsedu.R;
@@ -31,6 +32,10 @@ import com.morningtel.kidsedu.mediaplayer.PlayerActivity;
 import com.morningtel.kidsedu.model.AppModel;
 import com.morningtel.kidsedu.model.JsonParse;
 import com.morningtel.kidsedu.model.VideoItemModel;
+import com.morningtel.kidsedu.qqapi.QQActivity;
+import com.morningtel.kidsedu.sinaweiboapi.WBMainActivity;
+import com.morningtel.kidsedu.wxapi.WXEntryActivity;
+import com.morningtel.kidsedu.yxapi.YX_SendActivity;
 
 public class VideoDetailActivity extends SherlockActivity {
 	
@@ -55,6 +60,11 @@ public class VideoDetailActivity extends SherlockActivity {
 	AppModel model=null;
 	//第一集播放url
 	String firstUrl="";
+	
+	//第三方分享信息
+	String send_text="";
+	String send_path="";
+	String send_imageUrl="";
 	
 	public static BitmapUtils bitmapUtils;
 
@@ -82,15 +92,110 @@ public class VideoDetailActivity extends SherlockActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// TODO Auto-generated method stub
+		SubMenu s_menu=menu.addSubMenu("分享");
+		MenuItem item1=s_menu.add(0, 1, 0, "易信好友");
+		item1.setIcon(R.drawable.yixin_logo);
+		MenuItem item2=s_menu.add(0, 2, 1, "易信朋友圈");
+		item2.setIcon(R.drawable.yixin_pengyou_logo);
+		MenuItem item3=s_menu.add(0, 3, 2, "微信好友");
+		item3.setIcon(R.drawable.weixin_logo);
+		MenuItem item4=s_menu.add(0, 4, 3, "微信朋友圈");
+		item4.setIcon(R.drawable.weixin_pengyou_logo);
+		MenuItem item5=s_menu.add(0, 5, 4, "QQ好友");
+		item5.setIcon(R.drawable.qq_logo);
+		MenuItem item6=s_menu.add(0, 6, 5, "QQ空间");
+		item6.setIcon(R.drawable.qqkj_logo);
+		MenuItem item7=s_menu.add(0, 7, 6, "腾讯微博");
+		item7.setIcon(R.drawable.tencentweibo_logo);
+		MenuItem item8=s_menu.add(0, 8, 7, "新浪微博");
+		item8.setIcon(R.drawable.sinaweibo_logo);
+		MenuItem mItem=s_menu.getItem();
+		mItem.setIcon(R.drawable.abs__ic_menu_share_holo_light);
+		mItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_WITH_TEXT|MenuItem.SHOW_AS_ACTION_IF_ROOM);
+		
 		return super.onCreateOptionsMenu(menu);
 	}
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// TODO Auto-generated method stub
+		Intent intent=null;
+		Bundle bundle=null;
 		switch(item.getItemId()) {
 			case android.R.id.home:
 				finish();
+				break;
+			case 1:
+				intent=new Intent(VideoDetailActivity.this, YX_SendActivity.class);
+				bundle=new Bundle();
+				bundle.putString("text", send_text);
+				bundle.putString("path", "/data/data/"+getPackageName()+"/kidsedu/"+send_path);
+				bundle.putBoolean("isFriend", false);
+				intent.putExtras(bundle);
+				startActivity(intent);
+				break;
+			case 2:
+				intent=new Intent(VideoDetailActivity.this, YX_SendActivity.class);
+				bundle=new Bundle();
+				bundle.putString("text", send_text);
+				bundle.putString("path", "/data/data/"+getPackageName()+"/kidsedu/"+send_path);
+				bundle.putBoolean("isFriend", true);
+				intent.putExtras(bundle);
+				startActivity(intent);
+				break;
+			case 3:
+				intent=new Intent(VideoDetailActivity.this, WXEntryActivity.class);
+				bundle=new Bundle();
+				bundle.putString("text", send_text);
+				bundle.putString("path", "/data/data/"+getPackageName()+"/kidsedu/"+send_path);
+				bundle.putBoolean("isFriend", false);
+				intent.putExtras(bundle);
+				startActivity(intent);
+				break;
+			case 4:
+				intent=new Intent(VideoDetailActivity.this, WXEntryActivity.class);
+				bundle=new Bundle();
+				bundle.putString("text", send_text);
+				bundle.putString("path", "/data/data/"+getPackageName()+"/kidsedu/"+send_path);
+				bundle.putBoolean("isFriend", true);
+				intent.putExtras(bundle);
+				startActivity(intent);
+				break;
+			case 5:
+				intent=new Intent(VideoDetailActivity.this, QQActivity.class);
+				bundle=new Bundle();
+				bundle.putString("text", send_text);
+				bundle.putString("send_imageUrl", send_imageUrl);
+				bundle.putString("type", "qq");
+				intent.putExtras(bundle);
+				startActivity(intent);
+				break;
+			case 6:
+				intent=new Intent(VideoDetailActivity.this, QQActivity.class);
+				bundle=new Bundle();
+				bundle.putString("text", send_text);
+				bundle.putString("send_imageUrl", send_imageUrl);
+				bundle.putString("type", "qqkj");
+				intent.putExtras(bundle);
+				startActivity(intent);
+				break;
+			case 7:
+				intent=new Intent(VideoDetailActivity.this, QQActivity.class);
+				bundle=new Bundle();
+				bundle.putString("text", send_text);
+				bundle.putString("path", "/data/data/"+getPackageName()+"/kidsedu/"+send_path);
+				bundle.putString("type", "tweibo");
+				intent.putExtras(bundle);
+				startActivity(intent);
+				break;
+			case 8:
+				intent=new Intent(VideoDetailActivity.this, WBMainActivity.class);
+				bundle=new Bundle();
+				bundle.putString("text", send_text);
+				bundle.putString("path", "/data/data/"+getPackageName()+"/kidsedu/"+send_path);
+				bundle.putString("type", "tweibo");
+				intent.putExtras(bundle);
+				startActivity(intent);
 				break;
 		}
 		
@@ -176,6 +281,11 @@ public class VideoDetailActivity extends SherlockActivity {
 				}
 				else {
 					model=JsonParse.getVideoModelByAid(msg.obj.toString());
+					
+					send_text=model.getName();
+					send_path=model.getIconUrl().substring(model.getIconUrl().lastIndexOf("/")+1, model.getIconUrl().length());
+					send_imageUrl=((KEApplication) getApplicationContext()).kidsIconUrl+model.getIconUrl();
+					
 					bitmapUtils.display(video_detail_image, ((KEApplication) getApplicationContext()).kidsIconUrl+model.getIconUrl());
 					video_detail_num.setText(""+model.getCommentGrade());
 					video_detail_provider.setText("提供者："+model.getProvider());

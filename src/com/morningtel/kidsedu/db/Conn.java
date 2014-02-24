@@ -287,7 +287,7 @@ public class Conn extends SQLiteOpenHelper {
 				cs=db.query(VIDEO_TABLE, null, null, null, null, null, null);
 			}
 			else if(type.equals("music")) {
-				cs=db.query(MUSIC_TABLE, null, null, null, null, null, null);
+				cs=db.query(MUSIC_TABLE, null, MUSIC_FLAG+"=?", new String[]{"1"}, null, null, null);
 			}
 			cs.moveToFirst();
 			for(int i=0;i<cs.getCount();i++) {
@@ -297,6 +297,30 @@ public class Conn extends SQLiteOpenHelper {
 			cs.close();
 			db.close();
 			return model_list;
+		}
+	}
+	
+	/**
+	 * 获取单一音乐播放信息
+	 * @param id
+	 * @return
+	 */
+	public AppModel getSingleMusicModel(int id) {
+		synchronized (this) {
+			AppModel model=null;
+			SQLiteDatabase db=this.getReadableDatabase();
+			Cursor cs=db.query(MUSIC_TABLE, null, MUSIC_FLAG+"=?", new String[]{"1"}, null, null, null);
+			cs.moveToFirst();
+			for(int i=0;i<cs.getCount();i++) {
+				cs.moveToPosition(i);
+				AppModel temp=deserializeModel(cs.getBlob(1));
+				if(temp.getId()==id) {
+					model=temp;
+				}
+			}
+			cs.close();
+			db.close();
+			return model;
 		}
 	}
 	

@@ -27,6 +27,7 @@ import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 
 import com.morningtel.kidsedu.R;
+import com.morningtel.kidsedu.service.MusicBackgroundServiceForKids;
 
 import android.app.Activity;
 import android.content.Context;
@@ -47,6 +48,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.Bundle;
 import android.os.Environment;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -499,4 +501,41 @@ public class CommonUtils {
     	return (int) (pxValue/scale+0.5f);
     }
     
+    /**
+     * 儿童模式播放服务开始
+     * @param context
+     * @param id
+     */
+    public static void kidsMusicStart(Context context, String id) {
+    	Intent intent=new Intent(context, MusicBackgroundServiceForKids.class);
+    	Bundle bundle=new Bundle();
+    	bundle.putString("action", MusicBackgroundServiceForKids.START);
+    	bundle.putString("id", id);
+    	intent.putExtras(bundle);
+    	context.startService(intent);
+    }
+    
+    /**
+     * 儿童模式播放服务暂停
+     * @param context
+     */
+    public static void kidsMusicPause(Context context) {
+    	Intent intent=new Intent(context, MusicBackgroundServiceForKids.class);
+    	Bundle bundle=new Bundle();
+    	bundle.putString("action", MusicBackgroundServiceForKids.PAUSE);
+    	intent.putExtras(bundle);
+    	context.startService(intent);
+    }
+    
+    /**
+     * 儿童模式播放服务暂停
+     * @param context
+     */
+    public static void kidsMusicStop(Context context) {
+    	Intent intent=new Intent(context, MusicBackgroundServiceForKids.class);
+    	Bundle bundle=new Bundle();
+    	bundle.putString("action", MusicBackgroundServiceForKids.STOP);
+    	intent.putExtras(bundle);
+    	context.startService(intent);
+    }
 }

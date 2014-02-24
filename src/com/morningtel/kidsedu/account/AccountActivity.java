@@ -14,12 +14,13 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.morningtel.kidsedu.R;
 import com.morningtel.kidsedu.commons.CommonUtils;
+import com.morningtel.kidsedu.myview.MyTextView;
 
 public class AccountActivity extends SherlockActivity {
 		
 	ImageView account_avatar=null;
 	TextView user_nickname=null;
-	TextView account_coin=null;
+	MyTextView account_coin=null;
 	Button account_coin_recharge=null;
 	TextView account_tt=null;
 	TextView account_kk=null;
@@ -66,7 +67,9 @@ public class AccountActivity extends SherlockActivity {
 		account_avatar=(ImageView) findViewById(R.id.account_avatar);
 		user_nickname=(TextView) findViewById(R.id.user_nickname);
 		user_nickname.setText(userInfo_map.get("userName"));
-		account_coin=(TextView) findViewById(R.id.account_coin);
+		account_coin=(MyTextView) findViewById(R.id.account_coin);
+		account_coin.setMaxNum(0);
+		account_coin.setStart();
 		account_coin_recharge=(Button) findViewById(R.id.account_coin_recharge);
 		account_coin_recharge.setOnClickListener(new Button.OnClickListener() {
 

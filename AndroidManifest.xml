@@ -10,6 +10,7 @@
     
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"></uses-permission> 
 	<uses-permission android:name="android.permission.CHANGE_WIFI_STATE"></uses-permission>
     <uses-permission android:name="android.permission.INTERNET" />
@@ -36,7 +37,15 @@
                 <category android:name="android.intent.category.HOME" />                   
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-        </activity>        
+        </activity>      
+        <activity android:name=".SplashActivity" android:screenOrientation="portrait" android:configChanges="orientation|keyboardHidden|navigation" >
+            <intent-filter>  
+                <action android:name="android.intent.action.VIEW" />  
+              	<category android:name="android.intent.category.DEFAULT" />  
+              	<category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="http" android:host="data" />    
+            </intent-filter>
+        </activity>                               
         <activity android:name=".search.SearchActivity" android:screenOrientation="portrait" android:configChanges="orientation|keyboardHidden|navigation" ></activity>                       
         <activity android:name=".BaseActivity" android:screenOrientation="portrait" android:configChanges="orientation|keyboardHidden|navigation" ></activity>               
         <activity android:name=".applist.AppDetailActivity" android:screenOrientation="portrait" android:configChanges="orientation|keyboardHidden|navigation" ></activity>        
@@ -48,6 +57,7 @@
         <activity android:name=".commons.NotificationActivity" android:screenOrientation="portrait" android:configChanges="orientation|keyboardHidden|navigation" ></activity>        
 		<service android:name=".service.UpdateService"></service>
 		<service android:name=".service.MusicBackgroundService"></service>
+		<service android:name=".service.MusicBackgroundServiceForKids"></service>
         <activity android:name=".service.MusicServiceActivity" android:screenOrientation="portrait" android:configChanges="orientation|keyboardHidden|navigation" ></activity>        
         <activity android:name=".account.AccountActivity" android:screenOrientation="portrait" android:configChanges="orientation|keyboardHidden|navigation" ></activity>        
         <activity android:name=".account.AccountMusicActivity" android:screenOrientation="portrait" android:configChanges="orientation|keyboardHidden|navigation" ></activity>        
@@ -75,6 +85,68 @@
             android:launchMode="singleTop"
             android:theme="@android:style/Theme.NoTitleBar"
             android:windowSoftInputMode="stateAlwaysHidden" />
+        
+        <!-- yixin -->
+        <activity android:name=".yxapi.YX_SendActivity" android:screenOrientation="portrait" android:configChanges="orientation|keyboardHidden|navigation" ></activity>        
+        <activity
+	        android:name=".yxapi.YXEntryActivity"
+	        android:screenOrientation="portrait"
+	        android:exported="true"
+	        android:excludeFromRecents="true"
+	        android:launchMode="singleTop"/>
+        <receiver
+	        android:name=".yxapi.AppRegister"
+	        android:screenOrientation="portrait"
+	        android:permission="im.yixin.sdk.permission.YIXIN_SDK_MESSAGE">
+            <intent-filter>
+                <action android:name="im.yixin.sdk.api.Intent.ACTION_REFRESH_YXAPP"/>
+            </intent-filter>
+        </receiver>
+        
+        <!-- weixin -->
+        <activity
+            android:name=".wxapi.WXEntryActivity"
+            android:exported="true"
+            android:launchMode="singleTop">
+        </activity>
+        <receiver
+            android:name=".wxapi.AppRegister"
+            android:permission="com.tencent.mm.plugin.permission.SEND" >
+            <intent-filter>
+                <action android:name="com.tencent.mm.plugin.openapi.Intent.ACTION_REFRESH_WXAPP" />
+            </intent-filter>
+        </receiver>
+        
+        <!-- qq -->
+        <!--  辅助Activity  加上方向 防止横竖屏切换listener 丢失-->
+        <activity android:name="com.tencent.connect.common.AssistActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait" />
+        <activity android:name="com.tencent.plus.ImageActivity" />
+        <activity
+            android:name="com.tencent.tauth.AuthActivity"
+            android:launchMode="singleTask"
+            android:noHistory="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="tencent101020681" /><!-- 100380359 100381104 222222 -->
+            </intent-filter>
+        </activity>
+        <activity android:name=".qqapi.QQActivity" android:screenOrientation="portrait" android:configChanges="orientation|keyboardHidden|navigation" ></activity>        
+        
+        <!-- sinaweibo -->
+       	<activity android:name=".sinaweiboapi.WBMainActivity" android:screenOrientation="portrait" android:configChanges="orientation|keyboardHidden|navigation" >
+       	    <intent-filter>
+                <action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+       	</activity>        
+        
 	</application>
 
 </manifest>
