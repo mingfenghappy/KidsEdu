@@ -528,7 +528,7 @@ public class CommonUtils {
     }
     
     /**
-     * 儿童模式播放服务暂停
+     * 儿童模式播放服务停止
      * @param context
      */
     public static void kidsMusicStop(Context context) {
