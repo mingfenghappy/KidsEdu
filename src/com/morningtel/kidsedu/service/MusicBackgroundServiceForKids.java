@@ -1,14 +1,15 @@
 package com.morningtel.kidsedu.service;
 
+import java.io.File;
+import java.io.FileInputStream;
+
 import com.morningtel.kidsedu.commons.CommonUtils;
 import com.morningtel.kidsedu.db.Conn;
 import com.morningtel.kidsedu.model.AppModel;
 
 import android.app.Service;
 import android.content.Intent;
-import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.media.MediaPlayer.OnPreparedListener;
 import android.os.IBinder;
 
 public class MusicBackgroundServiceForKids extends Service {
@@ -28,6 +29,9 @@ public class MusicBackgroundServiceForKids extends Service {
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		// TODO Auto-generated method stub
+		if(intent.getExtras()==null) {
+			return 0;
+		}
 		String action=intent.getExtras().getString("action");
 		if(action.equals(MusicBackgroundServiceForKids.START)) {
 			if(mediaPlayer!=null){
@@ -37,15 +41,6 @@ public class MusicBackgroundServiceForKids extends Service {
 	        }
 			mediaPlayer=new MediaPlayer();
 			mediaPlayer.setLooping(false);
-			mediaPlayer.setOnPreparedListener(new OnPreparedListener() {
-				
-				@Override
-				public void onPrepared(MediaPlayer mp) {
-					// TODO Auto-generated method stub
-					mediaPlayer.start();
-				}
-			});
-			mediaPlayer.reset();
 			AppModel model=Conn.getInstance(MusicBackgroundServiceForKids.this).getSingleMusicModel(Integer.parseInt(intent.getExtras().getString("id")));
 			if(model==null) {
 				CommonUtils.showCustomToast(MusicBackgroundServiceForKids.this, "未找到相应的资源信息");
@@ -53,11 +48,13 @@ public class MusicBackgroundServiceForKids extends Service {
 			}
 			String filePath=model.getFileUrl().substring(model.getFileUrl().lastIndexOf("/"), model.getFileUrl().length());
 			try {
-				mediaPlayer.setDataSource("/data/data/"+getPackageName()+"/kidsedu"+filePath);
-				mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC); 
+				File file=new File("/data/data/"+getPackageName()+"/kidsedu"+filePath); 
+				FileInputStream fis=new FileInputStream(file); 
+				mediaPlayer.setDataSource(fis.getFD()); 
 				if(!mediaPlayer.isPlaying()) {				
 					if(mediaPlayer!=null) {
-						mediaPlayer.prepareAsync();							
+						mediaPlayer.prepare();
+						mediaPlayer.start();
 					}
 				}
 			} catch (Exception e) {
@@ -87,5 +84,4 @@ public class MusicBackgroundServiceForKids extends Service {
 		}
 		return super.onStartCommand(intent, flags, startId);
 	}
-
 }
