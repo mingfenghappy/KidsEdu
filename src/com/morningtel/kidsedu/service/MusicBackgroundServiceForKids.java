@@ -17,6 +17,9 @@ public class MusicBackgroundServiceForKids extends Service {
 	public final static String START="action_start";
 	public final static String PAUSE="action_pause";
 	public final static String STOP="action_stop";
+	public final static String RESUME="action_resume";	
+	
+	public static String currentAction=STOP;
 	
 	MediaPlayer mediaPlayer=null;
 	
@@ -55,6 +58,7 @@ public class MusicBackgroundServiceForKids extends Service {
 					if(mediaPlayer!=null) {
 						mediaPlayer.prepare();
 						mediaPlayer.start();
+						currentAction=START;
 					}
 				}
 			} catch (Exception e) {
@@ -65,9 +69,20 @@ public class MusicBackgroundServiceForKids extends Service {
 		else if(action.equals(MusicBackgroundServiceForKids.PAUSE)) {
 			if(mediaPlayer!=null&&mediaPlayer.isPlaying()) {
 				mediaPlayer.pause();
+				currentAction=PAUSE;
 			}
 			else {
 				CommonUtils.showCustomToast(MusicBackgroundServiceForKids.this, "请先使用音频播放功能");
+				return super.onStartCommand(intent, flags, startId);
+			}
+		}
+		else if(action.equals(MusicBackgroundServiceForKids.RESUME)) {
+			if(mediaPlayer!=null&&!mediaPlayer.isPlaying()) {
+				mediaPlayer.start();
+				currentAction=START;
+			}
+			else {
+				CommonUtils.showCustomToast(MusicBackgroundServiceForKids.this, "请先暂停音频播放功能");
 				return super.onStartCommand(intent, flags, startId);
 			}
 		}
@@ -76,6 +91,7 @@ public class MusicBackgroundServiceForKids extends Service {
 				mediaPlayer.stop();
 				mediaPlayer.release();
 				mediaPlayer=null;
+				currentAction=STOP;
 	        }
 			else {
 				CommonUtils.showCustomToast(MusicBackgroundServiceForKids.this, "请先使用音频播放功能");

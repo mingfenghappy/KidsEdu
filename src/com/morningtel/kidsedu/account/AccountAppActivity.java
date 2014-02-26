@@ -47,7 +47,7 @@ public class AccountAppActivity extends SherlockActivity {
 
 		resourceType=getIntent().getExtras().getInt("resourceType");
 		model_list=new ArrayList<AppModel>();
-		ArrayList<AppModel> model_list_temp=Conn.getInstance(getApplicationContext()).getAppModelList("app");
+		ArrayList<AppModel> model_list_temp=Conn.getInstance(getApplicationContext()).getAppManagerModelList();
 		for(int i=0;i<model_list_temp.size();i++) {
 			if(model_list_temp.get(i).getResourceType()==resourceType) {
 				model_list.add(model_list_temp.get(i));
@@ -107,7 +107,9 @@ public class AccountAppActivity extends SherlockActivity {
 			public void onClickFrontView(int position) {
 				// TODO Auto-generated method stub
 				super.onClickFrontView(position);
-				CommonUtils.openApp(AccountAppActivity.this, model_list.get(position).getPackageName());
+				if(CommonUtils.checkAppInstall(model_list.get(position).getPackageName(), AccountAppActivity.this)) {
+					CommonUtils.openApp(AccountAppActivity.this, model_list.get(position).getPackageName());
+				}
 			}
 		});
 	}
@@ -124,15 +126,7 @@ public class AccountAppActivity extends SherlockActivity {
 		public void onReceive(Context context, Intent intent) {
 			// TODO Auto-generated method stub
 			if(intent.getAction().equals(AppReceiver.appChange)) {
-				model_list.clear();
-				ArrayList<AppModel> model_list_temp=Conn.getInstance(getApplicationContext()).getAppModelList("app");
-				for(int i=0;i<model_list_temp.size();i++) {
-					if(model_list_temp.get(i).getResourceType()==resourceType) {
-						model_list.add(model_list_temp.get(i));
-					}
-				}
-				app_list.setAdapter(adapter);
-				app_list.setSelection(firstItem);
+				adapter.notifyDataSetChanged();
 			}
 			else if(intent.getAction().equals(AppReceiver.appUpdate)) {
 				

@@ -229,7 +229,7 @@ public class CommonUtils {
     	PackageManager packageManager=context.getPackageManager(); 
     	Intent intent=new Intent(); 
     	try { 
-    	    intent =packageManager.getLaunchIntentForPackage(packageName); 
+    	    intent=packageManager.getLaunchIntentForPackage(packageName); 
     	} catch (Exception e) { 
     		e.printStackTrace();
     	} 
@@ -502,6 +502,23 @@ public class CommonUtils {
     }
     
     /**
+     * 判断文件是否安装下载完整
+     * @param context
+     * @param path
+     * @return
+     */
+    public static boolean checkAPKState(Context context, String path) {
+		PackageInfo pi=null;
+		try {
+			PackageManager pm=context.getPackageManager();
+			pi=pm.getPackageArchiveInfo(path, PackageManager.GET_ACTIVITIES);
+			return pi==null?false:true;
+		} catch(Exception e) {
+			return false;
+		}
+	}
+    
+    /**
      * 儿童模式播放服务开始
      * @param context
      * @param id
@@ -537,5 +554,25 @@ public class CommonUtils {
     	bundle.putString("action", MusicBackgroundServiceForKids.STOP);
     	intent.putExtras(bundle);
     	context.startService(intent);
+    }
+    
+    /**
+     * 儿童模式播放服务恢复
+     * @param context
+     */
+    public static void kidsMusicResume(Context context) {
+    	Intent intent=new Intent(context, MusicBackgroundServiceForKids.class);
+    	Bundle bundle=new Bundle();
+    	bundle.putString("action", MusicBackgroundServiceForKids.RESUME);
+    	intent.putExtras(bundle);
+    	context.startService(intent);
+    }
+    
+    /**
+     * 当前儿童模式播放状态
+     * @return
+     */
+    public static String kidsMusicState() {
+    	return MusicBackgroundServiceForKids.currentAction;
     }
 }

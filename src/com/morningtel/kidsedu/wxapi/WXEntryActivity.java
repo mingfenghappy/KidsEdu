@@ -44,7 +44,8 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
 			api.registerApp("wx75db9bd256c4c9fa");    
 			sendText(getIntent().getExtras().getString("text"), getIntent().getExtras().getString("path"), getIntent().getExtras().getBoolean("isFriend"));
 		} else {
-			CommonUtils.showCustomToast(WXEntryActivity.this, "您当前使用的微信版本过低，易迪乐园分享失败");
+			CommonUtils.showCustomToast(WXEntryActivity.this, "您当前使用的微信版本过低或未安装，易迪乐园分享失败");
+			finish();
 		}
 	}
 	

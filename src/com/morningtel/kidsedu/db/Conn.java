@@ -10,6 +10,7 @@ import java.io.StreamCorruptedException;
 import java.util.ArrayList;
 
 import com.morningtel.kidsedu.KEApplication;
+import com.morningtel.kidsedu.commons.CommonUtils;
 import com.morningtel.kidsedu.model.AppModel;
 
 import android.content.ContentValues;
@@ -272,7 +273,7 @@ public class Conn extends SQLiteOpenHelper {
 	}
 	
 	/**
-	 * 根据类型获取全部相应信息
+	 * 根据类型获取全部已安装类型的相应信息
 	 * @return
 	 */
 	public ArrayList<AppModel> getAppModelList(String type) {
@@ -297,6 +298,48 @@ public class Conn extends SQLiteOpenHelper {
 			cs.close();
 			db.close();
 			return model_list;
+		}
+	}
+	
+	/**
+	 * 获取全部应用相应信息
+	 * @return
+	 */
+	public ArrayList<AppModel> getAppManagerModelList() {
+		synchronized (this) {
+			ArrayList<AppModel> model_list=new ArrayList<AppModel>();
+			SQLiteDatabase db=this.getReadableDatabase();
+			Cursor cs=db.query(APP_TABLE, null, null, null, null, null, null);
+			cs.moveToFirst();
+			for(int i=0;i<cs.getCount();i++) {
+				cs.moveToPosition(i);
+				model_list.add(deserializeModel(cs.getBlob(1)));
+			}
+			cs.close();
+			db.close();
+			return model_list;
+		}
+	}
+	
+	/**
+	 * 通过包名，判断数据库是否已经记录安装
+	 * @param packageName
+	 * @return
+	 */
+	public boolean getDBInstallFlag(String packageName) {
+		synchronized (this) {
+			SQLiteDatabase db=this.getReadableDatabase();
+			Cursor cs=db.query(APP_TABLE, null, APP_PACKAGENAME+"=?", new String[]{packageName}, null, null, null);
+			cs.moveToFirst();
+			if(cs.getCount()>0) {
+				boolean flag=cs.getInt(3)==1?true:false;
+				cs.close();
+				db.close();
+				return flag;
+			}
+			cs.close();
+			db.close();
+			return false;
 		}
 	}
 	
@@ -454,6 +497,47 @@ public class Conn extends SQLiteOpenHelper {
 			cs.close();
 			db.close();
 		}		
+	}
+	
+	/**
+	 * 将儿童模式的数据库信息写入到后台
+	 */
+	public void readOtherPlatformByApp() {
+		synchronized (this) {
+			File file=new File("/data/data/"+context.getPackageName()+"/CachedAppItem.sqlite");
+			SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(file.getPath(), null); 
+			Cursor cs=db.query("CachedAppItem", null, null, null, null, null, null);
+			cs.moveToFirst();
+			for(int i=0;i<cs.getCount();i++) {
+				cs.moveToPosition(i);
+				
+				AppModel model=new AppModel();
+				model.setFileSize(0);
+				model.setPackageName(cs.getString(cs.getColumnIndex("appInternalUrl")));
+				model.setName(cs.getString(cs.getColumnIndex("appName")));
+				model.setId(cs.getInt(cs.getColumnIndex("appID")));
+				model.setMobiledesc("");
+				model.setDownloadCount(0);
+				model.setResourceType(cs.getInt(cs.getColumnIndex("appType")));
+				switch(cs.getInt(cs.getColumnIndex("appType"))) {
+				case 8:
+					model.setIconUrl("studypics/"+cs.getString(cs.getColumnIndex("appStoreUrl")));
+					break;
+				case 9:
+					model.setIconUrl("readingpics/"+cs.getString(cs.getColumnIndex("appStoreUrl")));
+					break;
+				case 10:
+					model.setIconUrl("playpics/"+cs.getString(cs.getColumnIndex("appStoreUrl")));
+					break;
+				}
+				Conn.getInstance(context).insertAppModel(model);
+				if(CommonUtils.checkAppInstall(cs.getString(cs.getColumnIndex("appInternalUrl")), context)) {
+					Conn.getInstance(context).updateModel(cs.getString(cs.getColumnIndex("appInternalUrl")), 1);
+				}				
+			}
+			cs.close();
+			db.close();
+		}
 	}
 	
 	/**

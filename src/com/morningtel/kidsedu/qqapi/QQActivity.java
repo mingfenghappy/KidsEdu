@@ -45,7 +45,12 @@ public class QQActivity extends Activity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		
 		mTencent=Tencent.createInstance(mAppid, getApplicationContext());
-		
+		if(!mTencent.isSupportSSOLogin(QQActivity.this)) {
+			CommonUtils.showCustomToast(QQActivity.this, "请您先安装手机版QQ再执行分享操作");
+			finish();
+			return ;
+		}
+				
 		HashMap<String, String> map=readQQ(QQActivity.this);
 		if((Long.parseLong(map.get("expires_in"))-System.currentTimeMillis())/1000<=0) {
         	onClickLogin();

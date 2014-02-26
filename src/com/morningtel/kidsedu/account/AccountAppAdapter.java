@@ -10,6 +10,7 @@ import com.morningtel.kidsedu.R;
 import com.morningtel.kidsedu.commons.BitmapHelp;
 import com.morningtel.kidsedu.commons.CommonUtils;
 import com.morningtel.kidsedu.commons.DownloadAppTask;
+import com.morningtel.kidsedu.db.Conn;
 import com.morningtel.kidsedu.model.AppModel;
 
 import android.content.Context;
@@ -142,14 +143,37 @@ public class AccountAppAdapter extends BaseAdapter {
 			}
 			break;
 		}
-		holder.button_remove.setText("卸载");
-		holder.button_remove.setOnClickListener(new Button.OnClickListener() {
+		if(Conn.getInstance(context).getDBInstallFlag(model_list.get(position).getPackageName())&&CommonUtils.checkAppInstall(model_list.get(position).getPackageName(), context)) {
+			holder.button_remove.setText("卸载");
+			holder.button_remove.setOnClickListener(new Button.OnClickListener() {
 
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				CommonUtils.uninstall(model_list.get(position_).getPackageName(), context);
-			}});
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					CommonUtils.uninstall(model_list.get(position_).getPackageName(), context);
+				}});
+		}
+		else if(Conn.getInstance(context).getDBInstallFlag(model_list.get(position).getPackageName())&&!CommonUtils.checkAppInstall(model_list.get(position).getPackageName(), context)) {
+			holder.button_remove.setText("下载");
+			holder.button_remove.setOnClickListener(new Button.OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub					
+					download(model_list.get(position_).getId(), model_list.get(position_).getName(), model_list.get(position_).getPackageName());
+				}});
+		}
+		else if(!Conn.getInstance(context).getDBInstallFlag(model_list.get(position).getPackageName())) {
+			holder.button_remove.setText("下载");
+			holder.button_remove.setOnClickListener(new Button.OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub					
+					download(model_list.get(position_).getId(), model_list.get(position_).getName(), model_list.get(position_).getPackageName());
+				}});
+		}
+		
 		holder.button_update.setText("升级");
 		if(((KEApplication) context.getApplicationContext()).update_maps.containsKey(model_list.get(position_).getPackageName())) {
 			holder.button_update.setVisibility(View.VISIBLE);
@@ -158,20 +182,24 @@ public class AccountAppAdapter extends BaseAdapter {
 				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
-					if(((KEApplication) context.getApplicationContext()).download_app_maps.containsKey(model_list.get(position_).getPackageName())&&((KEApplication) context.getApplicationContext()).download_app_maps.get(model_list.get(position_).getPackageName())!=100) {
-						CommonUtils.showCustomToast(context, "正在下载中，请稍后");
-					}
-					else {
-						DownloadAppTask task=new DownloadAppTask();
-						task.setParams(context, model_list.get(position_).getId(), model_list.get(position_).getName(), model_list.get(position_).getPackageName());
-						task.execute(""+model_list.get(position_).getId());
-					}
+					download(model_list.get(position_).getId(), model_list.get(position_).getName(), model_list.get(position_).getPackageName());
 				}});
 		}
 		else {
 			holder.button_update.setVisibility(View.GONE);
 		}
 		return convertView;
+	}
+	
+	private void download(int id, String name, String packageName) {
+		if(((KEApplication) context.getApplicationContext()).download_app_maps.containsKey(packageName)&&((KEApplication) context.getApplicationContext()).download_app_maps.get(packageName)!=100) {
+			CommonUtils.showCustomToast(context, "正在下载中，请稍后");
+		}
+		else {
+			DownloadAppTask task=new DownloadAppTask();
+			task.setParams(context, id, name, packageName);
+			task.execute(""+id);
+		}
 	}
 
 }
