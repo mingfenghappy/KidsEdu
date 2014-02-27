@@ -57,41 +57,43 @@ public class UpdateService extends Service {
 				else {
 					((KEApplication) getApplicationContext()).update_maps.clear();
 					((KEApplication) getApplicationContext()).update_maps.putAll(JsonParse.getUpdateAppModelList(msg.obj.toString()));
-					Intent intent=new Intent();
-					intent.setAction(AppReceiver.appUpdate);
-					sendBroadcast(intent);
-					
-					manager=(NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
-					no=new Notification();
-					no.flags=Notification.FLAG_AUTO_CANCEL;
-					no.icon=R.drawable.ic_launcher;
-					no.when=System.currentTimeMillis();
-					no.tickerText="易迪乐园更新提示";
-					view=new RemoteViews(getPackageName(), R.layout.view_update);
 					Iterator<Entry<String, String>> it=((KEApplication) getApplicationContext()).update_maps.entrySet().iterator();
 					ArrayList<String> package_map=new ArrayList<String>();
 					while(it.hasNext()) {
 						Entry<String, String> entry=it.next();
 						package_map.add(entry.getKey());
 					}
-					switch(package_map.size()) {
-					case 1:
-						view.setImageViewBitmap(R.id.update_image1, CommonUtils.drawableToBitmap(UpdateService.this, CommonUtils.getAPPIcon(UpdateService.this, package_map.get(0))));
-						break;
-					case 2:
-						view.setImageViewBitmap(R.id.update_image1, CommonUtils.drawableToBitmap(UpdateService.this, CommonUtils.getAPPIcon(UpdateService.this, package_map.get(0))));
-						view.setImageViewBitmap(R.id.update_image2, CommonUtils.drawableToBitmap(UpdateService.this, CommonUtils.getAPPIcon(UpdateService.this, package_map.get(1))));
-						break;
-					default:
-						view.setImageViewBitmap(R.id.update_image1, CommonUtils.drawableToBitmap(UpdateService.this, CommonUtils.getAPPIcon(UpdateService.this, package_map.get(0))));
-						view.setImageViewBitmap(R.id.update_image2, CommonUtils.drawableToBitmap(UpdateService.this, CommonUtils.getAPPIcon(UpdateService.this, package_map.get(1))));
-						view.setImageViewBitmap(R.id.update_image3, CommonUtils.drawableToBitmap(UpdateService.this, CommonUtils.getAPPIcon(UpdateService.this, package_map.get(2))));
+					if(package_map.size()>0) {
+						Intent intent=new Intent();
+						intent.setAction(AppReceiver.appUpdate);
+						sendBroadcast(intent);					
+						manager=(NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+						no=new Notification();
+						no.flags=Notification.FLAG_AUTO_CANCEL;
+						no.icon=R.drawable.ic_launcher;
+						no.when=System.currentTimeMillis();
+						no.tickerText="易迪乐园更新提示";
+						view=new RemoteViews(getPackageName(), R.layout.view_update);
+						
+						switch(package_map.size()) {
+						case 1:
+							view.setImageViewBitmap(R.id.update_image1, CommonUtils.drawableToBitmap(UpdateService.this, CommonUtils.getAPPIcon(UpdateService.this, package_map.get(0))));
+							break;
+						case 2:
+							view.setImageViewBitmap(R.id.update_image1, CommonUtils.drawableToBitmap(UpdateService.this, CommonUtils.getAPPIcon(UpdateService.this, package_map.get(0))));
+							view.setImageViewBitmap(R.id.update_image2, CommonUtils.drawableToBitmap(UpdateService.this, CommonUtils.getAPPIcon(UpdateService.this, package_map.get(1))));
+							break;
+						default:
+							view.setImageViewBitmap(R.id.update_image1, CommonUtils.drawableToBitmap(UpdateService.this, CommonUtils.getAPPIcon(UpdateService.this, package_map.get(0))));
+							view.setImageViewBitmap(R.id.update_image2, CommonUtils.drawableToBitmap(UpdateService.this, CommonUtils.getAPPIcon(UpdateService.this, package_map.get(1))));
+							view.setImageViewBitmap(R.id.update_image3, CommonUtils.drawableToBitmap(UpdateService.this, CommonUtils.getAPPIcon(UpdateService.this, package_map.get(2))));
+						}
+						no.contentView=view;
+						Intent intent_new=new Intent(UpdateService.this, NotificationActivity.class);
+						PendingIntent pi=PendingIntent.getActivity(UpdateService.this, 0, intent_new, 0);
+						no.contentIntent=pi;
+						manager.notify(0, no);
 					}
-					no.contentView=view;
-					Intent intent_new=new Intent(UpdateService.this, NotificationActivity.class);
-					PendingIntent pi=PendingIntent.getActivity(UpdateService.this, 0, intent_new, 0);
-					no.contentIntent=pi;
-					manager.notify(0, no);
 				}
 				stopSelf();
 			}

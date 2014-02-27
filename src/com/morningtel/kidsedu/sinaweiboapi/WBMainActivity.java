@@ -27,6 +27,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.Window;
@@ -48,6 +49,8 @@ public class WBMainActivity extends Activity implements IWeiboHandler.Response {
     
     /** 微博微博分享接口实例 */
     private IWeiboShareAPI  mWeiboShareAPI=null;
+    
+    Bitmap bmp=null;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -218,7 +221,6 @@ public class WBMainActivity extends Activity implements IWeiboHandler.Response {
         // 1. 初始化微博的分享消息
         WeiboMultiMessage weiboMessage = new WeiboMultiMessage();
         weiboMessage.textObject=getTextObj("易迪乐园优秀动画片推荐："+getIntent().getExtras().getString("text"));
-        weiboMessage.imageObject=getImageObj();
         weiboMessage.mediaObject=getWebpageObj();
         
         // 2. 初始化从第三方到微博的消息请求
@@ -263,17 +265,6 @@ public class WBMainActivity extends Activity implements IWeiboHandler.Response {
         textObject.text=text;
         return textObject;
     }
-
-    /**
-     * 创建图片消息对象。
-     * 
-     * @return 图片消息对象。
-     */
-    private ImageObject getImageObj() {
-        ImageObject imageObject=new ImageObject();
-        imageObject.setImageObject(BitmapFactory.decodeFile(getIntent().getExtras().getString("path")));
-        return imageObject;
-    }
     
     /**
      * 创建多媒体（网页）消息对象。
@@ -286,7 +277,8 @@ public class WBMainActivity extends Activity implements IWeiboHandler.Response {
         mediaObject.title="易迪乐园优秀动画片推荐";
         mediaObject.description=getIntent().getExtras().getString("text");        
         // 设置 Bitmap 类型的图片到视频对象里
-        mediaObject.setThumbImage(BitmapFactory.decodeFile(getIntent().getExtras().getString("path")));
+        bmp=BitmapFactory.decodeFile(getIntent().getExtras().getString("path"));
+        mediaObject.setThumbImage(bmp);
         mediaObject.actionUrl="http://www.kidsedu.com";
         mediaObject.defaultText="易迪乐园";
         return mediaObject;
@@ -324,6 +316,10 @@ public class WBMainActivity extends Activity implements IWeiboHandler.Response {
         case WBConstants.ErrorCode.ERR_FAIL:
         	CommonUtils.showCustomToast(WBMainActivity.this, "分享失败 "+"Error Message:"+baseResp.errMsg);
             break;
+        }
+        if(bmp!=null&&!bmp.isRecycled()) {
+        	bmp.recycle();
+        	bmp=null;
         }
         finish();
     }

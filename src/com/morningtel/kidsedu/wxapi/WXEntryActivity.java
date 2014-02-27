@@ -2,6 +2,7 @@ package com.morningtel.kidsedu.wxapi;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.Window;
@@ -55,15 +56,18 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
 		WXMediaMessage msg=new WXMediaMessage(webpage);
 		msg.title="Ò×µÏÀÖÔ°ÓÅÐã¶¯»­Æ¬ÍÆ¼ö";
 		msg.description=text;
-		msg.thumbData=Util.bmpToByteArray(BitmapFactory.decodeFile(path), true);
-		
+		Bitmap bmp=BitmapFactory.decodeFile(path);
+		msg.thumbData=Util.bmpToByteArray(bmp, true);		
 		SendMessageToWX.Req req=new SendMessageToWX.Req();
 		req.transaction=buildTransaction("webpage");
 		req.message=msg;
 		req.scene=isFriend?SendMessageToWX.Req.WXSceneTimeline:SendMessageToWX.Req.WXSceneSession;
 		api.sendReq(req);
-		
 		finish();
+		if(bmp!=null&&!bmp.isRecycled()) {
+        	bmp.recycle();
+        	bmp=null;
+        }
 	}
 	
 	private String buildTransaction(final String type) {

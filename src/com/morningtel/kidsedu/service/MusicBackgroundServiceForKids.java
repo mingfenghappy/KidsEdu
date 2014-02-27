@@ -3,6 +3,7 @@ package com.morningtel.kidsedu.service;
 import java.io.File;
 import java.io.FileInputStream;
 
+import com.morningtel.kidsedu.R;
 import com.morningtel.kidsedu.commons.CommonUtils;
 import com.morningtel.kidsedu.db.Conn;
 import com.morningtel.kidsedu.model.AppModel;
@@ -44,6 +45,12 @@ public class MusicBackgroundServiceForKids extends Service {
 	        }
 			mediaPlayer=new MediaPlayer();
 			mediaPlayer.setLooping(false);
+			mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener(){
+
+				public void onCompletion(MediaPlayer mp) {
+					// TODO Auto-generated method stub
+					currentAction=STOP;
+				}});
 			AppModel model=Conn.getInstance(MusicBackgroundServiceForKids.this).getSingleMusicModel(Integer.parseInt(intent.getExtras().getString("id")));
 			if(model==null) {
 				CommonUtils.showCustomToast(MusicBackgroundServiceForKids.this, "未找到相应的资源信息");

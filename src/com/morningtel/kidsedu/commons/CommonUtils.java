@@ -287,12 +287,13 @@ public class CommonUtils {
     public static boolean checkAppInstall(String packageName, Context context) {  
         if (packageName==null||"".equals(packageName))  
             return false;  
-        try {  
-            context.getPackageManager().getApplicationInfo(packageName, PackageManager.GET_UNINSTALLED_PACKAGES);  
-            return true;  
-        } catch (NameNotFoundException e) {  
-            return false;  
-        }  
+        PackageInfo packageInfo=null;
+        try {
+            packageInfo=context.getPackageManager().getPackageInfo(packageName, 0);
+        } catch (NameNotFoundException e) {
+            packageInfo = null;
+        }
+        return packageInfo==null?false:true;
     }
     
     /**

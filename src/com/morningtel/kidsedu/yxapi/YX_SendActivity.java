@@ -7,6 +7,7 @@ import im.yixin.sdk.api.YXMessage;
 import im.yixin.sdk.api.YXWebPageMessageData;
 import im.yixin.sdk.util.BitmapUtil;
 import android.app.Activity;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.Window;
@@ -34,13 +35,18 @@ public class YX_SendActivity extends Activity {
 		YXMessage msg=new YXMessage(webpage);
 		msg.title="Ò×µÏÀÖÔ°ÓÅÐã¶¯»­Æ¬ÍÆ¼ö";
 		msg.description=text;
-		msg.thumbData=BitmapUtil.bmpToByteArray(BitmapFactory.decodeFile(path), true);
+		Bitmap bmp=BitmapFactory.decodeFile(path);
+		msg.thumbData=BitmapUtil.bmpToByteArray(bmp, true);
 		SendMessageToYX.Req req=new SendMessageToYX.Req();
 		req.transaction=buildTransaction("webpage");
 		req.message=msg;
 		req.scene=isFriend?SendMessageToYX.Req.YXSceneTimeline:SendMessageToYX.Req.YXSceneSession;
 		api.sendRequest(req);
 		finish();
+		if(bmp!=null&&!bmp.isRecycled()) {
+        	bmp.recycle();
+        	bmp=null;
+        }
 	}
 	
 	private String buildTransaction(final String type) {
