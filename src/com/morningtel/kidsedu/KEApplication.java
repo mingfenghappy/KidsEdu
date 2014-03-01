@@ -6,6 +6,7 @@ import java.util.HashMap;
 
 import com.morningtel.kidsedu.commons.CommonUtils;
 import com.morningtel.kidsedu.db.Conn;
+import com.morningtel.kidsedu.service.GuardService;
 import com.morningtel.kidsedu.service.UpdateService;
 
 import android.app.Application;
@@ -64,6 +65,9 @@ public class KEApplication extends Application {
 		copyOtherPlatformData("CachedAppItem.sqlite");
 		copyOtherPlatformData("CachedAudiobookItem2-iPad.sqlite");
 		copyOtherPlatformData("ChildMovieItem2-iPad.sqlite");
+		
+		Intent intent_time=new Intent(getApplicationContext(), GuardService.class);
+		startService(intent_time);
 	}
 	
 	/**

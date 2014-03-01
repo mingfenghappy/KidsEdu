@@ -36,12 +36,20 @@ public class TabMainActivity extends TabActivity {
 	ImageView tab_account=null;
 	ImageView tab_back=null;
 	
+	static TabMainActivity instance=null;
+	
+	public static TabMainActivity getInstance() {
+		return instance;
+	}
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_tabmain);
+		
+		instance=TabMainActivity.this;
 		
 		init();
 	}

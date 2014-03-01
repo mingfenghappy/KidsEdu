@@ -22,6 +22,8 @@
 	<uses-permission android:name="android.permission.CLEAR_APP_USER_DATA" />
 	<uses-permission android:name="android.permission.RESTART_PACKAGES"/>     
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.RECEIVE_USER_PRESENT" /> 
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" /> 
 	
     <application
         android:name=".KEApplication"
@@ -76,6 +78,21 @@
               	<data android:scheme="package" /> <!-- 注意！！ 这句必须要加，否则接收不到BroadCast -->   
             </intent-filter>     
         </receiver>  
+        
+        <receiver android:name=".receiver.GuardReceiver" android:process=":GuardService">
+            <intent-filter android:priority="2147483647">   
+	            <action android:name="android.intent.action.USER_PRESENT" />  
+	        </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+                <action android:name="android.intent.action.DATE_CHANGED" />
+            </intent-filter>
+            <intent-filter android:priority="2147483647">
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
+        <service android:name=".service.GuardService"></service>
         
         <!-- Don't forgot InitActivity -->
         <activity

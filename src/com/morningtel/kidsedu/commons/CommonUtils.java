@@ -30,6 +30,8 @@ import com.morningtel.kidsedu.R;
 import com.morningtel.kidsedu.service.MusicBackgroundServiceForKids;
 
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.app.ActivityManager.RunningServiceInfo;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -520,6 +522,31 @@ public class CommonUtils {
 	}
     
     /**
+     * 清除原先设置的home状态
+     * @param context
+     */
+    public static void clearHome(Context context) {
+    	//清除原先设置的home状态
+    	context.getPackageManager().clearPackagePreferredActivities(context.getPackageName());
+    }
+    
+    /**
+	 * 判断服务是否存在
+	 * @param context
+	 * @return
+	 */
+	public static boolean isServiceWorked(Context context, String serviceName) {  
+		ActivityManager myManager=(ActivityManager)context.getSystemService(Context.ACTIVITY_SERVICE);  
+		ArrayList<RunningServiceInfo> runningService = (ArrayList<RunningServiceInfo>) myManager.getRunningServices(30);  
+		for(int i = 0 ; i<runningService.size();i++) {  
+			if(runningService.get(i).service.getClassName().toString().equals(serviceName)) {  
+				return true;  
+			}  
+		}  
+		return false;  
+	}
+    
+    /**
      * 儿童模式播放服务开始
      * @param context
      * @param id
@@ -576,4 +603,107 @@ public class CommonUtils {
     public static String kidsMusicState() {
     	return MusicBackgroundServiceForKids.currentAction;
     }
+    
+    /**
+     * 时间限制设置
+     */
+    public static void setTimeLimit(Context context, boolean isStart, int minute) {
+    	SharedPreferences sp=context.getSharedPreferences("kidsedu", Activity.MODE_PRIVATE);
+    	SharedPreferences.Editor editor=sp.edit();
+    	editor.putBoolean("isStart", isStart);
+    	editor.putInt("minute", minute);
+    	editor.commit();
+    }
+    
+    /**
+     * 获取设置好的时间
+     * @param context
+     * @return
+     */
+    public static int getTimeLimit(Context context) {
+    	SharedPreferences sp=context.getSharedPreferences("kidsedu", Activity.MODE_PRIVATE);
+    	if(sp.getBoolean("isStart", false)) {
+    		return sp.getInt("minute", 0);
+    	}
+    	else {
+    		return -1;
+    	}
+    }
+    
+    /**
+     * 开始限制时间计时
+     * @param context
+     */
+    public static void startLimitState(Context context) {
+    	SharedPreferences sp=context.getSharedPreferences("kidsedu", Activity.MODE_PRIVATE);
+    	SharedPreferences.Editor editor=sp.edit();
+    	editor.putLong("limitStateStartTime", System.currentTimeMillis());
+    	//开启告警标志位
+    	editor.putBoolean("isStartWarm", true);
+    	editor.commit();
+    }
+    
+    /**
+     * 关闭限制时间计时
+     * @param context
+     */
+    public static void stopLimitState(Context context) {
+    	SharedPreferences sp=context.getSharedPreferences("kidsedu", Activity.MODE_PRIVATE);
+    	SharedPreferences.Editor editor=sp.edit();
+    	long startTime=sp.getLong("limitStateStartTime", 0);
+    	editor.putLong("lastTime", System.currentTimeMillis()-startTime);
+    	editor.putBoolean("isStartWarm", false);
+    	editor.commit();
+    }
+    
+    /**
+     * 重置限制时间计时
+     * @param context
+     */
+    public static void resetLimitState(Context context) {
+    	SharedPreferences sp=context.getSharedPreferences("kidsedu", Activity.MODE_PRIVATE);
+    	SharedPreferences.Editor editor=sp.edit();
+    	editor.putBoolean("isStartWarm", true);
+    	editor.putLong("limitStateStartTime", 0);
+    	editor.putLong("lastTime", 0);
+    	editor.commit();
+    }
+    
+    /**
+     * 判断是否已经超时
+     * @param context
+     * @return
+     */
+    public static boolean isNeedStopLimit(Context context) {
+    	SharedPreferences sp=context.getSharedPreferences("kidsedu", Activity.MODE_PRIVATE);
+    	//判断时间设置服务有没有开启，如果没有开启则不予监控
+    	if(sp.getBoolean("isStart", false)) {
+    		//是否已经开启告警，如果没有开启则不予监控
+    		if(sp.getBoolean("isStartWarm", false)) {
+    			long startTime=sp.getLong("limitStateStartTime", 0);
+    			long lastTime=sp.getLong("lastTime", 0)+(System.currentTimeMillis()-startTime);
+            	//在打开监控的情况下，如果当前累计时间大于设置好的时间，则监控告警
+            	if(lastTime>=1000*60*sp.getInt("minute", 0)) {
+        			SharedPreferences.Editor editor=sp.edit();
+                	editor.putBoolean("isStartWarm", false);
+                	editor.commit();
+                	System.out.println("正在告警");
+            		return true;
+            	}
+            	else {
+            		System.out.println("告警开启并监控");
+            		return false;
+            	}
+    		}
+    		else {
+    			System.out.println("告警开启但不予监控，请检查是否关闭告警或者已经发生过告警");
+            	return false;
+    		}    		
+    	}
+    	else {
+    		System.out.println("告警未开启");
+    		return false;
+    	}
+    }
+    
 }

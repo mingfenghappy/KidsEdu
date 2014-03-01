@@ -204,6 +204,87 @@
 	               	android:layout_marginLeft="@dimen/small_margin" 
 	               	android:text="玩玩资源管理" />   	           
 	       	</LinearLayout>
+	      	<LinearLayout 
+	      	    android:orientation="vertical"
+	       	    android:layout_width="match_parent"
+	       	   	android:layout_height="wrap_content"
+	           	android:layout_marginTop="20dip"
+	           	android:layout_marginLeft="@dimen/normal_margin"
+	           	android:layout_marginRight="@dimen/normal_margin"
+	           	android:layout_marginBottom="@dimen/normal_margin"
+	       		android:background="@drawable/list_blockbg_normal">
+	      	    <RelativeLayout 
+		       	    android:layout_width="match_parent"
+		       	   	android:layout_height="wrap_content"
+		           	android:paddingTop="5dip"
+		           	android:paddingBottom="5dip">
+		           	<TextView
+		               	android:textSize="@dimen/middle_text_size" 
+		               	android:drawableRight="@drawable/ic_mything_next_normal"
+		               	android:textColor="@android:color/black" 
+		               	android:gravity="left|center" 
+		               	android:layout_gravity="center_vertical" 
+		               	android:id="@+id/account_timenum_allow" 
+		               	android:layout_width="fill_parent" 
+		               	android:layout_height="@dimen/account_profile_item_height" 
+		               	android:layout_marginLeft="@dimen/small_margin" 
+		               	android:text="娱乐时间上限设置" />
+		           	<LinearLayout 
+		           	    android:id="@+id/account_timenum_layout"	           	    
+			       	    android:layout_width="fill_parent" 
+			           	android:layout_height="wrap_content"
+			           	android:visibility="gone"
+			           	android:gravity="center"
+			           	android:orientation="horizontal">
+		           	    <com.infteh.comboseekbar.ComboSeekBar
+				       	    android:id="@+id/account_timenum"
+				           	android:layout_marginLeft="@dimen/normal_margin" 
+				           	android:layout_marginRight="@dimen/normal_margin" 
+		                   	android:layout_weight="1"
+				       	    android:layout_width="fill_parent" 
+				           	android:layout_height="@dimen/account_profile_item_height" >
+				       	    
+				       	</com.infteh.comboseekbar.ComboSeekBar>
+				       	<Button
+		                   	android:textSize="15sp"
+		                   	android:id="@+id/account_timenum_commit"
+		                   	android:gravity="center"
+		                   	android:background="#3baa24"
+				           	android:layout_marginRight="@dimen/normal_margin" 
+		                   	android:textColor="@android:color/white"
+		                   	android:layout_width="wrap_content"
+		                   	android:layout_height="30dip"
+		                   	android:text="确定" />
+		           	</LinearLayout>
+		       	</RelativeLayout>
+		       	<ImageView 
+	               	android:layout_width="fill_parent" 
+	               	android:layout_height="1dip"
+	               	android:background="#dedddd"  />
+	           	<TextView 
+	               	android:textSize="@dimen/middle_text_size" 
+	               	android:drawableRight="@drawable/ic_mything_next_normal"
+	               	android:textColor="@android:color/black" 
+	               	android:gravity="left|center" 
+	               	android:layout_gravity="center_vertical" 
+	               	android:id="@+id/account_timenum_reset" 
+	               	android:layout_width="fill_parent" 
+	               	android:layout_height="@dimen/account_profile_item_height" 
+	               	android:layout_marginLeft="@dimen/small_margin" 
+	               	android:text="娱乐时间上限重置" />
+	      	</LinearLayout>
+	       	
+	       	<TextView 
+	       	    android:id="@+id/account_back"
+	       	    android:background="#3baa24"
+	           	android:layout_width="fill_parent" 
+	           	android:layout_height="@dimen/account_profile_item_height" 
+	           	android:layout_margin="@dimen/normal_margin"
+	           	android:gravity="center"
+	           	android:textSize="@dimen/large_text_size"
+	           	android:textColor="@android:color/white"
+	           	android:text="退出桌面"/>
+	       	
 	   	</LinearLayout>
 	</ScrollView>	   	
 </LinearLayout>

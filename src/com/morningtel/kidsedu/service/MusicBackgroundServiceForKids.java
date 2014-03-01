@@ -33,7 +33,7 @@ public class MusicBackgroundServiceForKids extends Service {
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		// TODO Auto-generated method stub
-		if(intent.getExtras()==null) {
+		if(intent==null) {
 			return 0;
 		}
 		String action=intent.getExtras().getString("action");
