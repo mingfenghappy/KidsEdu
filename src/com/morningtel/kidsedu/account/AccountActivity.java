@@ -3,15 +3,19 @@ package com.morningtel.kidsedu.account;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.jraf.android.backport.switchwidget.Switch;
+
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.SeekBar;
-import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockActivity;
@@ -39,12 +43,16 @@ public class AccountActivity extends SherlockActivity {
 	LinearLayout account_timenum_layout=null;
 	Button account_timenum_commit=null;
 	ComboSeekBar account_timenum=null;
+	LinearLayout account_timenum_allow_layout=null;
+	Switch account_timenum_allow_switch=null;
 	TextView account_timenum_allow=null;
 	TextView account_timenum_reset=null;
 	
 	HashMap<String, String> userInfo_map=null;
 	//当前选择的档次
 	int pos_choice=0;
+	//防止第一次页面加载设置的干扰
+	boolean isLoadOk=false;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -183,18 +191,34 @@ public class AccountActivity extends SherlockActivity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				account_timenum_allow.setVisibility(View.VISIBLE);
+				account_timenum_allow_layout.setVisibility(View.VISIBLE);
 				account_timenum_layout.setVisibility(View.GONE);
-				CommonUtils.setTimeLimit(AccountActivity.this, true, (pos_choice+1)*1);
-				CommonUtils.startLimitState(AccountActivity.this);			
+				CommonUtils.setTimeLimitMinute(AccountActivity.this, (pos_choice+1)*1);
 			}});
+		account_timenum_allow_layout=(LinearLayout) findViewById(R.id.account_timenum_allow_layout);
+		account_timenum_allow_switch=(Switch) findViewById(R.id.account_timenum_allow_switch);
+		account_timenum_allow_switch.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				// TODO Auto-generated method stub
+				if(isLoadOk) {
+					if(isChecked) {
+						CommonUtils.setTimeLimitState(AccountActivity.this, true);								
+					}
+					else {
+						CommonUtils.setTimeLimitState(AccountActivity.this, false);
+					}
+				} 				
+			}
+		});
 		account_timenum_allow=(TextView) findViewById(R.id.account_timenum_allow);
 		account_timenum_allow.setOnClickListener(new TextView.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				account_timenum_allow.setVisibility(View.GONE);
+				account_timenum_allow_layout.setVisibility(View.GONE);
 				account_timenum_layout.setVisibility(View.VISIBLE);
 			}});
 		account_timenum_reset=(TextView) findViewById(R.id.account_timenum_reset);
@@ -203,12 +227,36 @@ public class AccountActivity extends SherlockActivity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				CommonUtils.resetLimitState(AccountActivity.this);
+				new AlertDialog.Builder(AccountActivity.this).setTitle("提示").setMessage("您确定要重置娱乐时间上限吗？").setPositiveButton("确定", new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						// TODO Auto-generated method stub
+						CommonUtils.resetLimitState(AccountActivity.this);
+					}
+				}).setNegativeButton("取消", new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						// TODO Auto-generated method stub
+						
+					}
+				}).show();
 			}});
 
 		if(CommonUtils.getTimeLimit(AccountActivity.this)>0) {
 			account_timenum.setSelection((CommonUtils.getTimeLimit(AccountActivity.this)-1)/1);
+			account_timenum_allow_switch.setChecked(true);
 		}
-		account_timenum_commit.setText("开启");
+		else {
+			account_timenum_allow_switch.setChecked(false);
+		}
+	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		isLoadOk=true;
 	}
 }

@@ -605,12 +605,32 @@ public class CommonUtils {
     }
     
     /**
-     * 时间限制设置
+     * 开启/关闭时间限制设置
      */
-    public static void setTimeLimit(Context context, boolean isStart, int minute) {
+    public static void setTimeLimitState(Context context, boolean isStart) {
     	SharedPreferences sp=context.getSharedPreferences("kidsedu", Activity.MODE_PRIVATE);
     	SharedPreferences.Editor editor=sp.edit();
     	editor.putBoolean("isStart", isStart);
+    	editor.putInt("minute", sp.getInt("minute", 1));
+    	if(isStart) {
+    		editor.putLong("limitStateStartTime", System.currentTimeMillis());
+        	//开启告警标志位
+        	editor.putBoolean("isStartWarm", true);
+    	}
+    	else {
+    		editor.putLong("lastTime", 0);
+    		//关闭告警标志位
+        	editor.putBoolean("isStartWarm", false);
+    	}
+    	editor.commit();
+    }
+    
+    /**
+     * 时间限制设置
+     */
+    public static void setTimeLimitMinute(Context context, int minute) {
+    	SharedPreferences sp=context.getSharedPreferences("kidsedu", Activity.MODE_PRIVATE);
+    	SharedPreferences.Editor editor=sp.edit();
     	editor.putInt("minute", minute);
     	editor.commit();
     }
@@ -623,7 +643,7 @@ public class CommonUtils {
     public static int getTimeLimit(Context context) {
     	SharedPreferences sp=context.getSharedPreferences("kidsedu", Activity.MODE_PRIVATE);
     	if(sp.getBoolean("isStart", false)) {
-    		return sp.getInt("minute", 0);
+    		return sp.getInt("minute", -1);
     	}
     	else {
     		return -1;
@@ -631,23 +651,24 @@ public class CommonUtils {
     }
     
     /**
-     * 开始限制时间计时
+     * 恢复限制时间计时
      * @param context
      */
-    public static void startLimitState(Context context) {
+    public static void resumeLimitState(Context context) {
     	SharedPreferences sp=context.getSharedPreferences("kidsedu", Activity.MODE_PRIVATE);
-    	SharedPreferences.Editor editor=sp.edit();
-    	editor.putLong("limitStateStartTime", System.currentTimeMillis());
-    	//开启告警标志位
-    	editor.putBoolean("isStartWarm", true);
-    	editor.commit();
+    	if(sp.getBoolean("isStart", false)) {
+    		SharedPreferences.Editor editor=sp.edit();
+    		editor.putLong("limitStateStartTime", System.currentTimeMillis());
+        	editor.putBoolean("isStartWarm", true);
+        	editor.commit();
+    	}
     }
     
     /**
-     * 关闭限制时间计时
+     * 暂停限制时间计时
      * @param context
      */
-    public static void stopLimitState(Context context) {
+    public static void pauseLimitState(Context context) {
     	SharedPreferences sp=context.getSharedPreferences("kidsedu", Activity.MODE_PRIVATE);
     	SharedPreferences.Editor editor=sp.edit();
     	long startTime=sp.getLong("limitStateStartTime", 0);
@@ -664,7 +685,7 @@ public class CommonUtils {
     	SharedPreferences sp=context.getSharedPreferences("kidsedu", Activity.MODE_PRIVATE);
     	SharedPreferences.Editor editor=sp.edit();
     	editor.putBoolean("isStartWarm", true);
-    	editor.putLong("limitStateStartTime", 0);
+    	editor.putLong("limitStateStartTime", System.currentTimeMillis());
     	editor.putLong("lastTime", 0);
     	editor.commit();
     }
@@ -683,7 +704,7 @@ public class CommonUtils {
     			long startTime=sp.getLong("limitStateStartTime", 0);
     			long lastTime=sp.getLong("lastTime", 0)+(System.currentTimeMillis()-startTime);
             	//在打开监控的情况下，如果当前累计时间大于设置好的时间，则监控告警
-            	if(lastTime>=1000*60*sp.getInt("minute", 0)) {
+            	if(lastTime>=1000*60*sp.getInt("minute", 1)) {
         			SharedPreferences.Editor editor=sp.edit();
                 	editor.putBoolean("isStartWarm", false);
                 	editor.commit();
