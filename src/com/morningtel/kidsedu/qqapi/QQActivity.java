@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import org.apache.http.conn.ConnectTimeoutException;
 import org.json.JSONException;
@@ -20,10 +19,7 @@ import com.tencent.tauth.Tencent;
 import com.tencent.tauth.UiError;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -51,55 +47,16 @@ public class QQActivity extends Activity {
 			return ;
 		}
 				
-		HashMap<String, String> map=readQQ(QQActivity.this);
-		if((Long.parseLong(map.get("expires_in"))-System.currentTimeMillis())/1000<=0) {
-        	onClickLogin();
+		if(getIntent().getExtras().getString("type").equals("qqkj")) {
+			shareType=Tencent.SHARE_TO_QQ_NO_SHARE_TYPE;
+			sendTextKJ(getIntent().getExtras().getString("text"), getIntent().getExtras().getString("send_imageUrl"));
 		}
-		else {
-			mTencent.setOpenId(map.get("openid"));
-			mTencent.setAccessToken(map.get("access_token"), ""+(Long.parseLong(map.get("expires_in"))-System.currentTimeMillis())/1000);
-			if(getIntent().getExtras().getString("type").equals("qqkj")) {
-				shareType=Tencent.SHARE_TO_QQ_NO_SHARE_TYPE;
-				sendTextKJ(getIntent().getExtras().getString("text"), getIntent().getExtras().getString("send_imageUrl"));
-			}
-			else if(getIntent().getExtras().getString("type").equals("qq")) {
-				shareType=Tencent.SHARE_TO_QQ_TYPE_DEFAULT;
-				sendText(getIntent().getExtras().getString("text"), getIntent().getExtras().getString("send_imageUrl"));
-			}
-			else if(getIntent().getExtras().getString("type").equals("tweibo")) {
-				sendWeiboWithPic(getIntent().getExtras().getString("text"), getIntent().getExtras().getString("path"));
-			}
+		else if(getIntent().getExtras().getString("type").equals("qq")) {
+			shareType=Tencent.SHARE_TO_QQ_TYPE_DEFAULT;
+			sendText(getIntent().getExtras().getString("text"), getIntent().getExtras().getString("send_imageUrl"));
 		}
-	}
-	
-	private void onClickLogin() {
-		if (!mTencent.isSessionValid()) {
-			IUiListener listener = new BaseUiListener() {
-				@Override
-				protected void doComplete(JSONObject response) {
-					System.out.println(response.toString());
-					//保存用户登录信息
-            		keepQQ(QQActivity.this, getQQOpenId(response.toString()).get("openid"), 
-            				getQQOpenId(response.toString()).get("access_token"), 
-            				System.currentTimeMillis()+Long.parseLong(getQQOpenId(response.toString()).get("expires_in"))*1000);
-            		mTencent.setOpenId(getQQOpenId(response.toString()).get("openid"));
-        			mTencent.setAccessToken(getQQOpenId(response.toString()).get("access_token"), ""+(Long.parseLong(getQQOpenId(response.toString()).get("expires_in"))));
-        			if(getIntent().getExtras().getString("type").equals("qqkj")) {
-        				shareType=Tencent.SHARE_TO_QQ_NO_SHARE_TYPE;
-        				sendTextKJ(getIntent().getExtras().getString("text"), getIntent().getExtras().getString("send_imageUrl"));
-        			}
-        			else if(getIntent().getExtras().getString("type").equals("qq")) {
-        				shareType=Tencent.SHARE_TO_QQ_TYPE_DEFAULT;
-        				sendText(getIntent().getExtras().getString("text"), getIntent().getExtras().getString("send_imageUrl"));
-        			}
-        			else if(getIntent().getExtras().getString("type").equals("tweibo")) {
-        				sendWeiboWithPic(getIntent().getExtras().getString("text"), getIntent().getExtras().getString("path"));
-        			}				
-    			}
-			};
-			mTencent.login(this, "all", listener);
-		} else {
-			mTencent.logout(this);
+		else if(getIntent().getExtras().getString("type").equals("tweibo")) {
+			sendWeiboWithPic(getIntent().getExtras().getString("text"), getIntent().getExtras().getString("path"));
 		}
 	}
 	
@@ -125,60 +82,6 @@ public class QQActivity extends Activity {
 		public void onCancel() {
 			CommonUtils.showCustomToast(QQActivity.this, "onCancel: ");
 		}
-	}
-	
-	/**
-	 * QQ接入信息保存
-	 * @param context
-	 * @param openid
-	 * @param access_token
-	 * @param expires_in
-	 */
-	public static void keepQQ(Context context, String openid, String access_token, long expires_in) {
-		SharedPreferences sp=context.getSharedPreferences("kidsedu", Activity.MODE_PRIVATE);
-		Editor editor = sp.edit();
-		editor.putString("openid", openid);
-		editor.putString("access_token", access_token);
-		editor.putLong("expires_in", expires_in);
-		editor.commit();
-	}
-
-	/**
-	 * 获得openId
-	 * @param str
-	 * @return
-	 */
-	public static HashMap<String, String> getQQOpenId(String str) {
-		HashMap<String, String> map=null;
-		try {
-			map=new HashMap<String, String>();
-			JSONObject obj=new JSONObject(str);
-			map.put("openid", obj.getString("openid"));
-			map.put("expires_in", obj.getString("expires_in"));
-			map.put("access_token", obj.getString("access_token"));
-			return map;
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-		}
-	}
-	
-	/**
-	 * 获取QQ登录信息
-	 * @param context
-	 * @return
-	 */
-	public static HashMap<String, String> readQQ(Context context) {
-		SharedPreferences sp=context.getSharedPreferences("kidsedu", Activity.MODE_PRIVATE);
-		String openid=sp.getString("openid", "");
-		String access_token=sp.getString("access_token", "");
-		long expires_in=sp.getLong("expires_in", 0); 
-		HashMap<String, String> map=new HashMap<String, String>();
-		map.put("openid", openid);
-		map.put("access_token", access_token);
-		map.put("expires_in", ""+expires_in);
-		return map;
 	}
 	
 	@Override

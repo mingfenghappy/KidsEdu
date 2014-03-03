@@ -197,6 +197,8 @@ public class AccountActivity extends SherlockActivity {
 			}});
 		account_timenum_allow_layout=(LinearLayout) findViewById(R.id.account_timenum_allow_layout);
 		account_timenum_allow_switch=(Switch) findViewById(R.id.account_timenum_allow_switch);
+		account_timenum_allow_switch.setTextOn("¿ªÆô");
+		account_timenum_allow_switch.setTextOff("¹Ø±Õ");
 		account_timenum_allow_switch.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 			
 			@Override

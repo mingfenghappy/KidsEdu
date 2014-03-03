@@ -36,6 +36,9 @@ public class GuardService extends Service {
 		// TODO Auto-generated method stub
 		if(CommonUtils.isNeedStopLimit(GuardService.this)) {
 			System.out.println("¸æ¾¯¿ªÊ¼");
+			Intent intent_=new Intent();
+			intent_.setAction("guard_service");
+			sendBroadcast(intent_);
 		}
         return START_STICKY;
 	}

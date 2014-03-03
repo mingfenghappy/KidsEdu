@@ -704,7 +704,7 @@ public class CommonUtils {
     			long startTime=sp.getLong("limitStateStartTime", 0);
     			long lastTime=sp.getLong("lastTime", 0)+(System.currentTimeMillis()-startTime);
             	//在打开监控的情况下，如果当前累计时间大于设置好的时间，则监控告警
-            	if(lastTime>=1000*60*sp.getInt("minute", 1)) {
+            	if(lastTime>=1000*60*60*sp.getInt("minute", 1)) {
         			SharedPreferences.Editor editor=sp.edit();
                 	editor.putBoolean("isStartWarm", false);
                 	editor.commit();

@@ -220,7 +220,8 @@ public class WBMainActivity extends Activity implements IWeiboHandler.Response {
     private void sendMultiMessage() {        
         // 1. 初始化微博的分享消息
         WeiboMultiMessage weiboMessage = new WeiboMultiMessage();
-        weiboMessage.textObject=getTextObj("易迪乐园优秀动画片推荐："+getIntent().getExtras().getString("text"));
+        weiboMessage.textObject=getTextObj(getIntent().getExtras().getString("title")+" "+getIntent().getExtras().getString("text"));
+        weiboMessage.imageObject=getImageObj();
         weiboMessage.mediaObject=getWebpageObj();
         
         // 2. 初始化从第三方到微博的消息请求
@@ -274,14 +275,25 @@ public class WBMainActivity extends Activity implements IWeiboHandler.Response {
     private WebpageObject getWebpageObj() {
         WebpageObject mediaObject=new WebpageObject();
         mediaObject.identify=Utility.generateGUID();
-        mediaObject.title="易迪乐园优秀动画片推荐";
+        mediaObject.title=getIntent().getExtras().getString("title");
         mediaObject.description=getIntent().getExtras().getString("text");        
+        mediaObject.setThumbImage(bmp);
+        mediaObject.actionUrl=getIntent().getExtras().getString("url");
+        mediaObject.defaultText=getIntent().getExtras().getString("defaultText");
+        return mediaObject;
+    }
+    
+    /**
+     * 创建图片消息对象。
+     * 
+     * @return 图片消息对象。
+     */
+    private ImageObject getImageObj() {
+        ImageObject imageObject=new ImageObject();
         // 设置 Bitmap 类型的图片到视频对象里
         bmp=BitmapFactory.decodeFile(getIntent().getExtras().getString("path"));
-        mediaObject.setThumbImage(bmp);
-        mediaObject.actionUrl="http://www.kidsedu.com";
-        mediaObject.defaultText="易迪乐园";
-        return mediaObject;
+        imageObject.setImageObject(bmp);
+        return imageObject;
     }
     
     /**

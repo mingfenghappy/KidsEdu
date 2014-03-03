@@ -10,8 +10,13 @@ import io.vov.vitamio.MediaPlayer.OnBufferingUpdateListener;
 import io.vov.vitamio.MediaPlayer.OnCompletionListener;
 import io.vov.vitamio.MediaPlayer.OnPreparedListener;
 import io.vov.vitamio.MediaPlayer.OnVideoSizeChangedListener;
+import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.AnimationDrawable;
 import android.media.AudioManager;
@@ -88,6 +93,8 @@ public class PlayerActivity extends BaseActivity implements OnBufferingUpdateLis
 	int MINIMUM_LIGHT=30;
 	//最高亮度
 	int MAXIMUM_LIGHT=255;
+	//点击来源
+	String source="";
 	String[] versionCode_array;
 	String[] fileUrl_array;
 	
@@ -114,6 +121,7 @@ public class PlayerActivity extends BaseActivity implements OnBufferingUpdateLis
 		setContentView(R.layout.player_layout);
 
 		path=getIntent().getExtras().getString("url");
+		source=getIntent().getExtras().getString("source");
 		
 		init();
 	}
@@ -552,6 +560,9 @@ public class PlayerActivity extends BaseActivity implements OnBufferingUpdateLis
 		// TODO Auto-generated method stub
 		super.onResume();
 		playLoadingLayout.setVisibility(View.VISIBLE);
+		IntentFilter filter=new IntentFilter();
+		filter.addAction("guard_service");
+		registerReceiver(receiver, filter);
 	}
 	
 	@Override
@@ -563,6 +574,7 @@ public class PlayerActivity extends BaseActivity implements OnBufferingUpdateLis
 		}
 		releaseMediaPlayer();
 		doCleanUp();
+		unregisterReceiver(receiver);
 	}
 
 	@Override
@@ -571,6 +583,23 @@ public class PlayerActivity extends BaseActivity implements OnBufferingUpdateLis
 		releaseMediaPlayer();
 		doCleanUp();
 	}
+	
+	BroadcastReceiver receiver=new BroadcastReceiver() {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			// TODO Auto-generated method stub
+			if(intent.getAction().equals("guard_service")&&source.equals("kid")) {
+				new AlertDialog.Builder(PlayerActivity.this).setTitle("提示").setMessage("娱乐时间上限已到").setPositiveButton("我知道了", new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						// TODO Auto-generated method stub
+						finish();
+					}
+				}).show();
+			}
+		}};
 	
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {

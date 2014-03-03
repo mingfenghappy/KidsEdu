@@ -117,6 +117,7 @@ public class AccountVideoActivity extends SherlockActivity {
 				bundle.putStringArray("VersionCode", versionCode_array);
 				bundle.putStringArray("FileUrl", fileUrl_array);
 				bundle.putString("url", ((KEApplication) getApplicationContext()).kidsVideoUrl+item_list.get(position).getFileUrl().substring(6, item_list.get(position).getFileUrl().length())+".mp4");
+				bundle.putString("source", "adult");
 				intent.putExtras(bundle);
 				startActivity(intent);
 			}

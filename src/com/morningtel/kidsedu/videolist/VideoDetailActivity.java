@@ -193,7 +193,9 @@ public class VideoDetailActivity extends SherlockActivity {
 				bundle=new Bundle();
 				bundle.putString("text", send_text);
 				bundle.putString("path", "/data/data/"+getPackageName()+"/kidsedu/"+send_path);
-				bundle.putString("type", "tweibo");
+				bundle.putString("title", "“◊µœ¿÷‘∞”≈–„∂Øª≠∆¨Õ∆ºˆ");
+				bundle.putString("url", "www.kidsedu.com");
+				bundle.putString("defaultText", "“◊µœ¿÷‘∞");
 				intent.putExtras(bundle);
 				startActivity(intent);
 				break;
@@ -376,6 +378,7 @@ public class VideoDetailActivity extends SherlockActivity {
 		bundle.putStringArray("VersionCode", versionCode_array);
 		bundle.putStringArray("FileUrl", fileUrl_array);
 		bundle.putString("url", ((KEApplication) getApplicationContext()).kidsVideoUrl+item_list.get(position).getFileUrl().substring(6, item_list.get(position).getFileUrl().length())+".mp4");
+		bundle.putString("source", "adult");
 		intent.putExtras(bundle);
 		startActivity(intent);
 		Conn.getInstance(VideoDetailActivity.this).insertVideoModel(model, Integer.parseInt(item_list.get(position).getVersionCode()));
