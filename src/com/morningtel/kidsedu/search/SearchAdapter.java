@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.TypedValue;
@@ -254,7 +255,7 @@ public class SearchAdapter extends BaseAdapter implements
 							}
 							DownloadAppTask task=new DownloadAppTask();
 							task.setParams(context, appfilter_list.get(position_).getId(), appfilter_list.get(position_).getName(), appfilter_list.get(position_).getPackageName());
-							task.execute(""+appfilter_list.get(position_).getId());
+							task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, ""+appfilter_list.get(position_).getId());
 							imageview.setImageResource(R.drawable.myapp_item_action_redownload_image);	
 							((KEApplication) context.getApplicationContext()).download_app_maps.put(appfilter_list.get(position_).getPackageName(), 0);
 							notifyDataSetChanged();				
@@ -332,7 +333,7 @@ public class SearchAdapter extends BaseAdapter implements
 							}
 							DownloadMusicTask task=new DownloadMusicTask();
 							task.setParams(context, appfilter_list.get(position_).getId(), appfilter_list.get(position_).getName());
-							task.execute(""+appfilter_list.get(position_).getId());			
+							task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, ""+appfilter_list.get(position_).getId());			
 							imageview.setImageResource(R.drawable.myapp_item_action_redownload_image);	
 							((KEApplication) context.getApplicationContext()).download_music_maps.put(appfilter_list.get(position_).getName(), 0);					
 							notifyDataSetChanged();	

@@ -15,6 +15,7 @@ import com.morningtel.kidsedu.model.AppModel;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -198,7 +199,7 @@ public class AccountAppAdapter extends BaseAdapter {
 		else {
 			DownloadAppTask task=new DownloadAppTask();
 			task.setParams(context, id, name, packageName);
-			task.execute(""+id);
+			task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, ""+id);
 		}
 	}
 

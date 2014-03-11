@@ -13,6 +13,7 @@ import com.morningtel.kidsedu.model.AppsFilterModel;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -172,7 +173,7 @@ public class AppListAdapter extends BaseAdapter {
 					}
 					DownloadAppTask task=new DownloadAppTask();
 					task.setParams(context, appfilter_list.get(position_).getId(), appfilter_list.get(position_).getName(), appfilter_list.get(position_).getPackageName());
-					task.execute(""+appfilter_list.get(position_).getId());
+					task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, ""+appfilter_list.get(position_).getId());
 					imageview.setImageResource(R.drawable.myapp_item_action_redownload_image);	
 					((KEApplication) context.getApplicationContext()).download_app_maps.put(appfilter_list.get(position_).getPackageName(), 0);
 					notifyDataSetChanged();				
