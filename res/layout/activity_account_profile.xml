@@ -221,23 +221,40 @@
 		           	android:paddingBottom="5dip">
 	               	<LinearLayout 
 	               	    android:id="@+id/account_timenum_allow_layout"
+	               	    android:paddingLeft="10dip"
+	               	    android:paddingRight="10dip"
 	               	    android:layout_width="fill_parent" 
 		               	android:layout_height="@dimen/account_profile_item_height"
 		               	android:gravity="center_vertical"  
-		               	android:orientation="horizontal">
-	               	    <TextView
-			               	android:textSize="@dimen/middle_text_size" 
-			               	android:textColor="@android:color/black" 
-			               	android:gravity="left|center" 
-			               	android:layout_weight="1"
-			               	android:id="@+id/account_timenum_allow" 
-			               	android:layout_width="fill_parent" 
-			               	android:layout_height="@dimen/account_profile_item_height" 
-			               	android:layout_marginLeft="@dimen/small_margin" 
-			               	android:text="娱乐时间上限设置" />
+		               	android:orientation="horizontal">		               	
+		               	<LinearLayout 
+		               	    android:layout_width="wrap_content" 
+			               	android:layout_height="wrap_content"
+			               	android:gravity="center_vertical"  
+			               	android:orientation="vertical">
+		               	    <TextView
+				               	android:textSize="@dimen/middle_text_size" 
+				               	android:textColor="@android:color/black" 
+				               	android:gravity="left|center" 
+				               	android:layout_weight="1"
+				               	android:layout_width="fill_parent" 
+				               	android:layout_height="@dimen/account_profile_item_height" 
+				               	android:layout_marginLeft="@dimen/small_margin" 
+				               	android:text="娱乐时间上限设置" />
+		               	    <TextView
+				               	android:textSize="@dimen/middle_text_size" 
+				               	android:textColor="@color/ade_dark_green" 
+				               	android:gravity="left|center" 
+				               	android:layout_weight="1"
+				               	android:id="@+id/account_timenum_allow" 
+				               	android:layout_width="fill_parent" 
+				               	android:layout_height="@dimen/account_profile_item_height" 
+				               	android:layout_marginLeft="@dimen/small_margin"/>
+		               	</LinearLayout>
+	               	    
 	               	    <org.jraf.android.backport.switchwidget.Switch
 					        android:id="@+id/account_timenum_allow_switch"	
-					        android:layout_marginRight="30dip"				        
+					        android:layout_marginLeft="40dip"				        
 					        android:layout_width="wrap_content"
 					        android:layout_height="30dip"
 					        switchwidget:switchPadding="5dip"
@@ -288,17 +305,30 @@
 	               	android:layout_marginLeft="@dimen/small_margin" 
 	               	android:text="娱乐时间上限重置" />
 	      	</LinearLayout>
+	      	
+	      	<TextView 
+	       	    android:id="@+id/account_add"
+	       	    android:background="#3baa24"
+	           	android:layout_width="fill_parent" 
+	           	android:layout_height="wrap_content" 
+	           	android:padding="@dimen/normal_margin"
+	           	android:layout_margin="@dimen/normal_margin"
+	           	android:gravity="center"
+	           	android:textSize="@dimen/large_text_size"
+	           	android:textColor="@android:color/white"
+	           	android:text="开启易迪乐园桌面"/>
 	       	
 	       	<TextView 
 	       	    android:id="@+id/account_back"
 	       	    android:background="#3baa24"
 	           	android:layout_width="fill_parent" 
-	           	android:layout_height="@dimen/account_profile_item_height" 
+	           	android:layout_height="wrap_content" 
+	           	android:padding="@dimen/normal_margin"
 	           	android:layout_margin="@dimen/normal_margin"
 	           	android:gravity="center"
 	           	android:textSize="@dimen/large_text_size"
 	           	android:textColor="@android:color/white"
-	           	android:text="退出桌面"/>
+	           	android:text="退出易迪乐园桌面"/>
 	       	
 	   	</LinearLayout>
 	</ScrollView>	   	

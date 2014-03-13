@@ -40,6 +40,7 @@ public class AccountActivity extends SherlockActivity {
 	TextView account_xx=null;
 	TextView account_ww=null;
 	TextView account_back=null;
+	TextView account_add=null;
 	LinearLayout account_timenum_layout=null;
 	Button account_timenum_commit=null;
 	ComboSeekBar account_timenum=null;
@@ -167,14 +168,22 @@ public class AccountActivity extends SherlockActivity {
 				TabMainActivity.getInstance().finish();
 				finish();
 			}});
+		account_add=(TextView) findViewById(R.id.account_add);
+		account_add.setOnClickListener(new TextView.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				CommonUtils.addHome(AccountActivity.this);
+			}});
 		account_timenum=(ComboSeekBar) findViewById(R.id.account_timenum);
 		ArrayList<String> timeNums=new ArrayList<String>();
-		timeNums.add("1h");
-		timeNums.add("2h");
-		timeNums.add("3h");
-		timeNums.add("4h");
-		timeNums.add("5h");
-		timeNums.add("6h");
+		timeNums.add("15m");
+		timeNums.add("30m");
+		timeNums.add("45m");
+		timeNums.add("60m");
+		timeNums.add("75m");
+		timeNums.add("90m");
 		account_timenum.setAdapter(timeNums);
 		account_timenum.setColor(Color.RED);
 		account_timenum.setOnSelectionListener(new OnSelectionListener() {
@@ -194,6 +203,7 @@ public class AccountActivity extends SherlockActivity {
 				account_timenum_allow_layout.setVisibility(View.VISIBLE);
 				account_timenum_layout.setVisibility(View.GONE);
 				CommonUtils.setTimeLimitMinute(AccountActivity.this, (pos_choice+1)*1);
+				account_timenum_allow.setText("当前上限："+(CommonUtils.getTimeLimit(AccountActivity.this)==-1?"无限制":CommonUtils.getTimeLimit(AccountActivity.this)*15+"分钟"));
 			}});
 		account_timenum_allow_layout=(LinearLayout) findViewById(R.id.account_timenum_allow_layout);
 		account_timenum_allow_switch=(Switch) findViewById(R.id.account_timenum_allow_switch);
@@ -206,16 +216,18 @@ public class AccountActivity extends SherlockActivity {
 				// TODO Auto-generated method stub
 				if(isLoadOk) {
 					if(isChecked) {
-						CommonUtils.setTimeLimitState(AccountActivity.this, true);								
+						CommonUtils.setTimeLimitState(AccountActivity.this, true);		
 					}
 					else {
 						CommonUtils.setTimeLimitState(AccountActivity.this, false);
-					}
+					}						
+					account_timenum_allow.setText("当前上限："+(CommonUtils.getTimeLimit(AccountActivity.this)==-1?"无限制":CommonUtils.getTimeLimit(AccountActivity.this)*15+"分钟"));								
 				} 				
 			}
 		});
 		account_timenum_allow=(TextView) findViewById(R.id.account_timenum_allow);
-		account_timenum_allow.setOnClickListener(new TextView.OnClickListener() {
+		account_timenum_allow.setText("当前上限："+(CommonUtils.getTimeLimit(AccountActivity.this)==-1?"无限制":CommonUtils.getTimeLimit(AccountActivity.this)*15+"分钟"));
+		account_timenum_allow_layout.setOnClickListener(new LinearLayout.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
@@ -247,12 +259,12 @@ public class AccountActivity extends SherlockActivity {
 			}});
 
 		if(CommonUtils.getTimeLimit(AccountActivity.this)>0) {
-			account_timenum.setSelection((CommonUtils.getTimeLimit(AccountActivity.this)-1)/1);
 			account_timenum_allow_switch.setChecked(true);
 		}
 		else {
 			account_timenum_allow_switch.setChecked(false);
 		}
+		account_timenum.setSelection((CommonUtils.getTimeLimit(AccountActivity.this)-1)/1);
 	}
 	
 	@Override

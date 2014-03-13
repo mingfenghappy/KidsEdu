@@ -32,13 +32,16 @@ import com.morningtel.kidsedu.service.MusicBackgroundServiceForKids;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.ResolveInfo;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -531,6 +534,20 @@ public class CommonUtils {
     }
     
     /**
+     * 添加易迪乐园为home状态
+     * @param context
+     */
+    public static void addHome(Context context) {
+    	Intent homeIntent = new Intent("android.intent.action.MAIN");
+    	homeIntent.addCategory("android.intent.category.HOME");
+    	homeIntent.addCategory("android.intent.category.DEFAULT");
+    	Intent chooserIntent = new Intent(Intent.ACTION_CHOOSER);
+    	chooserIntent.putExtra(Intent.EXTRA_INTENT, homeIntent);            
+    	context.startActivity(chooserIntent);
+
+    }
+    
+    /**
 	 * 判断服务是否存在
 	 * @param context
 	 * @return
@@ -704,7 +721,7 @@ public class CommonUtils {
     			long startTime=sp.getLong("limitStateStartTime", 0);
     			long lastTime=sp.getLong("lastTime", 0)+(System.currentTimeMillis()-startTime);
             	//在打开监控的情况下，如果当前累计时间大于设置好的时间，则监控告警
-            	if(lastTime>=1000*60*sp.getInt("minute", 1)) {
+            	if(lastTime>=1000*60*15*sp.getInt("minute", 1)) {
         			SharedPreferences.Editor editor=sp.edit();
                 	editor.putBoolean("isStartWarm", false);
                 	editor.commit();
