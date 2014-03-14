@@ -264,7 +264,12 @@ public class AccountActivity extends SherlockActivity {
 		else {
 			account_timenum_allow_switch.setChecked(false);
 		}
-		account_timenum.setSelection((CommonUtils.getTimeLimit(AccountActivity.this)-1)/1);
+		if(CommonUtils.getTimeLimit(AccountActivity.this)==-1) {
+			account_timenum.setSelection(0);
+		}
+		else {
+			account_timenum.setSelection((CommonUtils.getTimeLimit(AccountActivity.this)-1)/1);
+		}
 	}
 	
 	@Override
