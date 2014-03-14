@@ -203,7 +203,7 @@ public class AccountActivity extends SherlockActivity {
 				account_timenum_allow_layout.setVisibility(View.VISIBLE);
 				account_timenum_layout.setVisibility(View.GONE);
 				CommonUtils.setTimeLimitMinute(AccountActivity.this, (pos_choice+1)*1);
-				account_timenum_allow.setText("当前上限："+(CommonUtils.getTimeLimit(AccountActivity.this)==-1?"无限制":CommonUtils.getTimeLimit(AccountActivity.this)*15+"分钟"));
+				account_timenum_allow.setText((CommonUtils.getTimeLimit(AccountActivity.this)==-1?"无限制":CommonUtils.getTimeLimit(AccountActivity.this)*15+"分钟"));
 			}});
 		account_timenum_allow_layout=(LinearLayout) findViewById(R.id.account_timenum_allow_layout);
 		account_timenum_allow_switch=(Switch) findViewById(R.id.account_timenum_allow_switch);
@@ -221,12 +221,12 @@ public class AccountActivity extends SherlockActivity {
 					else {
 						CommonUtils.setTimeLimitState(AccountActivity.this, false);
 					}						
-					account_timenum_allow.setText("当前上限："+(CommonUtils.getTimeLimit(AccountActivity.this)==-1?"无限制":CommonUtils.getTimeLimit(AccountActivity.this)*15+"分钟"));								
+					account_timenum_allow.setText((CommonUtils.getTimeLimit(AccountActivity.this)==-1?"无限制":CommonUtils.getTimeLimit(AccountActivity.this)*15+"分钟"));								
 				} 				
 			}
 		});
 		account_timenum_allow=(TextView) findViewById(R.id.account_timenum_allow);
-		account_timenum_allow.setText("当前上限："+(CommonUtils.getTimeLimit(AccountActivity.this)==-1?"无限制":CommonUtils.getTimeLimit(AccountActivity.this)*15+"分钟"));
+		account_timenum_allow.setText((CommonUtils.getTimeLimit(AccountActivity.this)==-1?"无限制":CommonUtils.getTimeLimit(AccountActivity.this)*15+"分钟"));
 		account_timenum_allow_layout.setOnClickListener(new LinearLayout.OnClickListener() {
 
 			@Override

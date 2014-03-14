@@ -205,11 +205,18 @@
 	               	android:layout_marginLeft="@dimen/small_margin" 
 	               	android:text="玩玩资源管理" />   	           
 	       	</LinearLayout>
+	       	<TextView 
+	           	android:textSize="@dimen/middle_text_size" 
+	           	android:textColor="@color/wan_text_gray" 
+	           	android:gravity="left|center" 
+	           	android:layout_width="wrap_content" 
+	           	android:layout_height="@dimen/account_profile_item_height" 
+	           	android:layout_marginLeft="@dimen/small_margin" 
+	           	android:text="娱乐时间上限设置" />
 	      	<LinearLayout 
 	      	    android:orientation="vertical"
 	       	    android:layout_width="match_parent"
 	       	   	android:layout_height="wrap_content"
-	           	android:layout_marginTop="20dip"
 	           	android:layout_marginLeft="@dimen/normal_margin"
 	           	android:layout_marginRight="@dimen/normal_margin"
 	           	android:layout_marginBottom="@dimen/normal_margin"
@@ -225,32 +232,29 @@
 	               	    android:layout_width="fill_parent" 
 		               	android:layout_height="@dimen/account_profile_item_height"
 		               	android:gravity="center_vertical"  
-		               	android:orientation="horizontal">		               	
+		               	android:orientation="horizontal">	
 		               	<LinearLayout 
-		               	    android:layout_width="wrap_content" 
-			               	android:layout_height="wrap_content"
-			               	android:gravity="center_vertical"  
+		               	    android:layout_width="fill_parent" 
+			               	android:layout_height="@dimen/account_profile_item_height"
+			               	android:layout_weight="1"
+			               	android:gravity="center_vertical"
 			               	android:orientation="vertical">
 		               	    <TextView
-				               	android:textSize="@dimen/middle_text_size" 
-				               	android:textColor="@android:color/black" 
-				               	android:gravity="left|center" 
-				               	android:layout_weight="1"
-				               	android:layout_width="fill_parent" 
-				               	android:layout_height="@dimen/account_profile_item_height" 
-				               	android:layout_marginLeft="@dimen/small_margin" 
-				               	android:text="娱乐时间上限设置" />
-		               	    <TextView
-				               	android:textSize="@dimen/middle_text_size" 
+				               	android:textSize="@dimen/large_text_size" 
 				               	android:textColor="@color/ade_dark_green" 
 				               	android:gravity="left|center" 
-				               	android:layout_weight="1"
 				               	android:id="@+id/account_timenum_allow" 
-				               	android:layout_width="fill_parent" 
-				               	android:layout_height="@dimen/account_profile_item_height" 
+				               	android:layout_width="wrap_content" 
+				               	android:layout_height="wrap_content" 
 				               	android:layout_marginLeft="@dimen/small_margin"/>
+		               	    <TextView 
+		               	        android:text="提示：点击以设置"
+		               	        android:textSize="10sp"
+				               	android:layout_width="fill_parent" 
+				               	android:layout_height="wrap_content"
+				               	android:layout_marginLeft="@dimen/small_margin" />
 		               	</LinearLayout>
-	               	    
+	               	    	         
 	               	    <org.jraf.android.backport.switchwidget.Switch
 					        android:id="@+id/account_timenum_allow_switch"	
 					        android:layout_marginLeft="40dip"				        
@@ -303,8 +307,7 @@
 	               	android:layout_height="@dimen/account_profile_item_height" 
 	               	android:layout_marginLeft="@dimen/small_margin" 
 	               	android:text="娱乐时间上限重置" />
-	      	</LinearLayout>
-	      	
+	      	</LinearLayout>	      	
 	      	<TextView 
 	       	    android:id="@+id/account_add"
 	       	    android:background="#3baa24"
