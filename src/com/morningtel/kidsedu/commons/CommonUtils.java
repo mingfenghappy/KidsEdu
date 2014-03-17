@@ -32,16 +32,13 @@ import com.morningtel.kidsedu.service.MusicBackgroundServiceForKids;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.content.pm.ResolveInfo;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -687,11 +684,13 @@ public class CommonUtils {
      */
     public static void pauseLimitState(Context context) {
     	SharedPreferences sp=context.getSharedPreferences("kidsedu", Activity.MODE_PRIVATE);
-    	SharedPreferences.Editor editor=sp.edit();
-    	long startTime=sp.getLong("limitStateStartTime", 0);
-    	editor.putLong("lastTime", sp.getLong("lastTime", 0)+System.currentTimeMillis()-startTime);
-    	editor.putBoolean("isStartWarm", false);
-    	editor.commit();
+    	if(sp.getBoolean("isStart", false)) {
+    		SharedPreferences.Editor editor=sp.edit();
+        	long startTime=sp.getLong("limitStateStartTime", 0);
+        	editor.putLong("lastTime", sp.getLong("lastTime", 0)+System.currentTimeMillis()-startTime);
+        	editor.putBoolean("isStartWarm", false);
+        	editor.commit();
+    	}    	
     }
     
     /**
