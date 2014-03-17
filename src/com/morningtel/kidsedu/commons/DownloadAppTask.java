@@ -73,8 +73,12 @@ public class DownloadAppTask extends AsyncTask<String, Integer, String> {
 		super.onPostExecute(result);
 		switch(Integer.parseInt(result)) {
 		case 2:
+			CommonUtils.showCustomToast(context, "文件下载完成");
+			sendBroadCast(packageName);
 			break;
 		case 1:
+			CommonUtils.showCustomToast(context, "文件下载完成");
+			sendBroadCast(packageName);
 			break;
 		case -1:
 			CommonUtils.showCustomToast(context, "获取下载文件信息出现异常");
