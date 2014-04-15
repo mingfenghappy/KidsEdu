@@ -73,9 +73,7 @@ public class DownloadAppTask extends AsyncTask<String, Integer, String> {
 		super.onPostExecute(result);
 		switch(Integer.parseInt(result)) {
 		case 2:
-			CommonUtils.showCustomToast(context, "文件下载完成");
-			sendBroadCast(packageName);
-			break;
+			
 		case 1:
 			CommonUtils.showCustomToast(context, "文件下载完成");
 			sendBroadCast(packageName);
@@ -89,9 +87,7 @@ public class DownloadAppTask extends AsyncTask<String, Integer, String> {
 			sendBroadCast(packageName);
 			break;
 		case -3:
-			CommonUtils.showCustomToast(context, "下载文件出现异常");
-			sendBroadCast(packageName);
-			break;
+			
 		case -4:
 			CommonUtils.showCustomToast(context, "下载文件出现异常");
 			sendBroadCast(packageName);
@@ -199,6 +195,11 @@ public class DownloadAppTask extends AsyncTask<String, Integer, String> {
 						publishProgress(percent);
 						downloadPercent=percent;
 						((KEApplication) context.getApplicationContext()).download_app_maps.put(model.getPackageName(), percent);
+					}
+					if(total>fileSize) {
+						result="-3";
+						file_new.delete();
+						break;
 					}
             	}
 				if(!result.equals("-5")) {

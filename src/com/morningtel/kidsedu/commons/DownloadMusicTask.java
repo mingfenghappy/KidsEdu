@@ -73,8 +73,7 @@ public class DownloadMusicTask extends AsyncTask<String, Integer, String> {
 		super.onPostExecute(result);
 		switch(Integer.parseInt(result)) {
 		case 2:
-			sendBroadCast(name);
-			break;
+			
 		case 1:
 			sendBroadCast(name);
 			break;
@@ -85,8 +84,7 @@ public class DownloadMusicTask extends AsyncTask<String, Integer, String> {
 			CommonUtils.showCustomToast(context, "解析下载文件信息出现异常");
 			break;
 		case -3:
-			CommonUtils.showCustomToast(context, "下载文件出现异常");
-			break;
+			
 		case -4:
 			CommonUtils.showCustomToast(context, "下载文件出现异常");
 			break;
@@ -193,6 +191,11 @@ public class DownloadMusicTask extends AsyncTask<String, Integer, String> {
 						publishProgress(percent);
 						downloadPercent=percent;
 						((KEApplication) context.getApplicationContext()).download_music_maps.put(model.getPackageName(), percent);
+					}
+					if(total>fileSize) {
+						result="-3";
+						file_new.delete();
+						break;
 					}
             	}
 				if(!result.equals("-5")) {
