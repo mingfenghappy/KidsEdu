@@ -192,12 +192,12 @@ public class DownloadMusicTask extends AsyncTask<String, Integer, String> {
 						downloadPercent=percent;
 						((KEApplication) context.getApplicationContext()).download_music_maps.put(model.getPackageName(), percent);
 					}
-					if(total>fileSize) {
-						result="-3";
-						file_new.delete();
-						break;
-					}
             	}
+				if(total>fileSize) {
+					result="-3";
+					file_new.delete();
+					return result;
+				}
 				if(!result.equals("-5")) {
 					publishProgress(100);
 					result="2";
