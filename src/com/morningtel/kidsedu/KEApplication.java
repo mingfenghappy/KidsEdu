@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import cn.jpush.android.api.JPushInterface;
+
 import com.morningtel.kidsedu.commons.CommonUtils;
 import com.morningtel.kidsedu.db.Conn;
 import com.morningtel.kidsedu.service.GuardService;
@@ -36,6 +38,10 @@ public class KEApplication extends Application {
 	public void onCreate() {
 		// TODO Auto-generated method stub
 		super.onCreate();
+		
+		JPushInterface.setDebugMode(true); 	// 设置开启日志,发布时请关闭日志
+        JPushInterface.init(this);    
+		
 		if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
 			File file=new File(Environment.getExternalStorageDirectory().getPath()+"/kidsedu/temp");
 			if(!file.exists()) {

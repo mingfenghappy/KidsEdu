@@ -1,5 +1,7 @@
 package com.morningtel.kidsedu;
 
+import cn.jpush.android.api.JPushInterface;
+
 import com.morningtel.kidsedu.main.TabMainActivity;
 
 import android.app.Activity;
@@ -34,5 +36,19 @@ public class SplashActivity extends Activity {
 				startActivity(intent);
 				finish();
 			}});
+	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		JPushInterface.onResume(this);
+	}
+	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		JPushInterface.onPause(this);
 	}
 }
